@@ -1,0 +1,32 @@
+{
+  "name": "fs08-docthrough-team2-be",
+  "version": "1.0.0",
+  "description": "--",
+  "main": "index.js",
+  "scripts": {
+    "prepare": "husky",
+    "format": "prettier --write"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fs08-docthrough-team2/fs08-docthrough-team2-be.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/fs08-docthrough-team2/fs08-docthrough-team2-be/issues"
+  },
+  "homepage": "https://github.com/fs08-docthrough-team2/fs08-docthrough-team2-be#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "dotenv": "^17.2.3",
+    "husky": "^9.1.7",
+    "nodemon": "^3.1.10",
+    "prettier": "^3.6.2"
+  }
+}
