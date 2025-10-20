@@ -1,0 +1,26 @@
+# 시스템/패키지
+node_modules
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+
+# 빌드 아웃풋
+dist
+build
+
+# 테스트/커버리지
+coverage
+
+# 에디터/툴
+.vscode
+.eslintcache
+
+# Prisma 관련 (마이그레이션 SQL은 포맷 제외 추천)
+prisma/migrations
+prisma/dev.db
+prisma/*.db
+prisma/*.sqlite
+
+# 환경변수
+.env
+.env.*
