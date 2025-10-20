@@ -1,0 +1,22 @@
+{
+  "name": "fs08-docthrough-team2-be",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fs08-docthrough-team2/fs08-docthrough-team2-be.git"
+  },
+  "private": true,
+  "dependencies": {
+    "@prisma/client": "^6.17.1",
+    "cookie-parser": "^1.4.7",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "morgan": "^1.10.1",
+    "swagger-ui-express": "^5.0.1"
+  }
+}
