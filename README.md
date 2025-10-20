@@ -1,9 +1,13 @@
 # 📄 코드잇 스프린트 독스루 프로젝트
 
+---
+
 ## 📦 Repository
 
 - Frontend: https://github.com/fs08-docthrough-team2/fs08-docthrough-team2-fe
 - Backend: https://github.com/fs08-docthrough-team2/fs08-docthrough-team2-be
+
+---
 
 ## 👥 팀원 구성
 
@@ -12,6 +16,8 @@
 - **민기범**
 - **김동영**
 - **김연만**
+
+---
 
 ## 🧾 프로젝트 소개: DocsThrough
 
