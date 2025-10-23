@@ -98,14 +98,10 @@ export function errorHandler(err, req, res, next) {
     err.code = 'INVALID_INPUT';
     err.message = 'Invalid input data';
     try {
-      const failures =
-        typeof err.failures === 'function' ? Array.from(err.failures()) : [];
+      const failures = typeof err.failures === 'function' ? Array.from(err.failures()) : [];
       err.details = {
-        fields: failures.map(f => ({
-          path:
-            Array.isArray(f.path) && f.path.length
-              ? f.path.join('.')
-              : (f.key ?? ''),
+        fields: failures.map((f) => ({
+          path: Array.isArray(f.path) && f.path.length ? f.path.join('.') : (f.key ?? ''),
           type: f.type,
           message: f.message,
         })),
