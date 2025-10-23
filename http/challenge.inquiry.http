@@ -1,0 +1,4 @@
+### 번역 챌린지 목록 조회
+GET http://localhost:3000/api/challenge/inquiry/challenge-list
+
+###

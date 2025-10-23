@@ -4,7 +4,9 @@ import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import express from 'express';
 import morgan from 'morgan';
+
 import sampleRoutes from './api/routes/sample.routes.js';
+import challengeInquiryRoute from './api/routes/challenge.inquiry.route.js';
 
 import { swaggerDocs } from './common/swagger.js';
 // 환경 변수 설정
@@ -29,6 +31,7 @@ app.get('/', (req, res) => {
   res.send('API 연결 성공');
 });
 app.use('/api/sample', sampleRoutes);
+app.use('/api/challenge/inquiry', challengeInquiryRoute);
 
 // Swagger 문서
 swaggerDocs(app);
