@@ -1,8 +1,6 @@
-import { PrismaClient } from '@prisma/client';
+import prisma from '../src/common/prisma.js';
 import argon2 from 'argon2';
 import crypto from 'crypto';
-
-const prisma = new PrismaClient();
 
 // ─────────────────────────────────────────────────────────────
 // 1) JSON에서 추출해 상수로 내장한 데이터
