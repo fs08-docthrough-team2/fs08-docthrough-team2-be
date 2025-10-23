@@ -14,11 +14,9 @@ const options = {
       version: '1.0.0',
       description: '공부의 숲 API 문서',
     },
-      servers: [
-          {url: 'http://localhost:3000', description: '개발 서버'},
-      ],
+    servers: [{ url: 'http://localhost:3000', description: '개발 서버' }],
   },
-    apis: [path.resolve(__dirname, '../api/routes/*.js')], // JSDoc 주석 기반으로 문서 생성
+  apis: [path.resolve(__dirname, '../api/routes/*.js')], // JSDoc 주석 기반으로 문서 생성
 };
 
 const swaggerSpec = swaggerJsdoc(options);
