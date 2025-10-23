@@ -3,9 +3,9 @@
 import sampleService from '../services/sample.services.js';
 
 async function getSamples(req, res, next) {
-    await sampleService.getSamples();
+  await sampleService.getSamples();
 }
 
 export default {
-    getSamples,
+  getSamples,
 };
