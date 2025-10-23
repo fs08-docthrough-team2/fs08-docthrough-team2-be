@@ -30,7 +30,6 @@ app.get('/', (req, res) => {
 });
 app.use('/api/sample', sampleRoutes);
 
-
 // Swagger 문서
 swaggerDocs(app);
 

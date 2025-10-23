@@ -1,0 +1,156 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+model User {
+  user_id       String   @id @default(uuid())
+  email         String   @unique
+  nick_name      String
+  password      String
+
+  //어드민 여부
+  role          Role     @default(USER)
+  //외부 인증
+  provider      Provider?
+  refresh_token String
+  isDelete      Boolean  @default(false)
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+
+  challenges    Challenge[]
+  attends       Attend[]
+  feedbacks     Feedback[]
+  likes         Like[]
+  notices       Notice[]
+}
+
+enum Role {
+  USER
+  EXPERT
+  ADMIN
+}
+
+enum Provider {
+  GOOGLE
+  NAVER
+  KAKAO
+}
+
+model Challenge {
+  challenge_id  String     @id @default(uuid())
+  user_id       String
+  title         String
+  content       String
+
+  //타입
+  type          ChallengeType
+  //상태
+  status        ChallengeStatus
+  //분야
+  field         ChallengeField
+  source        String
+  deadline      DateTime
+  capacity      String
+  isDelete      Boolean  @default(false)
+  isClose       Boolean  @default(false)
+  isReject      Boolean  @default(false)
+  reject_content String?
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+
+  user          User       @relation(fields: [user_id], references: [user_id])
+  attends       Attend[]
+}
+
+enum ChallengeType {
+  OFFICIAL
+  BLOG
+}
+
+enum ChallengeStatus {
+  DEADLINE
+  INPROGRESS
+}
+
+enum ChallengeField {
+  NEXT
+  MODERN
+  API
+  WEB
+  CAREER
+}
+
+model Attend {
+  attend_id   String   @id @default(uuid())
+  challenge_id String
+  user_id     String
+  work_item   String
+  isSave      Boolean  @default(false)
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  user        User      @relation(fields: [user_id], references: [user_id])
+  challenge   Challenge @relation(fields: [challenge_id], references: [challenge_id])
+  feedbacks   Feedback[]
+  likes       Like[]
+}
+
+model Feedback {
+  feedback_id String   @id @default(uuid())
+  attend_id   String
+  user_id     String
+  content     String
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+
+  user        User      @relation(fields: [user_id], references: [user_id])
+  attend      Attend    @relation(fields: [attend_id], references: [attend_id])
+}
+
+model Like {
+  like_id     String   @id @default(uuid())
+  user_id     String
+  attend_id   String
+  liker       Boolean
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+
+  user        User    @relation(fields: [user_id], references: [user_id])
+  attend      Attend  @relation(fields: [attend_id], references: [attend_id])
+}
+
+model Notice {
+  notice_id   String   @id @default(uuid())
+  user_id     String
+  type        NoticeType
+  content     String
+  isRead      Boolean  @default(false)
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+
+  user        User @relation(fields: [user_id], references: [user_id])
+}
+
+enum NoticeType {
+  CHALLENGE
+  APPROVAL
+  FEEDBACK
+  DEADLINE
+  ATTEND
+}
