@@ -140,3 +140,7 @@ vite.config.ts.timestamp-*
 /src/generated/
 /prisma/migrations/
 /.idea/
+
+/src/generated/prisma
+
+/src/generated/prisma
