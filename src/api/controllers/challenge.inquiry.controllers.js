@@ -2,6 +2,8 @@
 import challengeService from '../services/challenge.inquiry.services.js';
 
 async function getChallengeList(req, res, next) {
+  const { title, field, type, status, page, pageSize, sort } = req.params;
+
   const listData = await challengeService.getChallengeList();
   res.status(200).json(listData);
 }

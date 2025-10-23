@@ -13,6 +13,8 @@ async function getChallengeList() {
         deadline: true,
         capacity: true,
       },
+
+      where: {},
     });
 
     return challenges;
