@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import express from 'express';
 import morgan from 'morgan';
-import sampleRoutes from './routes/sample.routes.js';
+import sampleRoutes from './api/routes/sample.routes.js';
 
 import { swaggerDocs } from './common/swagger.js';
 // 환경 변수 설정
