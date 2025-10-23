@@ -6,8 +6,8 @@
   "scripts": {
     "prepare": "husky",
     "format": "prettier --write",
-    "start": "node src/app.js",
-    "dev": "nodemon src/app.js",
+    "start": "node app.js",
+    "dev": "nodemon app.js",
     "seed": "node prisma/seed.js",
     "migrate": "npx prisma migrate dev",
     "build": "npx prisma generate",
