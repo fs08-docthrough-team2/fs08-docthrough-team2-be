@@ -1,0 +1,45 @@
+{
+  "name": "fs08-docthrough-team2-be",
+  "version": "1.0.0",
+  "description": "--",
+  "main": "src/app.js",
+  "scripts": {
+    "prepare": "husky",
+    "format": "prettier --write",
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js",
+    "seed": "node prisma/seed.js",
+    "migrate": "npx prisma migrate dev",
+    "build": "npx prisma generate",
+    "deploy": "prisma migrate deploy && npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fs08-docthrough-team2/fs08-docthrough-team2-be.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/fs08-docthrough-team2/fs08-docthrough-team2-be/issues"
+  },
+  "homepage": "https://github.com/fs08-docthrough-team2/fs08-docthrough-team2-be#readme",
+  "dependencies": {
+    "@prisma/client": "^6.17.1",
+    "argon2": "^0.44.0",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "morgan": "^1.10.1",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
+  },
+  "devDependencies": {
+    "dotenv": "^17.2.3",
+    "husky": "^9.1.7",
+    "nodemon": "^3.1.10",
+    "prettier": "^3.6.2",
+    "prisma": "^6.18.0"
+  }
+}
