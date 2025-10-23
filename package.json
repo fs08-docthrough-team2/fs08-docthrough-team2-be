@@ -5,7 +5,13 @@
   "main": "index.js",
   "scripts": {
     "prepare": "husky",
-    "format": "prettier --write"
+    "format": "prettier --write",
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js",
+    "seed": "node prisma/seed.js",
+    "migrate": "prisma migrate dev --name init",
+    "build": "prisma generate",
+    "deploy": "prisma migrate deploy && npm run build"
   },
   "repository": {
     "type": "git",
