@@ -8,7 +8,7 @@ import challengeControllers from '../controllers/challenge.inquiry.controllers.j
 const router = express.Router();
 router.use(corsMiddleware);
 
-router.get('/challenge-list', challengeControllers.getChallengeList);
+router.get('/challenge-list', challengeControllers.getChallengeListInput);
 
 // 에러 핸들링 미들웨어 적용
 router.use(errorMiddleware.errorHandler);
