@@ -60,6 +60,73 @@ async function getChallengeListInput(req, res, next) {
   }
 }
 
+async function getChallengeDetailInput(req, res, next) {
+  const { challengeId } = req.params;
+
+  try {
+    // 입력 검증 (UUID 검증)
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(challengeId)) {
+      return res.status(400).json({
+        message: '유효하지 않은 챌린지 ID 형식입니다.',
+      });
+    }
+
+    // 서비스 호출
+    const detailData = await challengeService.getChallengeDetail(challengeId);
+
+    // 응답 반환
+    return res.status(200).json(detailData);
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function getParticipateListInput(req, res, next) {
+  const { challengeId } = req.params;
+  const { page, pageSize } = req.query;
+
+  try {
+    // 입력 검증 (UUID 검증)
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(challengeId)) {
+      return res.status(400).json({
+        message: '유효하지 않은 챌린지 ID 형식입니다.',
+      });
+    }
+
+    // 페이지네이션 검증
+    const pageNum = Number(page);
+    const pageSizeNum = Number(pageSize);
+
+    if (!Number.isInteger(pageNum) || !Number.isInteger(pageSizeNum)) {
+      return res.status(400).json({
+        message: '페이지 또는 페이지 크기 값이 올바르지 않습니다.',
+      });
+    }
+
+    if (pageNum < 1 || pageSizeNum < 1) {
+      return res.status(400).json({
+        message: '페이지 또는 페이지 크기 값은 1 이상이어야 합니다.',
+      });
+    }
+
+    // 서비스 호출
+    const participateData = await challengeService.getParticipateList(
+      challengeId,
+      pageNum,
+      pageSizeNum,
+    );
+
+    // 응답 반환
+    return res.status(200).json(participateData);
+  } catch (error) {
+    next(error);
+  }
+}
+
 export default {
   getChallengeListInput,
+  getChallengeDetailInput,
+  getParticipateListInput,
 };

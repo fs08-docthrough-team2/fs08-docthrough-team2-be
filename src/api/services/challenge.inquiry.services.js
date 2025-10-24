@@ -85,6 +85,115 @@ async function getChallengeList({ title, field, type, status, page, pageSize, so
   }
 }
 
+async function getChallengeDetail(challengeId) {
+  try {
+    const challenge = await prisma.challenge.findUnique({
+      where: {
+        challenge_id: challengeId,
+      },
+      select: {
+        challenge_id: true,
+        title: true,
+        content: true,
+        field: true,
+        type: true,
+        status: true,
+        deadline: true,
+        capacity: true,
+        source: true,
+        _count: {
+          select: {
+            attends: true,
+          },
+        },
+      },
+    });
+
+    if (!challenge) {
+      return {
+        success: false,
+        message: '챌린지를 찾을 수 없습니다.',
+      };
+    }
+
+    return {
+      success: true,
+      data: {
+        challengeId: challenge.challenge_id,
+        title: challenge.title,
+        content: challenge.content,
+        field: challenge.field,
+        type: challenge.type,
+        status: challenge.status,
+        deadline: challenge.deadline,
+        currentParticipants: challenge._count.attends,
+        maxParticipants: parseInt(challenge.capacity),
+        source: challenge.source,
+      },
+    };
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function getParticipateList(challengeId, page, pageSize) {
+  try {
+    const participates = await prisma.attend.findMany({
+      where: {
+        challenge_id: challengeId,
+        isSave: true,
+      },
+      select: {
+        attend_id: true,
+        user_id: true,
+        updated_at: true,
+        user: {
+          select: {
+            nick_name: true,
+          },
+        },
+        _count: {
+          select: {
+            likes: {
+              where: {
+                liker: true,
+              },
+            },
+          },
+        },
+      },
+      orderBy: [{ likes: { _count: 'desc' } }],
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+    });
+
+    // 순위 추가
+    const participatesWithRank = participates.map((participate, index) => ({
+      rank: index + 1,
+      attendId: participate.attend_id,
+      userId: participate.user_id,
+      nickName: participate.user.nick_name,
+      hearts: participate._count.likes,
+      lastSubmittedAt: participate.updated_at,
+    }));
+
+    return {
+      success: true,
+      data: {
+        participates: participatesWithRank,
+      },
+      pagination: {
+        page: page,
+        pageSize: pageSize,
+      },
+    };
+  } catch (error) {
+    throw error;
+  }
+}
+
 export default {
   getChallengeList,
+  getChallengeDetail,
+  getParticipateList,
 };
