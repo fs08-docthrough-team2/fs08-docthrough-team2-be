@@ -136,7 +136,64 @@ async function getChallengeDetail(challengeId) {
   }
 }
 
+async function getParticipateList(challengeId, page, pageSize) {
+  try {
+    const participates = await prisma.attend.findMany({
+      where: {
+        challenge_id: challengeId,
+        isSave: true,
+      },
+      select: {
+        attend_id: true,
+        user_id: true,
+        updated_at: true,
+        user: {
+          select: {
+            nick_name: true,
+          },
+        },
+        _count: {
+          select: {
+            likes: {
+              where: {
+                liker: true,
+              },
+            },
+          },
+        },
+      },
+      orderBy: [{ likes: { _count: 'desc' } }],
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+    });
+
+    // 순위 추가
+    const participatesWithRank = participates.map((participate, index) => ({
+      rank: index + 1,
+      attendId: participate.attend_id,
+      userId: participate.user_id,
+      nickName: participate.user.nick_name,
+      hearts: participate._count.likes,
+      lastSubmittedAt: participate.updated_at,
+    }));
+
+    return {
+      success: true,
+      data: {
+        participates: participatesWithRank,
+      },
+      pagination: {
+        page: page,
+        pageSize: pageSize,
+      },
+    };
+  } catch (error) {
+    throw error;
+  }
+}
+
 export default {
   getChallengeList,
   getChallengeDetail,
+  getParticipateList,
 };
