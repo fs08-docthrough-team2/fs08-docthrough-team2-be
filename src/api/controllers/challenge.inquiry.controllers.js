@@ -60,6 +60,28 @@ async function getChallengeListInput(req, res, next) {
   }
 }
 
+async function getChallengeDetailInput(req, res, next) {
+  const { challengeId } = req.params;
+  try {
+    // 입력 검증 (UUID 검증)
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(challengeId)) {
+      return res.status(400).json({
+        message: '유효하지 않은 챌린지 ID 형식입니다.',
+      });
+    }
+
+    // 서비스 호출
+    const detailData = await challengeService.getChallengeDetail(challengeId);
+
+    // 응답 반환
+    return res.status(200).json(detailData);
+  } catch (error) {
+    next(error);
+  }
+}
+
 export default {
   getChallengeListInput,
+  getChallengeDetailInput,
 };

@@ -1,4 +1,7 @@
 ### 번역 챌린지 목록 조회
+
 GET http://localhost:3000/api/challenge/inquiry/challenge-list?pageSize=1&page=3
 
-###
+### 번역 챌린지 상세 조회
+
+GET http://localhost:3000/api/challenge/inquiry/challenge-detail/de68229a-3f0b-4869-b220-d04c186a7024

@@ -85,6 +85,58 @@ async function getChallengeList({ title, field, type, status, page, pageSize, so
   }
 }
 
+async function getChallengeDetail(challengeId) {
+  try {
+    const challenge = await prisma.challenge.findUnique({
+      where: {
+        challenge_id: challengeId,
+      },
+      select: {
+        challenge_id: true,
+        title: true,
+        content: true,
+        field: true,
+        type: true,
+        status: true,
+        deadline: true,
+        capacity: true,
+        source: true,
+        _count: {
+          select: {
+            attends: true,
+          },
+        },
+      },
+    });
+
+    if (!challenge) {
+      return {
+        success: false,
+        message: '챌린지를 찾을 수 없습니다.',
+      };
+    }
+
+    return {
+      success: true,
+      data: {
+        challengeId: challenge.challenge_id,
+        title: challenge.title,
+        content: challenge.content,
+        field: challenge.field,
+        type: challenge.type,
+        status: challenge.status,
+        deadline: challenge.deadline,
+        currentParticipants: challenge._count.attends,
+        maxParticipants: parseInt(challenge.capacity),
+        source: challenge.source,
+      },
+    };
+  } catch (error) {
+    throw error;
+  }
+}
+
 export default {
   getChallengeList,
+  getChallengeDetail,
 };

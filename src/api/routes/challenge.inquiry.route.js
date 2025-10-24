@@ -9,6 +9,7 @@ const router = express.Router();
 router.use(corsMiddleware);
 
 router.get('/challenge-list', challengeControllers.getChallengeListInput);
+router.get('/challenge-detail/:challengeId', challengeControllers.getChallengeDetailInput);
 
 // 에러 핸들링 미들웨어 적용
 router.use(errorMiddleware.errorHandler);
