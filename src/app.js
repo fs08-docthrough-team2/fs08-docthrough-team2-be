@@ -5,6 +5,11 @@ import cookieParser from 'cookie-parser';
 import express from 'express';
 import morgan from 'morgan';
 
+import authRoutes  from "./api/routes/auth.routes.js" 
+import tokenRoutes from "./api/routes/token.routes.js"
+
+import { errorHandler } from './common/error.js';
+
 import sampleRoutes from './api/routes/sample.routes.js';
 import challengeInquiryRoute from './api/routes/challenge.inquiry.route.js';
 
@@ -20,6 +25,7 @@ if (!process.env.DATABASE_URL) {
 
 const app = express();
 
+
 // express 미들웨어 설정
 app.use(express.json({ limit: '1mb' })); // JSON 파싱 미들웨어 추가
 app.use(express.urlencoded({ limit: '1mb', extended: true }));
@@ -27,14 +33,19 @@ app.use(morgan('combined'));
 app.use(cookieParser());
 
 // API 라우트 설정
+
 app.get('/', (req, res) => {
   res.send('API 연결 성공');
 });
 app.use('/api/sample', sampleRoutes);
 app.use('/api/challenge/inquiry', challengeInquiryRoute);
+app.use("/api/auth", authRoutes);
+app.use("/api/token", tokenRoutes);
 
 // Swagger 문서
 swaggerDocs(app);
+
+app.use(errorHandler);
 
 // 서버 실행
 const PORT = Number(process.env.PORT ?? 3000);
