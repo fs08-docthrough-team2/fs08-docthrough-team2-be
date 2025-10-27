@@ -253,8 +253,6 @@ async function getUserParticipateList(userEmail, title, field, type, status, pag
   }
 }
 
-// TODO: isDelete가 true라고 해서, 완료된 챌린지인지 확실하지 않음. 상태값으로 확인 필요.
-
 async function getUserCompleteList(userEmail, title, field, type, status, page, pageSize) {
   try {
     const user_uuid = await prisma.user.findUnique({
