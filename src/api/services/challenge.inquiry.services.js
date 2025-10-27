@@ -192,8 +192,69 @@ async function getParticipateList(challengeId, page, pageSize) {
   }
 }
 
+async function getUserParticipateList(userEmail, title, field, type, status, page, pageSize) {
+  try {
+    const user_uuid = await prisma.user.findUnique({
+      where: { email: userEmail },
+      select: { user_id: true },
+    });
+
+    // where 조건 동적 생성
+    const whereCondition = {
+      isDelete: false,
+    };
+
+    if (field) {
+      whereCondition.field = field;
+    }
+
+    if (type) {
+      whereCondition.type = type;
+    }
+
+    if (status) {
+      whereCondition.status = status;
+    }
+
+    if (user_uuid) {
+      whereCondition.user_id = user_uuid.user_id;
+    }
+
+    const participates = await prisma.challenge.findMany({
+      where: whereCondition,
+      select: {
+        title: true,
+        content: true,
+        type: true,
+        status: true,
+        field: true,
+        source: true,
+        deadline: true,
+        capacity: true,
+      },
+
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+    });
+
+    return {
+      success: true,
+      data: {
+        participates: participates,
+      },
+      pagination: {
+        page: page,
+        pageSize: pageSize,
+      },
+    };
+  } catch (error) {
+    throw error;
+  }
+}
+
 export default {
   getChallengeList,
   getChallengeDetail,
   getParticipateList,
+  getUserParticipateList,
 };
