@@ -238,7 +238,6 @@ async function seedUsers() {
         provider: null,
         refresh_token: refreshHash,
         isDelete: false,
-        created_at: new Date(),
       },
       select: { user_id: true, email: true },
     });
