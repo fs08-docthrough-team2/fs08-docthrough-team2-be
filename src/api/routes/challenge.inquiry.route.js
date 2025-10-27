@@ -13,7 +13,7 @@ router.use(corsMiddleware);
  * /api/challenge/inquiry/challenge-list:
  *   get:
  *     tags:
- *       - Challenge Inquiry
+ *       - 챌린지 조회
  *     summary: 번역 챌린지 목록 조회
  *     description: 모든 번역 챌린지를 조회하고 제목 검색, 필터링, 페이지네이션을 제공합니다.
  *     parameters:
@@ -185,7 +185,7 @@ router.get('/challenge-list', challengeControllers.getChallengeListInput);
  * /api/challenge/inquiry/challenge-detail/{challengeId}:
  *   get:
  *     tags:
- *       - Challenge Inquiry
+ *       - 챌린지 조회
  *     summary: 번역 챌린지 상세 조회
  *     description: 특정 챌린지의 상세 정보를 조회합니다.
  *     parameters:
@@ -289,7 +289,7 @@ router.get('/challenge-detail/:challengeId', challengeControllers.getChallengeDe
  * /api/challenge/inquiry/participate-list/{challengeId}:
  *   get:
  *     tags:
- *       - Challenge Inquiry
+ *       - 챌린지 조회
  *     summary: 챌린지 참여 현황 조회
  *     description: 특정 챌린지의 참여자 목록을 순위, 닉네임, 하트 수, 최종 제출 시간과 함께 조회합니다.
  *     parameters:
@@ -398,7 +398,7 @@ router.get('/participate-list/:challengeId', challengeControllers.getParticipate
  * /api/challenge/inquiry/individual-participate-list/{userEmail}:
  *   get:
  *     tags:
- *       - Challenge Inquiry
+ *       - 챌린지 조회
  *     summary: 각 회원별 참여하는 챌린지 목록 조회
  *     description: 특정 회원이 참여하고 있는 챌린지 목록을 필터링 옵션과 함께 조회합니다.
  *     parameters:
@@ -561,7 +561,7 @@ router.get(
  * /api/challenge/inquiry/individual-complete-list/{userEmail}:
  *   get:
  *     tags:
- *       - Challenge Inquiry
+ *       - 챌린지 조회
  *     summary: 각 회원별 참여 완료한 챌린지 목록 조회 (만료된 챌린지)
  *     description: 특정 회원이 참여했던 챌린지 중 마감일이 지난(완료된) 챌린지 목록을 필터링 옵션과 함께 조회합니다.
  *     parameters:
@@ -721,7 +721,7 @@ router.get('/individual-complete-list/:userEmail', challengeControllers.getUserC
  * /api/challenge/inquiry/individual-challenge-detail/{userEmail}:
  *   get:
  *     tags:
- *       - Challenge Inquiry
+ *       - 챌린지 조회
  *     summary: 각 회원별 신청한 챌린지 목록 조회 및 거절 목록 조회
  *     description: 특정 회원이 신청했지만 아직 참여하지 않은 챌린지 목록과 거절된 챌린지 목록을 조회합니다. 마감일이 지나지 않고 종료되지 않은 챌린지만 조회됩니다.
  *     parameters:
