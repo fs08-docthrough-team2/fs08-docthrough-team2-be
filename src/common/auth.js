@@ -1,5 +1,7 @@
 import { expressjwt } from 'express-jwt';
-import userRepository from '../api/repositories/auth.repository.js';
+import {
+  findUserById
+} from '../api/repositories/auth.repository.js';
 
 function throwUnauthorizedError() {
   // 인증되지 않은 경우 401 에러를 발생시키는 함수
@@ -13,7 +15,7 @@ async function verifySessionLogin(req, res, next) {
     const { userId } = req.session;
     if (!userId) throwUnauthorizedError();
 
-    const user = await userRepository.findUserById(userId);
+    const user = await findUserById(userId);
     if (!user || user.isDelete) throwUnauthorizedError();
 
     req.user = {
@@ -32,6 +34,15 @@ const verifyAccessToken = expressjwt({
   secret: process.env.JWT_SECRET,
   algorithms: ['HS256'],
   requestProperty: 'auth',
+  getToken: (req) => {
+    if (
+      req.headers.authorization &&
+      req.headers.authorization.startsWith("Bearer ")
+    ) {
+      return req.headers.authorization.split(" ")[1];
+    }
+    return null;
+  },
 });
 
 const verifyRefreshToken = [
@@ -48,7 +59,7 @@ const verifyRefreshToken = [
       const token = req.cookies.refreshToken;
       if (!token) throwUnauthorizedError();
 
-      const user = await userRepository.findUserById(req.auth.user_id);
+      const user = await findUserById(req.auth.user_id);
       if (!user || user.refresh_token !== token) {
         const err = new Error('Refresh Token 불일치');
         err.status = 401;

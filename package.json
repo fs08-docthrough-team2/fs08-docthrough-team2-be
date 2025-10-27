@@ -13,6 +13,9 @@
     "build": "npx prisma generate",
     "deploy": "prisma migrate deploy && npm run build"
   },
+  "prisma": {
+    "seed": "node prisma/seed.js"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/fs08-docthrough-team2/fs08-docthrough-team2-be.git"
@@ -28,9 +31,11 @@
   "dependencies": {
     "@prisma/client": "^6.17.1",
     "argon2": "^0.44.0",
+    "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "express": "^5.1.0",
+    "express-jwt": "^8.5.1",
     "morgan": "^1.10.1",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1"

@@ -1,6 +1,8 @@
-import prisma from '../common/prisma.js';
+import prisma from "../../common/prisma.js"
 
-export async function findUserById(user_id) {
+
+// id로 찾기
+export async function findUserById(user_id){
   return prisma.user.findUnique({
     where: {
       user_id,
@@ -8,25 +10,28 @@ export async function findUserById(user_id) {
   });
 }
 
-export async function findUserByEmail(email) {
+// 이메일로 찾기
+export async function findUserByEmail(email){
   return prisma.user.findUnique({
     where: {
       email,
-    },
-  });
+    }
+  })
 }
 
-export async function CreateUser(data) {
-  prisma.user.create({ data });
+// 사용자 생성
+export async function createUser(data){
+  return prisma.user.create({ data });
 }
 
-export async function updateRefreshToken(user_id, refresh_token) {
-  return prisma.user.update({
-    where: {
-      userId: user_id,
-    },
-    data: {
-      refreshToken: refresh_token,
-    },
-  });
-}
+// // 토큰 갱신
+// export async function updateRefreshToken(user_id, refresh_token){
+//   return prisma.user.update({
+//     where:{
+//       userId:user_id,
+//     },
+//     data: {
+//       refreshToken: refresh_token
+//     },
+//   });
+// };
