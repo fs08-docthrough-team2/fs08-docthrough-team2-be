@@ -314,6 +314,70 @@ async function getUserCompleteList(userEmail, title, field, type, status, page, 
   }
 }
 
+async function getUserChallengeDetail(userEmail, title, field, type, status, page, pageSize) {
+  try {
+    const user_uuid = await prisma.user.findUnique({
+      where: { email: userEmail },
+      select: { user_id: true },
+    });
+
+    // where 조건 동적 생성
+    const whereCondition = {
+      isDelete: false,
+      isClose: false,
+      deadline: { gt: new Date() },
+    };
+
+    if (field) {
+      whereCondition.field = field;
+    }
+
+    if (type) {
+      whereCondition.type = type;
+    }
+
+    if (status) {
+      whereCondition.status = status;
+    }
+
+    if (user_uuid) {
+      whereCondition.user_id = user_uuid.user_id;
+    }
+
+    const participates = await prisma.challenge.findMany({
+      where: whereCondition,
+      select: {
+        title: true,
+        content: true,
+        type: true,
+        status: true,
+        field: true,
+        source: true,
+        deadline: true,
+        capacity: true,
+        isReject: true,
+        reject_content: true,
+      },
+
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+    });
+
+    return {
+      success: true,
+      data: {
+        participates: participates,
+      },
+      pagination: {
+        page: page,
+        pageSize: pageSize,
+      },
+    };
+  } catch (error) {
+    throw error;
+  }
+}
+
 export default {
   getChallengeList,
   getChallengeDetail,
@@ -321,4 +385,5 @@ export default {
 
   getUserParticipateList,
   getUserCompleteList,
+  getUserChallengeDetail,
 };

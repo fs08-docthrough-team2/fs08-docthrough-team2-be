@@ -235,6 +235,49 @@ async function getUserCompleteListInput(req, res, next) {
   }
 }
 
+async function getUserChallengeDetailInput(req, res, next) {
+  const { userEmail } = req.params;
+  const { page, pageSize, title, field, type, status } = req.query;
+
+  try {
+    // 입력 검증
+    if (!userEmail || userEmail.trim() === '') {
+      return res.status(400).json({ message: '유저 이메일이 필요합니다.' });
+    }
+
+    const pageNum = Number(page);
+    const pageSizeNum = Number(pageSize);
+
+    if (!Number.isInteger(pageNum) || !Number.isInteger(pageSizeNum)) {
+      return res.status(400).json({ message: '페이지 또는 페이지 크기 값이 올바르지 않습니다.' });
+    }
+
+    if (pageNum < 1 || pageSizeNum < 1) {
+      return res.status(400).json({ message: '페이지 또는 페이지 크기 값은 1 이상이어야 합니다.' });
+    }
+
+    if (pageSizeNum > 100) {
+      return res.status(400).json({ message: '페이지 크기는 100 이하여야 합니다.' });
+    }
+
+    // 서비스 호출
+    const userChallengeDetailData = await challengeService.getUserChallengeDetail(
+      userEmail,
+      title,
+      field,
+      type,
+      status,
+      pageNum,
+      pageSizeNum,
+    );
+
+    // 응답 반환
+    return res.status(200).json(userChallengeDetailData);
+  } catch (error) {
+    next(error);
+  }
+}
+
 export default {
   getChallengeListInput,
   getChallengeDetailInput,
@@ -242,4 +285,5 @@ export default {
 
   getUserParticipateListInput,
   getUserCompleteListInput,
+  getUserChallengeDetailInput,
 };
