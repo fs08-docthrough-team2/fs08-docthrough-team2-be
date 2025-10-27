@@ -8,6 +8,7 @@ import corsCofing from '../src/common/cors.js'
 
 import authRoutes  from "./api/routes/auth.routes.js" 
 import tokenRoutes from "./api/routes/token.routes.js"
+import adminRoutes from "./api/routes/admin.routes.js"
 
 import { errorHandler } from './common/error.js';
 
@@ -36,9 +37,10 @@ app.use(cookieParser());
 //   res.send('API 연결 성공');
 // });
 
+
 app.use("/api/auth", authRoutes);
 app.use("/api/token", tokenRoutes);
-
+app.use("/api/admin", adminRoutes);
 // app.use('/api/sample', sampleRoutes);
 
 // Swagger 문서

@@ -4,6 +4,7 @@ import {
   refreshAccessToken
 } from "../services/token.service.js";
 
+
 export const verifyAccessTokenController = asyncHandler(async (req, res) => {
   if (!refreshToken) {
     return res.status(401).json({
@@ -33,7 +34,8 @@ export const verifyAccessTokenController = asyncHandler(async (req, res) => {
       message: "Refresh Token 유효함",
       user: result.user,
     });
-  } catch (error) {
+  } 
+  catch (error) {
     console.error("verifyAccessTokenController Error:", error);
     return res.status(401).json({
       success: false,

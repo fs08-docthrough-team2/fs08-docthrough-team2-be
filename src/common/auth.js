@@ -25,7 +25,8 @@ async function verifySessionLogin(req, res, next) {
       role: user.role,
     };
     next();
-  } catch (error) {
+  } 
+  catch (error) {
     next(error);
   }
 }
@@ -34,6 +35,7 @@ const verifyAccessToken = expressjwt({
   secret: process.env.JWT_SECRET,
   algorithms: ['HS256'],
   requestProperty: 'auth',
+  credentialsRequired: true,
   getToken: (req) => {
     if (
       req.headers.authorization &&
@@ -43,16 +45,19 @@ const verifyAccessToken = expressjwt({
     }
     return null;
   },
+  onVerificationSucceeded: (req, token) => {
+    req.auth = token.payload;
+  },
 });
 
 const verifyRefreshToken = [
   expressjwt({
     secret: process.env.JWT_SECRET,
     algorithms: ['HS256'],
+    requestProperty: "auth",
     getToken(req) {
       return req.cookies.refreshToken;
     },
-    requestProperty: 'auth',
   }),
   async function checkRefreshToken(req, res, next) {
     try {
@@ -80,6 +85,7 @@ const verifyRefreshToken = [
 async function verifyAdmin(req, res, next) {
   try {
     const role = req.auth?.role || req.user?.role;
+    console.log("verifyAdmin - req.auth:", req.auth);
     if (role !== 'ADMIN') {
       const err = new Error('관리자 권한이 필요합니다!');
       err.status = 403;

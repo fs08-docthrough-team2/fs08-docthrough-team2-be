@@ -1,4 +1,4 @@
-import bcrypt from 'bcrypt';
+import argon2 from "argon2";
 import jwt from 'jsonwebtoken';
 import dotenv from "dotenv";
 import {
@@ -17,7 +17,7 @@ export async function signup(email, password, nickName) {
   const existing = await findUserByEmail(email);
   if (existing) throw new Error("이미 등록된 이메일입니다.");
 
-  const hashed = await bcrypt.hash(password, 10);
+  const hashed = await argon2.hash(password);
 
   const user = await createUser({
     email,
@@ -64,7 +64,7 @@ export async function login(email, password) {
   if (!user || user.isDelete) 
     throw new Error('존재하지 않는 사용자입니다.');
 
-  const match = await bcrypt.compare(password, user.password);
+  const match = await argon2.verify(user.password, password); 
   if (!match) 
     throw new Error('비밀번호가 올바르지 않습니다.');
 

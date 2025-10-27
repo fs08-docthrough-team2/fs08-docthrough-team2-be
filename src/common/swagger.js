@@ -15,6 +15,28 @@ const options = {
       description: '공부의 숲 API 문서',
     },
     servers: [{ url: 'http://localhost:3000', description: '개발 서버' }],
+      components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: "http",
+          scheme: "bearer",
+          bearerFormat: "JWT",
+          description: "Access Token을 입력하세요. 예시: Bearer eyJhbGciOiJIUzI1NiIs...",
+        },
+        cookieAuth: {
+          type: "apiKey",
+          in: "cookie",
+          name: "refreshToken",
+          description: "Refresh Token (Swagger에서 쿠키 테스트 시 필요)",
+        },
+      },
+    },
+    security: [
+      {
+        bearerAuth: [],
+        cookieAuth: [],
+      },
+    ],
   },
   apis: [path.resolve(__dirname, '../api/routes/*.js')], // JSDoc 주석 기반으로 문서 생성
 };
