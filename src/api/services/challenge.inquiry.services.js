@@ -202,6 +202,70 @@ async function getUserParticipateList(userEmail, title, field, type, status, pag
     // where 조건 동적 생성
     const whereCondition = {
       isDelete: false,
+      deadline: { gt: new Date() },
+    };
+
+    if (field) {
+      whereCondition.field = field;
+    }
+
+    if (type) {
+      whereCondition.type = type;
+    }
+
+    if (status) {
+      whereCondition.status = status;
+    }
+
+    if (user_uuid) {
+      whereCondition.user_id = user_uuid.user_id;
+    }
+
+    const participates = await prisma.challenge.findMany({
+      where: whereCondition,
+      select: {
+        title: true,
+        content: true,
+        type: true,
+        status: true,
+        field: true,
+        source: true,
+        deadline: true,
+        capacity: true,
+      },
+
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+    });
+
+    return {
+      success: true,
+      data: {
+        participates: participates,
+      },
+      pagination: {
+        page: page,
+        pageSize: pageSize,
+      },
+    };
+  } catch (error) {
+    throw error;
+  }
+}
+
+// TODO: isDelete가 true라고 해서, 완료된 챌린지인지 확실하지 않음. 상태값으로 확인 필요.
+
+async function getUserCompleteList(userEmail, title, field, type, status, page, pageSize) {
+  try {
+    const user_uuid = await prisma.user.findUnique({
+      where: { email: userEmail },
+      select: { user_id: true },
+    });
+
+    // where 조건 동적 생성
+    const whereCondition = {
+      isDelete: false,
+      deadline: { lt: new Date() },
     };
 
     if (field) {
@@ -256,5 +320,7 @@ export default {
   getChallengeList,
   getChallengeDetail,
   getParticipateList,
+
   getUserParticipateList,
+  getUserCompleteList,
 };

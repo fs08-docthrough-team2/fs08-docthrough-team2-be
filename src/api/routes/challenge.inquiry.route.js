@@ -556,6 +556,8 @@ router.get(
   challengeControllers.getUserParticipateListInput,
 );
 
+router.get('/individual-complete-list/:userEmail', challengeControllers.getUserCompleteListInput);
+
 // 에러 핸들링 미들웨어 적용
 router.use(errorMiddleware.errorHandler);
 
