@@ -5,8 +5,12 @@ import {
   loginController,
   logoutController,
 } from "../controllers/auth.conotroller.js";
+import corsMiddleware from '../../common/cors.js';
+import * as errorMiddleware from '../../common/error.js';
 
 const router = express.Router();
+
+router.use(corsMiddleware);
 
 /**
  * @swagger
@@ -89,5 +93,8 @@ router.post("/login", loginController);
  *         description: Refresh Token이 없거나 유효하지 않음
  */
 router.post("/logout", logoutController);
+
+// 에러 핸들링 미들웨어 적용
+router.use(errorMiddleware.errorHandler);
 
 export default router;

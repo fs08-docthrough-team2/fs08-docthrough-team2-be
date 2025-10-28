@@ -4,11 +4,14 @@ import {
   verifyAccessTokenController,
   refreshTokenController,
 } from "../controllers/token.controller.js";
+import corsMiddleware from '../../common/cors.js';
+import * as errorMiddleware from '../../common/error.js';
 
 import auth from "../../common/auth.js";
 
 const router = express.Router();
 
+router.use(corsMiddleware);
 /**
  * @swagger
  * tags:
@@ -81,5 +84,8 @@ router.post("/verify", auth.verifyRefreshToken, verifyAccessTokenController);
  *         description: Refresh Token이 없거나 만료됨
  */
 router.post("/refresh", refreshTokenController);
+
+// 에러 핸들링 미들웨어 적용
+router.use(errorMiddleware.errorHandler);
 
 export default router;
