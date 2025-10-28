@@ -7,6 +7,8 @@ import morgan from 'morgan';
 
 import authRoutes  from "./api/routes/auth.routes.js" 
 import tokenRoutes from "./api/routes/token.routes.js"
+import adminRoutes from "./api/routes/admin.routes.js"
+import userRoutes from "./api/routes/user.routes.js"
 
 import { errorHandler } from './common/error.js';
 
@@ -44,7 +46,8 @@ app.use('/api/challenge', challengeCRUDRoute);
 app.use('/api/challenge/inquiry', challengeInquiryRoute);
 app.use("/api/auth", authRoutes);
 app.use("/api/token", tokenRoutes);
-
+app.use("/api/admin", adminRoutes);
+app.use("/api/user", userRoutes);
 // Swagger 문서
 swaggerDocs(app);
 
