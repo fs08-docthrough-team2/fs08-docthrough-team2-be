@@ -76,6 +76,10 @@ enum ChallengeType {
 enum ChallengeStatus {
   DEADLINE
   INPROGRESS
+  APPROVED
+  REJECTED
+  CANCELLED
+  PENDING
 }
 
 enum ChallengeField {
