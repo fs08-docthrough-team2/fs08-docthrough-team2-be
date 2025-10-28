@@ -1,0 +1,23 @@
+### Admin 챌린지 조회 API
+
+GET http://localhost:3000/api/challenge/admin/inquiry/challenge-list?page=1&pageSize=10
+
+### Admin 챌린지 상세 조회 API
+
+GET http://localhost:3000/api/challenge/admin/inquiry/challenge/0685b51d-953f-4943-bef7-8eebba911e8e
+
+### 챌린지 승인 API
+
+PATCH http://localhost:3000/api/challenge/admin/new-challenge/approve/0685b51d-953f-4943-bef7-8eebba911e8e
+content-type: application/json
+
+{}
+
+### 챌린지 거절 API
+
+PATCH http://localhost:3000/api/challenge/admin/new-challenge/reject/0685b51d-953f-4943-bef7-8eebba911e8e
+content-type: application/json
+
+{
+  "reject_comment": "챌린지 내용이 부적절합니다."
+}
