@@ -1,6 +1,10 @@
 import prisma from "../../common/prisma.js"
 
 export async function findUserByRefreshToken(token) {
+  if (!token || typeof token !== "string" || token.trim() === "") {
+    return null;
+  }
+
   return prisma.user.findFirst({
     where: { refresh_token: token },
     select: {

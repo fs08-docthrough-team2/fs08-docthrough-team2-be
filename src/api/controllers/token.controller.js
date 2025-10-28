@@ -6,6 +6,7 @@ import {
 
 
 export const verifyAccessTokenController = asyncHandler(async (req, res) => {
+  const refreshToken = req.cookies?.refreshToken; 
   if (!refreshToken) {
     return res.status(401).json({
       success: false,
@@ -17,7 +18,7 @@ export const verifyAccessTokenController = asyncHandler(async (req, res) => {
   }
 
   try {
-    const result = await verifyRefreshToken(refreshToken);
+    const result = await verifyAccessToken(refreshToken);
 
     if (!result?.user) {
       return res.status(401).json({

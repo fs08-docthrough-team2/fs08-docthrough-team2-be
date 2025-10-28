@@ -29,7 +29,6 @@ export async function verifyAccessToken(refreshToken) {
 
   return {
     user: {
-      userId: user.user_id,
       email: user.email,
       nickName: user.nick_name,
       role: user.role,
@@ -72,7 +71,6 @@ const newAccessToken = jwt.sign(
     accessToken: newAccessToken,
     refreshToken: newRefreshToken,
     user: {
-      userId: user.user_id,
       email: user.email,
       nickName: user.nick_name,
       role: user.role,

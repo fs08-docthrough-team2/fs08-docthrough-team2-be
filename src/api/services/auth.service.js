@@ -92,7 +92,6 @@ export async function login(email, password) {
     accessToken, 
     refreshToken,
     user:{
-      userId: user.user_id,
       email: user.email,
       nickName: user.nick_name,
       role: user.role,
