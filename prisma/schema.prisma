@@ -59,6 +59,7 @@ model Challenge {
   isDelete       Boolean         @default(false)
   isClose        Boolean         @default(false)
   isReject       Boolean         @default(false)
+  isApprove      Boolean         @default(false)
   reject_content String?
   created_at     DateTime        @default(now())
   updated_at     DateTime        @updatedAt
