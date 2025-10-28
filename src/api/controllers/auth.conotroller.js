@@ -5,9 +5,19 @@ export const signupController = asyncHandler(async (req, res) => {
   const { email, password, nickName } = req.body;
   const user = await signup(email, password, nickName);
 
+  const isProduction = process.env.NODE_ENV === "production";
+
+  res.cookie("refreshToken", user.refreshToken, {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: isProduction ? "strict" : "lax",
+    maxAge: 7 * 24 * 60 * 60 * 1000, 
+  });
+
   res.status(201).json({
     message: "회원가입 성공",
     user,
+    accessToken:user.accessToken,
   });
 });
 
