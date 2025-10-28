@@ -15,8 +15,9 @@ dotenv.config();
 
 export async function signup(email, password, nickName) {
   const existing = await findUserByEmail(email);
-  if (existing) throw new Error("이미 등록된 이메일입니다.");
-
+  if (existing) 
+    throw new Error("이미 등록된 이메일입니다.");
+  
   const hashed = await argon2.hash(password);
 
   const user = await createUser({
@@ -29,6 +30,7 @@ export async function signup(email, password, nickName) {
 
   // 회원가입 후 바로 토큰 발급
   const { accessToken, refreshToken } = await generateTokens(user);
+  await updateRefreshToken(user.user_id, refreshToken);
 
   return {
     userId: user.user_id,
