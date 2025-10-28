@@ -14,6 +14,8 @@ import challengeCRUDRoute from './api/routes/challenge.crud.route.js';
 import challengeInquiryRoute from './api/routes/challenge.inquiry.route.js';
 
 import { swaggerDocs } from './common/swagger.js';
+import cors from './common/cors.js';
+
 // 환경 변수 설정
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 if (!process.env.DATABASE_URL) {
@@ -25,6 +27,7 @@ if (!process.env.DATABASE_URL) {
 
 const app = express();
 
+app.use(cors);
 
 // express 미들웨어 설정
 app.use(express.json({ limit: '10mb' })); // JSON 파싱 미들웨어 추가
