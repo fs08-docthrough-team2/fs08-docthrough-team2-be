@@ -10,7 +10,6 @@ import tokenRoutes from "./api/routes/token.routes.js"
 
 import { errorHandler } from './common/error.js';
 
-import sampleRoutes from './api/routes/sample.routes.js';
 import challengeCRUDRoute from './api/routes/challenge.crud.route.js';
 import challengeInquiryRoute from './api/routes/challenge.inquiry.route.js';
 
@@ -34,7 +33,6 @@ app.use(morgan('combined'));
 app.use(cookieParser());
 
 // API 라우트 설정
-
 app.get('/', (req, res) => {
   res.send('API 연결 성공');
 });
