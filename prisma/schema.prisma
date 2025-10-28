@@ -43,6 +43,7 @@ enum Provider {
 
 model Challenge {
   challenge_id String @id @default(uuid())
+  challenge_no Int    @unique @default(autoincrement())
   user_id      String
   title        String
   content      String
