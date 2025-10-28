@@ -30,6 +30,7 @@ async function createChallenge(title, source, field, type, deadline, capacity, c
 
     return {
       success: true,
+      message: '챌린지가 성공적으로 생성되었습니다.',
       data: {
         newChallenge: newChallenge,
       }
@@ -46,6 +47,7 @@ async function updateChallenge(req, res, next) {
   });
   return {
     success: true,
+    message: '챌린지가 성공적으로 수정되었습니다.',
     data: {
       updateChallenge: updateChallenge,
     }
@@ -59,6 +61,7 @@ async function cancelChallenge(req, res, next) {
   });
   return {
     success: true,
+    message: '챌린지가 성공적으로 취소되었습니다.',
     data: {
       updateChallenge: updateChallenge,
     }
@@ -72,6 +75,7 @@ async function deleteChallenge(req, res, next) {
   });
   return {
     success: true,
+    message: '챌린지가 성공적으로 삭제되었습니다.',
     data: {
       updateChallenge: updateChallenge,
     }
@@ -84,6 +88,7 @@ async function hardDeleteChallenge(req, res, next) {
   });
   return {
     success: true,
+    message: '챌린지가 성공적으로 영구 삭제되었습니다.',
     data: {
       deletedChallenge: deletedChallenge,
     }
