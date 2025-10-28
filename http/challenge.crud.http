@@ -1,0 +1,43 @@
+### 챌린지 생성 API (CREATE)
+
+POST http://localhost:3000/api/challenge/create
+Content-Type: application/json
+
+{
+    "title": "파이썬 중급",
+    "source": "https://docs.python.org/3/tutorial/index.html",
+    "field": "API",
+    "type": "OFFICIAL",
+    "deadline": "2025-06-05T23:59:59+09:00",
+    "capacity": "2",
+    "content": "파이썬은 고급 범용 프로그래밍 언어입니다.",
+    "email": "user2@example.com"
+}
+
+### 챌린지 수정 API (UPDATE)
+PATCH http://localhost:3000/api/challenge/update/3e3d85d3-4c98-41db-8459-7fde0fab1e44
+content-type: application/json
+
+{
+  "title": "파이썬 고급",
+  "content": "파이썬은 매우 강력한 프로그래밍 언어입니다.",
+  "type": "OFFICIAL"
+}
+
+### 챌린지 취소 API (CANCEL)
+PATCH http://localhost:3000/api/challenge/cancel/3e3d85d3-4c98-41db-8459-7fde0fab1e44
+content-type: application/json
+
+{}
+
+### 챌린지 삭제 API (DELETE)
+PATCH http://localhost:3000/api/challenge/delete/3e3d85d3-4c98-41db-8459-7fde0fab1e44
+content-type: application/json
+
+{}
+
+### 챌린지 완전 삭제 API (HARD DELETE)
+DELETE http://localhost:3000/api/challenge/hard-delete/3e3d85d3-4c98-41db-8459-7fde0fab1e44
+content-type: application/json
+
+{}
