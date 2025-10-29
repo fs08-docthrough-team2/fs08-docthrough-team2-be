@@ -2,6 +2,8 @@
 import express from 'express';
 import corsMiddleware from '../../common/cors.js';
 import errorMiddleware from '../../common/error.js';
+import authMiddleware from '../../common/auth.js';
+
 import challengeAdminControllers from '../controllers/challenge.admin.controllers.js';
 
 const router = express.Router();
@@ -17,6 +19,12 @@ router.use(corsMiddleware);
 /**
  * @swagger
  * components:
+ *   securitySchemes:
+ *     BearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *       bearerFormat: JWT
+ *       description: JWT 액세스 토큰을 입력하세요 (관리자 권한 필요)
  *   schemas:
  *     ChallengeListItem:
  *       type: object
@@ -221,9 +229,11 @@ router.use(corsMiddleware);
  * @swagger
  * /api/challenge/admin/inquiry/challenge-list:
  *   get:
- *     summary: 챌린지 목록 조회
+ *     summary: 챌린지 목록 조회 (관리자 전용)
  *     description: 관리자가 챌린지 목록을 조회합니다. 검색, 필터링, 정렬, 페이징 기능을 제공합니다.
  *     tags: [관리자용 챌린지 API]
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - in: query
  *         name: searchKeyword
@@ -298,16 +308,36 @@ router.use(corsMiddleware);
  *                 value:
  *                   success: false
  *                   message: 유효하지 않은 상태 필터입니다.
+ *       401:
+ *         description: 인증 실패 (토큰 없음 또는 유효하지 않음)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               message: 인증이 필요합니다.
+ *       403:
+ *         description: 권한 부족 (관리자 권한 필요)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               message: 관리자 권한이 필요합니다!
  */
-router.get('/inquiry/challenge-list', challengeAdminControllers.getChallengeListInput);
+router.get('/inquiry/challenge-list',  authMiddleware.verifyAccessToken, authMiddleware.verifyAdmin, challengeAdminControllers.getChallengeListInput);
 
 /**
  * @swagger
  * /api/challenge/admin/inquiry/challenge/{challengeId}:
  *   get:
- *     summary: 챌린지 상세 조회
+ *     summary: 챌린지 상세 조회 (관리자 전용)
  *     description: 특정 챌린지의 상세 정보를 조회합니다.
  *     tags: [관리자용 챌린지 API]
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: challengeId
@@ -339,16 +369,36 @@ router.get('/inquiry/challenge-list', challengeAdminControllers.getChallengeList
  *             example:
  *               success: false
  *               message: 챌린지 ID가 필요합니다.
+ *       401:
+ *         description: 인증 실패 (토큰 없음 또는 유효하지 않음)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               message: 인증이 필요합니다.
+ *       403:
+ *         description: 권한 부족 (관리자 권한 필요)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               message: 관리자 권한이 필요합니다!
  */
-router.get('/inquiry/challenge/:challengeId', challengeAdminControllers.getChallengeDetailInput);
+router.get('/inquiry/challenge/:challengeId', authMiddleware.verifyAccessToken, authMiddleware.verifyAdmin, challengeAdminControllers.getChallengeDetailInput);
 
 /**
  * @swagger
  * /api/challenge/admin/new-challenge/approve/{challengeId}:
  *   patch:
- *     summary: 챌린지 승인
+ *     summary: 챌린지 승인 (관리자 전용)
  *     description: 대기 중인 챌린지를 승인합니다.
  *     tags: [관리자용 챌린지 API]
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: challengeId
@@ -393,16 +443,36 @@ router.get('/inquiry/challenge/:challengeId', challengeAdminControllers.getChall
  *             example:
  *               success: false
  *               message: 챌린지 ID가 필요합니다.
+ *       401:
+ *         description: 인증 실패 (토큰 없음 또는 유효하지 않음)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               message: 인증이 필요합니다.
+ *       403:
+ *         description: 권한 부족 (관리자 권한 필요)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               message: 관리자 권한이 필요합니다!
  */
-router.patch('/new-challenge/approve/:challengeId', challengeAdminControllers.approveChallengeInput);
+router.patch('/new-challenge/approve/:challengeId', authMiddleware.verifyAccessToken, authMiddleware.verifyAdmin, challengeAdminControllers.approveChallengeInput);
 
 /**
  * @swagger
  * /api/challenge/admin/new-challenge/reject/{challengeId}:
  *   patch:
- *     summary: 챌린지 거절
+ *     summary: 챌린지 거절 (관리자 전용)
  *     description: 대기 중인 챌린지를 거절하고 거절 사유를 기록합니다.
  *     tags: [관리자용 챌린지 API]
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: challengeId
@@ -460,8 +530,26 @@ router.patch('/new-challenge/approve/:challengeId', challengeAdminControllers.ap
  *                 value:
  *                   success: false
  *                   message: 챌린지 ID가 필요합니다.
+ *       401:
+ *         description: 인증 실패 (토큰 없음 또는 유효하지 않음)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               message: 인증이 필요합니다.
+ *       403:
+ *         description: 권한 부족 (관리자 권한 필요)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               message: 관리자 권한이 필요합니다!
  */
-router.patch('/new-challenge/reject/:challengeId', challengeAdminControllers.rejectChallengeInput);
+router.patch('/new-challenge/reject/:challengeId', authMiddleware.verifyAccessToken, authMiddleware.verifyAdmin, challengeAdminControllers.rejectChallengeInput);
 
 // 에러 핸들링 미들웨어 적용
 router.use(errorMiddleware.errorHandler);
