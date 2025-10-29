@@ -319,6 +319,7 @@ async function seedAttends(challenges, users) {
         data: {
           challenge_id: ch.challenge_id,
           user_id: u.user_id,
+          title: `${ch.title} - ${u.email.split('@')[0]}의 작업물`,
           work_item: WORK_ITEMS[wi % WORK_ITEMS.length],
           isSave: Math.random() < 0.6,
         },

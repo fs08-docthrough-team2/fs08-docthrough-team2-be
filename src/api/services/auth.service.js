@@ -17,7 +17,7 @@ export async function signup(email, password, nickName) {
   const existing = await findUserByEmail(email);
   if (existing) 
     throw new Error("이미 등록된 이메일입니다.");
-  
+
   const hashed = await argon2.hash(password);
 
   const user = await createUser({
@@ -85,10 +85,7 @@ export async function login(email, password) {
     {expiresIn: process.env.REFRESH_TOKEN_EXPIRES_IN || "7d"}
   );
 
-  await updateRefreshToken(
-    user.user_id, 
-    refreshToken
-  );
+  await updateRefreshToken( user.user_id, refreshToken );
 
   return { 
     accessToken, 

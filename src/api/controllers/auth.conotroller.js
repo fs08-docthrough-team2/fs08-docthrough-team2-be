@@ -9,7 +9,8 @@ export const signupController = asyncHandler(async (req, res) => {
 
   res.cookie("refreshToken", user.refreshToken, {
     httpOnly: true,
-    secure: isProduction,
+    //secure:isProduction,
+    secure: false,
     sameSite: isProduction ? "strict" : "lax",
     maxAge: 7 * 24 * 60 * 60 * 1000, 
   });
