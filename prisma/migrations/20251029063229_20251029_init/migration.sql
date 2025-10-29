@@ -35,6 +35,7 @@ CREATE TABLE "User" (
 -- CreateTable
 CREATE TABLE "Challenge" (
     "challenge_id" TEXT NOT NULL,
+    "challenge_no" SERIAL NOT NULL,
     "user_id" TEXT NOT NULL,
     "title" TEXT NOT NULL,
     "content" TEXT NOT NULL,
@@ -107,6 +108,9 @@ CREATE TABLE "Notice" (
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Challenge_challenge_no_key" ON "Challenge"("challenge_no");
 
 -- AddForeignKey
 ALTER TABLE "Challenge" ADD CONSTRAINT "Challenge_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User"("user_id") ON DELETE RESTRICT ON UPDATE CASCADE;
