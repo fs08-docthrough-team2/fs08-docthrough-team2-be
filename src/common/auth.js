@@ -64,7 +64,6 @@ const verifyRefreshToken = [
       const token = req.cookies.refreshToken;
       if (!token) throwUnauthorizedError();
       const user = await findUserById(req.auth.userId);
-      
       if (!user || user.refresh_token !== token) {
         const err = new Error('Refresh Token 불일치');
         err.status = 401;
