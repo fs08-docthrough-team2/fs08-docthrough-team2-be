@@ -2,10 +2,10 @@ import prisma from '../../common/prisma.js';
 
 async function getChallengeList(searchKeyword, status, page, pageSize, sort) {
   try {
+    // Where 조건 설정
     const whereCondition = {
       isDelete: false,
     };
-
     // 검색 키워드 처리 (챌린지 제목으로 검색)
     if (searchKeyword && searchKeyword.trim() !== '') {
       whereCondition.title = {
@@ -13,7 +13,6 @@ async function getChallengeList(searchKeyword, status, page, pageSize, sort) {
         mode: 'insensitive',
       };
     }
-
     // 신청 상태 필터
     if (status) {
       switch (status) {
@@ -31,7 +30,6 @@ async function getChallengeList(searchKeyword, status, page, pageSize, sort) {
           break;
       }
     }
-
     // 정렬 조건 설정
     let orderBy;
     switch (sort) {
@@ -90,6 +88,7 @@ async function getChallengeList(searchKeyword, status, page, pageSize, sort) {
       status: challenge.status,
     }));
 
+    // 결과를 반환
     return {
       success: true,
       data: formattedChallenges,
@@ -106,53 +105,76 @@ async function getChallengeList(searchKeyword, status, page, pageSize, sort) {
 }
 
 async function getChallengeDetail(challengeId){
-  const challengeDetail = await prisma.challenge.findUnique({
-    where: { challenge_id: challengeId },
-  });
+  try{
+    // 챌린지 상세 내용 조회
+    const challengeDetail = await prisma.challenge.findUnique({
+      where: { challenge_id: challengeId },
+    });
 
-  return {
-    success: true,
-    data: {
-      no: challengeDetail.challenge_no,
-      title: challengeDetail.title,
-      type: challengeDetail.type,
-      field: challengeDetail.field,
-      content: challengeDetail.content,
-      deadline: challengeDetail.deadline,
-      capacity: challengeDetail.capacity,
-      source: challengeDetail.source,
-    }
-  };
-}
-
-async function approveChallenge(challengeId){
-  const approvedChallenge = await prisma.challenge.update({
-    where: { challenge_id: challengeId },
-    data: { isApprove: true, isReject: false, reject_content: null, }
-  });
-
-  return {
-    success: true,
-    message: "챌린지가 승인되었습니다.",
-    data: {
-      approvedChallenge: approvedChallenge,
-    }
-  };
-}
-
-async function rejectChallenge(challengeId, reject_comment){
-  const rejectedChallenge = await prisma.challenge.update({
-    where: { challenge_id: challengeId },
-    data: { isReject: true, isApprove: false, reject_content: reject_comment, }
-  });
-
-  return {
-    success: true,
-    message: "챌린지가 거절되었습니다.",
-    data: {
-      rejectedChallenge: rejectedChallenge,
-    }
+    // 결과를 반환
+    return {
+      success: true,
+      data: {
+        no: challengeDetail.challenge_no,
+        title: challengeDetail.title,
+        type: challengeDetail.type,
+        field: challengeDetail.field,
+        content: challengeDetail.content,
+        deadline: challengeDetail.deadline,
+        capacity: challengeDetail.capacity,
+        source: challengeDetail.source,
+      }
+    };
+  } catch (error) {
+    throw error;
   }
+}
+
+async function approveChallenge(challengeId, userID){
+  try {
+    // 챌린지 승인 상태 변경
+    const approvedChallenge = await prisma.challenge.update({
+      where: { challenge_id: challengeId },
+      data: { isApprove: true, isReject: false, reject_content: null, }
+    });
+
+    // TODO: 승인 알림 함수 호출 (userID 이용)
+
+    // 결과를 반환
+    return {
+      success: true,
+      message: "챌린지가 승인되었습니다.",
+      data: {
+        approvedChallenge: approvedChallenge,
+      }
+    };
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function rejectChallenge(challengeId, reject_comment, userID){
+  try {
+    // 챌린지 거절 상태 변경
+    const rejectedChallenge = await prisma.challenge.update({
+      where: { challenge_id: challengeId },
+      data: { isReject: true, isApprove: false, reject_content: reject_comment, }
+    });
+
+    // TODO: 거절 알림 함수 호출 (userID 이용)
+
+    // 결과를 반환
+    return {
+      success: true,
+      message: "챌린지가 거절되었습니다.",
+      data: {
+        rejectedChallenge: rejectedChallenge,
+      }
+    };
+  } catch (error) {
+    throw error;
+  }
+
 }
 
 export default {

@@ -327,7 +327,12 @@ router.use(corsMiddleware);
  *               success: false
  *               message: 관리자 권한이 필요합니다!
  */
-router.get('/inquiry/challenge-list',  authMiddleware.verifyAccessToken, authMiddleware.verifyAdmin, challengeAdminControllers.getChallengeListInput);
+router.get(
+  '/inquiry/challenge-list',
+  authMiddleware.verifyAccessToken,
+  authMiddleware.verifyAdmin,
+  challengeAdminControllers.getChallengeListInput
+);
 
 /**
  * @swagger
@@ -388,7 +393,12 @@ router.get('/inquiry/challenge-list',  authMiddleware.verifyAccessToken, authMid
  *               success: false
  *               message: 관리자 권한이 필요합니다!
  */
-router.get('/inquiry/challenge/:challengeId', authMiddleware.verifyAccessToken, authMiddleware.verifyAdmin, challengeAdminControllers.getChallengeDetailInput);
+router.get(
+  '/inquiry/challenge/:challengeId',
+  authMiddleware.verifyAccessToken,
+  authMiddleware.verifyAdmin,
+  challengeAdminControllers.getChallengeDetailInput
+);
 
 /**
  * @swagger
@@ -462,7 +472,12 @@ router.get('/inquiry/challenge/:challengeId', authMiddleware.verifyAccessToken, 
  *               success: false
  *               message: 관리자 권한이 필요합니다!
  */
-router.patch('/new-challenge/approve/:challengeId', authMiddleware.verifyAccessToken, authMiddleware.verifyAdmin, challengeAdminControllers.approveChallengeInput);
+router.patch(
+  '/new-challenge/approve/:challengeId',
+  authMiddleware.verifyAccessToken,
+  authMiddleware.verifyAdmin,
+  challengeAdminControllers.approveChallengeInput
+);
 
 /**
  * @swagger
@@ -549,7 +564,12 @@ router.patch('/new-challenge/approve/:challengeId', authMiddleware.verifyAccessT
  *               success: false
  *               message: 관리자 권한이 필요합니다!
  */
-router.patch('/new-challenge/reject/:challengeId', authMiddleware.verifyAccessToken, authMiddleware.verifyAdmin, challengeAdminControllers.rejectChallengeInput);
+router.patch(
+  '/new-challenge/reject/:challengeId',
+  authMiddleware.verifyAccessToken,
+  authMiddleware.verifyAdmin,
+  challengeAdminControllers.rejectChallengeInput
+);
 
 // 에러 핸들링 미들웨어 적용
 router.use(errorMiddleware.errorHandler);
