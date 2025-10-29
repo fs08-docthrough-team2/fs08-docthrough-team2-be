@@ -138,7 +138,6 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 /src/generated/
-/prisma/migrations/
 /.idea/
 
 /src/generated/prisma

@@ -1,0 +1,163 @@
+import prisma from '../../common/prisma.js';
+
+async function getChallengeList(searchKeyword, status, page, pageSize, sort) {
+  try {
+    const whereCondition = {
+      isDelete: false,
+    };
+
+    // 검색 키워드 처리 (챌린지 제목으로 검색)
+    if (searchKeyword && searchKeyword.trim() !== '') {
+      whereCondition.title = {
+        contains: searchKeyword.trim(),
+        mode: 'insensitive',
+      };
+    }
+
+    // 신청 상태 필터
+    if (status) {
+      switch (status) {
+        case '신청승인':
+          whereCondition.status = 'APPROVED';
+          break;
+        case '신청거절':
+          whereCondition.status = 'REJECTED';
+          break;
+        case '신청취소':
+          whereCondition.status = 'CANCELLED';
+          break;
+        case '신청대기':
+          whereCondition.status = 'PENDING';
+          break;
+      }
+    }
+
+    // 정렬 조건 설정
+    let orderBy;
+    switch (sort) {
+      case '신청시간빠름순':
+        orderBy = { created_at: 'asc' };
+        break;
+      case '신청시간느림순':
+        orderBy = { created_at: 'desc' };
+        break;
+      case '마감기한빠름순':
+        orderBy = { deadline: 'asc' };
+        break;
+      case '마감기한느림순':
+        orderBy = { deadline: 'desc' };
+        break;
+      default:
+        orderBy = { created_at: 'desc' };
+    }
+
+    // 전체 개수 조회
+    const totalCount = await prisma.challenge.count({
+      where: whereCondition,
+    });
+
+    // 챌린지 목록 조회
+    const challenges = await prisma.challenge.findMany({
+      select: {
+        challenge_no: true,
+        title: true,
+        type: true,
+        field: true,
+        status: true,
+        deadline: true,
+        created_at: true,
+        _count: {
+          select: {
+            attends: true,
+          },
+        },
+      },
+      where: whereCondition,
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+      orderBy: orderBy,
+    });
+
+    // 응답 데이터 포맷팅
+    const formattedChallenges = challenges.map((challenge) => ({
+      no: challenge.challenge_no,
+      type: challenge.type,
+      field: challenge.field,
+      title: challenge.title,
+      participants: challenge._count.attends,
+      appliedDate: challenge.created_at,
+      deadline: challenge.deadline,
+      status: challenge.status,
+    }));
+
+    return {
+      success: true,
+      data: formattedChallenges,
+      pagination: {
+        page: page,
+        pageSize: pageSize,
+        totalCount: totalCount,
+        totalPages: Math.ceil(totalCount / pageSize),
+      },
+    };
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function getChallengeDetail(challengeId){
+  const challengeDetail = await prisma.challenge.findUnique({
+    where: { challenge_id: challengeId },
+  });
+
+  return {
+    success: true,
+    data: {
+      no: challengeDetail.challenge_no,
+      title: challengeDetail.title,
+      type: challengeDetail.type,
+      field: challengeDetail.field,
+      content: challengeDetail.content,
+      deadline: challengeDetail.deadline,
+      capacity: challengeDetail.capacity,
+      source: challengeDetail.source,
+    }
+  };
+}
+
+async function approveChallenge(challengeId){
+  const approvedChallenge = await prisma.challenge.update({
+    where: { challenge_id: challengeId },
+    data: { isApprove: true, isReject: false, reject_content: null, }
+  });
+
+  return {
+    success: true,
+    message: "챌린지가 승인되었습니다.",
+    data: {
+      approvedChallenge: approvedChallenge,
+    }
+  };
+}
+
+async function rejectChallenge(challengeId, reject_comment){
+  const rejectedChallenge = await prisma.challenge.update({
+    where: { challenge_id: challengeId },
+    data: { isReject: true, isApprove: false, reject_content: reject_comment, }
+  });
+
+  return {
+    success: true,
+    message: "챌린지가 거절되었습니다.",
+    data: {
+      rejectedChallenge: rejectedChallenge,
+    }
+  }
+}
+
+export default {
+  getChallengeList,
+  getChallengeDetail,
+  approveChallenge,
+  rejectChallenge
+};

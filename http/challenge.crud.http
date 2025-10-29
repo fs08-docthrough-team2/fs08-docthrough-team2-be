@@ -1,6 +1,7 @@
 ### 챌린지 생성 API (CREATE)
 
 POST http://localhost:3000/api/challenge/create
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJhMGMyMzVkMi1jOTdmLTQxYjItYjM2Zi00ZmFmOGMxMzI0M2YiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NjE3MDA0MDYsImV4cCI6MTc2MTc4NjgwNn0.0isiZw8ZdCvY_X4-fkEG_Y9FOYY3AUOEUbDAvsAHgvY
 Content-Type: application/json
 
 {
@@ -15,7 +16,8 @@ Content-Type: application/json
 }
 
 ### 챌린지 수정 API (UPDATE)
-PATCH http://localhost:3000/api/challenge/update/3e3d85d3-4c98-41db-8459-7fde0fab1e44
+PATCH http://localhost:3000/api/challenge/update/b27bd2d1-d43b-4cc4-8721-d5d314c320e0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJhMGMyMzVkMi1jOTdmLTQxYjItYjM2Zi00ZmFmOGMxMzI0M2YiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NjE3MDA0MDYsImV4cCI6MTc2MTc4NjgwNn0.0isiZw8ZdCvY_X4-fkEG_Y9FOYY3AUOEUbDAvsAHgvY
 content-type: application/json
 
 {
@@ -25,19 +27,22 @@ content-type: application/json
 }
 
 ### 챌린지 취소 API (CANCEL)
-PATCH http://localhost:3000/api/challenge/cancel/3e3d85d3-4c98-41db-8459-7fde0fab1e44
+PATCH http://localhost:3000/api/challenge/cancel/b27bd2d1-d43b-4cc4-8721-d5d314c320e0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJhMGMyMzVkMi1jOTdmLTQxYjItYjM2Zi00ZmFmOGMxMzI0M2YiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NjE3MDA0MDYsImV4cCI6MTc2MTc4NjgwNn0.0isiZw8ZdCvY_X4-fkEG_Y9FOYY3AUOEUbDAvsAHgvY
 content-type: application/json
 
 {}
 
 ### 챌린지 삭제 API (DELETE)
-PATCH http://localhost:3000/api/challenge/delete/3e3d85d3-4c98-41db-8459-7fde0fab1e44
+PATCH http://localhost:3000/api/challenge/delete/b27bd2d1-d43b-4cc4-8721-d5d314c320e0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJhMGMyMzVkMi1jOTdmLTQxYjItYjM2Zi00ZmFmOGMxMzI0M2YiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NjE3MDA0MDYsImV4cCI6MTc2MTc4NjgwNn0.0isiZw8ZdCvY_X4-fkEG_Y9FOYY3AUOEUbDAvsAHgvY
 content-type: application/json
 
 {}
 
 ### 챌린지 완전 삭제 API (HARD DELETE)
-DELETE http://localhost:3000/api/challenge/hard-delete/3e3d85d3-4c98-41db-8459-7fde0fab1e44
+DELETE http://localhost:3000/api/challenge/hard-delete/b27bd2d1-d43b-4cc4-8721-d5d314c320e0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJhMGMyMzVkMi1jOTdmLTQxYjItYjM2Zi00ZmFmOGMxMzI0M2YiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NjE3MDA0MDYsImV4cCI6MTc2MTc4NjgwNn0.0isiZw8ZdCvY_X4-fkEG_Y9FOYY3AUOEUbDAvsAHgvY
 content-type: application/json
 
 {}

@@ -43,6 +43,7 @@ enum Provider {
 
 model Challenge {
   challenge_id String @id @default(uuid())
+  challenge_no Int    @unique @default(autoincrement())
   user_id      String
   title        String
   content      String
@@ -59,6 +60,7 @@ model Challenge {
   isDelete       Boolean         @default(false)
   isClose        Boolean         @default(false)
   isReject       Boolean         @default(false)
+  isApprove      Boolean         @default(false)
   reject_content String?
   created_at     DateTime        @default(now())
   updated_at     DateTime        @updatedAt
@@ -75,6 +77,10 @@ enum ChallengeType {
 enum ChallengeStatus {
   DEADLINE
   INPROGRESS
+  APPROVED
+  REJECTED
+  CANCELLED
+  PENDING
 }
 
 enum ChallengeField {
