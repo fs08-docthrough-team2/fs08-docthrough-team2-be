@@ -2,25 +2,26 @@
 import challengeAdminServices from '../services/challenge.admin.services.js';
 import isUUID from 'is-uuid';
 
-async function getChallengeListInput(req, res, next) {
+async function getChallengeListInput(req, res) {
+  // 입력값 불러오기
   const { searchKeyword, status, sort = 'desc' } = req.query;
   const page = parseInt(req.query.page) || 1;
   const pageSize = parseInt(req.query.pageSize) || 10;
+  const userID = !isUUID.v4(req.auth?.userId) ? undefined : req.auth?.userId;
 
+  // 입력값 검증
   if (page <= 0 || pageSize <= 0) {
     return res.status(400).json({
       success: false,
       message: "페이지 번호와 페이지 크기는 1 이상의 값이어야 합니다."
     });
   }
-
   if (sort && !['신청시간빠름순', '신청시간느림순', '마감기한빠름순', '마감기한느림순', 'desc', 'asc'].includes(sort)) {
     return res.status(400).json({
       success: false,
       message: "유효하지 않은 정렬 기준입니다."
     });
   }
-
   if (status && !['신청승인', '신청거절', '신청취소', '신청대기'].includes(status)) {
     return res.status(400).json({
       success: false,
@@ -28,42 +29,83 @@ async function getChallengeListInput(req, res, next) {
     });
   }
 
-  const response = await challengeAdminServices.getChallengeList(searchKeyword, status, page, pageSize, sort);
+  // 서비스 호출
+  const response = await challengeAdminServices.getChallengeList(
+    searchKeyword, status, page, pageSize, sort
+  );
+
+  // 호출 결과 반환
   return res.status(200).json(response);
 }
 
-async function getChallengeDetailInput(req, res, next) {
-  const { challengeId } = req.params;
+async function getChallengeDetailInput(req, res) {
+  // 입력값 불러오기
+  const challengeID = !isUUID.v4(req.params.challengeId) ? undefined : req.params.challengeId;
 
-  if (!challengeId || !isUUID.v4(challengeId)) {
+  // 입력값 검증
+  if (challengeID === undefined) {
     return res.status(400).json({
       success: false,
-      message: "챌린지 ID가 필요합니다."
+      message: "챌린지 ID가 없거나 올바르지 않습니다."
     });
   }
 
-  const response = await challengeAdminServices.getChallengeDetail(challengeId);
+  // 서비스 호출
+  const response = await challengeAdminServices.getChallengeDetail(
+    challengeID
+  );
+
+  // 호출 결과 반환
   return res.status(200).json(response);
 }
 
-async function approveChallengeInput(req, res, next) {
-  const { challengeId } = req.params;
+async function approveChallengeInput(req, res) {
+  // 입력값 불러오기
+  const challengeID = !isUUID.v4(req.params.challengeId) ? undefined : req.params.challengeId;
+  const userID = !isUUID.v4(req.auth?.userId) ? undefined : req.auth?.userId;
 
-  if (!challengeId || !isUUID.v4(challengeId)) {
+  // 입력값 검증
+  if (userID === undefined) {
     return res.status(400).json({
       success: false,
-      message: "챌린지 ID가 필요합니다."
+      message: "유저 ID가 없거나 올바르지 않습니다."
+    });
+  }
+  if (challengeID === undefined) {
+    return res.status(400).json({
+      success: false,
+      message: "챌린지 ID가 없거나 올바르지 않습니다."
     });
   }
 
-  const response = await challengeAdminServices.approveChallenge(challengeId);
+  // 서비스 호출
+  const response = await challengeAdminServices.approveChallenge(
+    challengeID, userID
+  );
+
+  // 호출 결과 반환
   return res.status(200).json(response);
 }
 
-async function rejectChallengeInput(req, res, next) {
-  const { challengeId } = req.params;
+async function rejectChallengeInput(req, res) {
+  // 입력값 불러오기
+  const challengeID = !isUUID.v4(req.params.challengeId) ? undefined : req.params.challengeId;
+  const userID = !isUUID.v4(req.auth?.userId) ? undefined : req.auth?.userId;
   const { reject_comment } = req.body;
 
+  // 입력값 검증
+  if (userID === undefined) {
+    return res.status(400).json({
+      success: false,
+      message: "유저 ID가 없거나 올바르지 않습니다."
+    });
+  }
+  if (challengeID === undefined) {
+    return res.status(400).json({
+      success: false,
+      message: "챌린지 ID가 없거나 올바르지 않습니다."
+    });
+  }
   if (!reject_comment || reject_comment.trim() === '') {
     return res.status(400).json({
       success: false,
@@ -71,14 +113,12 @@ async function rejectChallengeInput(req, res, next) {
     });
   }
 
-  if (!challengeId || !isUUID.v4(challengeId)) {
-    return res.status(400).json({
-      success: false,
-      message: "챌린지 ID가 필요합니다."
-    });
-  }
+  // 서비스 호출
+  const response = await challengeAdminServices.rejectChallenge(
+    challengeID, reject_comment, userID
+  );
 
-  const response = await challengeAdminServices.rejectChallenge(challengeId, reject_comment);
+  // 호출 결과 반환
   return res.status(200).json(response);
 }
 
