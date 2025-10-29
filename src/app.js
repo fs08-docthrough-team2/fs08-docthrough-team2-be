@@ -20,6 +20,7 @@ import challengeCRUDRoute from './api/routes/challenge.crud.route.js'
 import { errorHandler } from './common/error.js';
 import { swaggerDocs } from './common/swagger.js';
 import cors from './common/cors.js';
+import prisma from './common/prisma.js';
 
 // 환경 변수 설정
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -60,6 +61,33 @@ app.use(errorHandler);
 
 // 서버 실행
 const PORT = Number(process.env.PORT ?? 3000);
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
   console.log(`Server is running on port ${PORT}`);
+
+  try {
+    // 데이터베이스 연결 테스트
+    await prisma.$connect();
+    console.log('✅ Database connected');
+
+    // 서버 연결 테스트 엔드포인트
+    app.get('/health', (req, res) => {
+      res.status(200).json({
+        status: 'OK',
+        timestamp: new Date().toISOString()
+      });
+    });
+  } catch (error) {
+    console.error('❌ Startup error:', error);
+    throw error;
+  }
+});
+
+// 처리되지 않은 에러 캐치
+process.on('unhandledRejection', (error) => {
+  console.error('Unhandled Rejection:', error);
+});
+
+process.on('uncaughtException', (error) => {
+  console.error('Uncaught Exception:', error);
+  process.exit(1);
 });
