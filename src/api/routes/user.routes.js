@@ -16,7 +16,7 @@ const router = express.Router();
  * /api/user/my:
  *   get:
  *     summary: 내 정보 조회
- *     description: 쿠키의 Refresh Token을 이용해 현재 로그인한 유저의 정보를 조회합니다.
+ *     description: Authorization 헤더의 Access Token을 이용해 현재 로그인한 유저의 정보를 조회합니다.
  *     tags: [User]
  *     responses:
  *       200:
@@ -35,6 +35,6 @@ const router = express.Router();
  *       401:
  *         description: 인증 실패
  */
-router.get("/my", auth.verifyRefreshToken, getMyInfoController);
+router.get("/my", auth.verifyAccessToken, getMyInfoController);
 
 export default router;
