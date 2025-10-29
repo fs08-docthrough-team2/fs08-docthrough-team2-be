@@ -2,11 +2,23 @@
 import express from 'express';
 import corsMiddleware from '../../common/cors.js';
 import errorMiddleware from '../../common/error.js';
+import authMiddleware from '../../common/auth.js';
 
 import challengeControllers from '../controllers/challenge.inquiry.controllers.js';
 
 const router = express.Router();
 router.use(corsMiddleware);
+
+/**
+ * @swagger
+ * components:
+ *   securitySchemes:
+ *     BearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *       bearerFormat: JWT
+ *       description: JWT 액세스 토큰을 입력하세요
+ */
 
 /**
  * @swagger
@@ -16,6 +28,8 @@ router.use(corsMiddleware);
  *       - 챌린지 조회
  *     summary: 번역 챌린지 목록 조회
  *     description: 모든 번역 챌린지를 조회하고 제목 검색, 필터링, 페이지네이션을 제공합니다.
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - in: query
  *         name: title
@@ -158,6 +172,16 @@ router.use(corsMiddleware);
  *                 message:
  *                   type: string
  *                   example: "필드 값이 올바르지 않습니다."
+ *       401:
+ *         description: 인증 실패 (토큰 없음 또는 유효하지 않음)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "인증이 필요합니다."
  *       500:
  *         description: 서버 오류
  *         content:
@@ -178,7 +202,11 @@ router.use(corsMiddleware);
  *                       type: string
  *                       example: "서버 오류가 발생했습니다."
  */
-router.get('/challenge-list', challengeControllers.getChallengeListInput);
+router.get(
+  '/challenge-list',
+  authMiddleware.verifyAccessToken,
+  challengeControllers.getChallengeListInput
+);
 
 /**
  * @swagger
@@ -188,6 +216,8 @@ router.get('/challenge-list', challengeControllers.getChallengeListInput);
  *       - 챌린지 조회
  *     summary: 번역 챌린지 상세 조회
  *     description: 특정 챌린지의 상세 정보를 조회합니다.
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: challengeId
@@ -266,6 +296,16 @@ router.get('/challenge-list', challengeControllers.getChallengeListInput);
  *                 message:
  *                   type: string
  *                   example: "유효하지 않은 챌린지 ID 형식입니다."
+ *       401:
+ *         description: 인증 실패 (토큰 없음 또는 유효하지 않음)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "인증이 필요합니다."
  *       404:
  *         description: 챌린지를 찾을 수 없음
  *         content:
@@ -282,7 +322,11 @@ router.get('/challenge-list', challengeControllers.getChallengeListInput);
  *       500:
  *         description: 서버 오류
  */
-router.get('/challenge-detail/:challengeId', challengeControllers.getChallengeDetailInput);
+router.get(
+  '/challenge-detail/:challengeId',
+  authMiddleware.verifyAccessToken,
+  challengeControllers.getChallengeDetailInput
+);
 
 /**
  * @swagger
@@ -292,6 +336,8 @@ router.get('/challenge-detail/:challengeId', challengeControllers.getChallengeDe
  *       - 챌린지 조회
  *     summary: 챌린지 참여 현황 조회
  *     description: 특정 챌린지의 참여자 목록을 순위, 닉네임, 하트 수, 최종 제출 시간과 함께 조회합니다.
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: challengeId
@@ -388,10 +434,23 @@ router.get('/challenge-detail/:challengeId', challengeControllers.getChallengeDe
  *                       value: "유효하지 않은 챌린지 ID 형식입니다."
  *                     invalidPagination:
  *                       value: "페이지 또는 페이지 크기 값이 올바르지 않습니다."
+ *       401:
+ *         description: 인증 실패 (토큰 없음 또는 유효하지 않음)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "인증이 필요합니다."
  *       500:
  *         description: 서버 오류
  */
-router.get('/participate-list/:challengeId', challengeControllers.getParticipateListInput);
+router.get('/participate-list/:challengeId',
+  authMiddleware.verifyAccessToken,
+  challengeControllers.getParticipateListInput
+);
 
 /**
  * @swagger
@@ -401,6 +460,8 @@ router.get('/participate-list/:challengeId', challengeControllers.getParticipate
  *       - 챌린지 조회
  *     summary: 각 회원별 참여하는 챌린지 목록 조회
  *     description: 특정 회원이 참여하고 있는 챌린지 목록을 필터링 옵션과 함께 조회합니다.
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: userEmail
@@ -548,11 +609,22 @@ router.get('/participate-list/:challengeId', challengeControllers.getParticipate
  *                       value: "페이지 또는 페이지 크기 값은 1 이상이어야 합니다."
  *                     pageSizeLimit:
  *                       value: "페이지 크기는 100 이하여야 합니다."
+ *       401:
+ *         description: 인증 실패 (토큰 없음 또는 유효하지 않음)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "인증이 필요합니다."
  *       500:
  *         description: 서버 오류
  */
 router.get(
   '/individual-participate-list/:userEmail',
+  authMiddleware.verifyAccessToken,
   challengeControllers.getUserParticipateListInput,
 );
 
@@ -564,6 +636,8 @@ router.get(
  *       - 챌린지 조회
  *     summary: 각 회원별 참여 완료한 챌린지 목록 조회 (만료된 챌린지)
  *     description: 특정 회원이 참여했던 챌린지 중 마감일이 지난(완료된) 챌린지 목록을 필터링 옵션과 함께 조회합니다.
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: userEmail
@@ -711,10 +785,24 @@ router.get(
  *                       value: "페이지 또는 페이지 크기 값은 1 이상이어야 합니다."
  *                     pageSizeLimit:
  *                       value: "페이지 크기는 100 이하여야 합니다."
+ *       401:
+ *         description: 인증 실패 (토큰 없음 또는 유효하지 않음)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "인증이 필요합니다."
  *       500:
  *         description: 서버 오류
  */
-router.get('/individual-complete-list/:userEmail', challengeControllers.getUserCompleteListInput);
+router.get(
+  '/individual-complete-list/:userEmail',
+  authMiddleware.verifyAccessToken,
+  challengeControllers.getUserCompleteListInput
+);
 
 /**
  * @swagger
@@ -724,6 +812,8 @@ router.get('/individual-complete-list/:userEmail', challengeControllers.getUserC
  *       - 챌린지 조회
  *     summary: 각 회원별 신청한 챌린지 목록 조회 및 거절 목록 조회
  *     description: 특정 회원이 신청했지만 아직 참여하지 않은 챌린지 목록과 거절된 챌린지 목록을 조회합니다. 마감일이 지나지 않고 종료되지 않은 챌린지만 조회됩니다.
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: userEmail
@@ -913,11 +1003,22 @@ router.get('/individual-complete-list/:userEmail', challengeControllers.getUserC
  *                       value: "페이지 또는 페이지 크기 값은 1 이상이어야 합니다."
  *                     pageSizeLimit:
  *                       value: "페이지 크기는 100 이하여야 합니다."
+ *       401:
+ *         description: 인증 실패 (토큰 없음 또는 유효하지 않음)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "인증이 필요합니다."
  *       500:
  *         description: 서버 오류
  */
 router.get(
   '/individual-challenge-detail/:userEmail',
+  authMiddleware.verifyAccessToken,
   challengeControllers.getUserChallengeDetailInput,
 );
 
