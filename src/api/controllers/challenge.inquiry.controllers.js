@@ -1,4 +1,5 @@
 import challengeService from '../services/challenge.inquiry.services.js';
+import isUUID from 'is-uuid';
 
 async function getChallengeListInput(req, res, next) {
   try {
@@ -65,10 +66,10 @@ async function getChallengeDetailInput(req, res, next) {
 
   try {
     // 입력 검증 (UUID 검증)
-    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-    if (!uuidRegex.test(challengeId)) {
+    if (!challengeId || !isUUID.v4(challengeId)) {
       return res.status(400).json({
-        message: '유효하지 않은 챌린지 ID 형식입니다.',
+        success: false,
+        message: "챌린지 ID가 필요합니다."
       });
     }
 
@@ -88,10 +89,10 @@ async function getParticipateListInput(req, res, next) {
 
   try {
     // 입력 검증 (UUID 검증)
-    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-    if (!uuidRegex.test(challengeId)) {
+    if (!challengeId || !isUUID.v4(challengeId)) {
       return res.status(400).json({
-        message: '유효하지 않은 챌린지 ID 형식입니다.',
+        success: false,
+        message: "챌린지 ID가 필요합니다."
       });
     }
 

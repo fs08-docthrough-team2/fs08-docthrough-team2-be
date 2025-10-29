@@ -2,11 +2,23 @@
 import express from 'express';
 import corsMiddleware from '../../common/cors.js';
 import errorMiddleware from '../../common/error.js';
+import authMiddleware from '../../common/auth.js';
 
 import challengeCRUDControllers from '../controllers/challenge.crud.controllers.js';
 
 const router = express.Router();
 router.use(corsMiddleware);
+
+/**
+ * @swagger
+ * components:
+ *   securitySchemes:
+ *     BearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *       bearerFormat: JWT
+ *       description: JWT 액세스 토큰을 입력하세요
+ */
 
 /**
  * @swagger
@@ -16,6 +28,8 @@ router.use(corsMiddleware);
  *       - 챌린지 관리
  *     summary: 챌린지 생성
  *     description: 새로운 챌린지를 생성합니다.
+ *     security:
+ *       - BearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -153,10 +167,20 @@ router.use(corsMiddleware);
  *                       value: "챌린지 추가에 필요한 값이 입력되지 않았습니다."
  *                     invalidCapacity:
  *                       value: "챌린지 인원은 2명 이상의 문자여야 합니다."
+ *       401:
+ *         description: 인증 실패 (토큰 없음 또는 유효하지 않음)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "인증이 필요합니다."
  *       500:
  *         description: 서버 오류
  */
-router.post('/create', challengeCRUDControllers.createChallengeInput);
+router.post('/create', authMiddleware.verifyAccessToken, challengeCRUDControllers.createChallengeInput);
 
 /**
  * @swagger
@@ -166,6 +190,8 @@ router.post('/create', challengeCRUDControllers.createChallengeInput);
  *       - 챌린지 관리
  *     summary: 챌린지 수정
  *     description: 기존 챌린지의 정보를 수정합니다.
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: challengeId
@@ -280,12 +306,22 @@ router.post('/create', challengeCRUDControllers.createChallengeInput);
  *                           type: string
  *                           format: date-time
  *                           example: "2025-10-28T02:19:46.233Z"
+ *       401:
+ *         description: 인증 실패 (토큰 없음 또는 유효하지 않음)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "인증이 필요합니다."
  *       404:
  *         description: 챌린지를 찾을 수 없음
  *       500:
  *         description: 서버 오류
  */
-router.patch('/update/:challengeId', challengeCRUDControllers.updateChallengeInput);
+router.patch('/update/:challengeId', authMiddleware.verifyAccessToken, challengeCRUDControllers.updateChallengeInput);
 
 /**
  * @swagger
@@ -295,6 +331,8 @@ router.patch('/update/:challengeId', challengeCRUDControllers.updateChallengeInp
  *       - 챌린지 관리
  *     summary: 챌린지 취소
  *     description: 챌린지를 취소 상태로 변경합니다. (isClose를 true로, status를 DEADLINE으로 설정)
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: challengeId
@@ -382,12 +420,22 @@ router.patch('/update/:challengeId', challengeCRUDControllers.updateChallengeInp
  *                           type: string
  *                           format: date-time
  *                           example: "2025-10-28T02:20:01.954Z"
+ *       401:
+ *         description: 인증 실패 (토큰 없음 또는 유효하지 않음)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "인증이 필요합니다."
  *       404:
  *         description: 챌린지를 찾을 수 없음
  *       500:
  *         description: 서버 오류
  */
-router.patch('/cancel/:challengeId', challengeCRUDControllers.cancelChallengeInput);
+router.patch('/cancel/:challengeId', authMiddleware.verifyAccessToken, challengeCRUDControllers.cancelChallengeInput);
 
 /**
  * @swagger
@@ -397,6 +445,8 @@ router.patch('/cancel/:challengeId', challengeCRUDControllers.cancelChallengeInp
  *       - 챌린지 관리
  *     summary: 챌린지 삭제 (소프트 삭제)
  *     description: 챌린지를 논리적으로 삭제합니다. (isDelete를 true로, status를 DEADLINE으로 설정)
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: challengeId
@@ -484,12 +534,22 @@ router.patch('/cancel/:challengeId', challengeCRUDControllers.cancelChallengeInp
  *                           type: string
  *                           format: date-time
  *                           example: "2025-10-28T02:20:19.951Z"
+ *       401:
+ *         description: 인증 실패 (토큰 없음 또는 유효하지 않음)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "인증이 필요합니다."
  *       404:
  *         description: 챌린지를 찾을 수 없음
  *       500:
  *         description: 서버 오류
  */
-router.patch('/delete/:challengeId', challengeCRUDControllers.deleteChallengeInput);
+router.patch('/delete/:challengeId', authMiddleware.verifyAccessToken, challengeCRUDControllers.deleteChallengeInput);
 
 /**
  * @swagger
@@ -497,8 +557,10 @@ router.patch('/delete/:challengeId', challengeCRUDControllers.deleteChallengeInp
  *   delete:
  *     tags:
  *       - 챌린지 관리
- *     summary: 챌린지 완전 삭제 (하드 삭제)
- *     description: 데이터베이스에서 챌린지를 영구적으로 삭제합니다.
+ *     summary: 챌린지 완전 삭제 (하드 삭제) - 관리자 전용
+ *     description: 데이터베이스에서 챌린지를 영구적으로 삭제합니다. 관리자 권한이 필요합니다.
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: challengeId
@@ -586,12 +648,32 @@ router.patch('/delete/:challengeId', challengeCRUDControllers.deleteChallengeInp
  *                           type: string
  *                           format: date-time
  *                           example: "2025-10-28T02:20:19.951Z"
+ *       401:
+ *         description: 인증 실패 (토큰 없음 또는 유효하지 않음)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "인증이 필요합니다."
+ *       403:
+ *         description: 권한 부족 (관리자 권한 필요)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "관리자 권한이 필요합니다!"
  *       404:
  *         description: 챌린지를 찾을 수 없음
  *       500:
  *         description: 서버 오류
  */
-router.delete("/hard-delete/:challengeId", challengeCRUDControllers.hardDeleteChallengeInput);
+router.delete("/hard-delete/:challengeId", authMiddleware.verifyAccessToken, authMiddleware.verifyAdmin, challengeCRUDControllers.hardDeleteChallengeInput);
 
 // 에러 핸들링 미들웨어 적용
 router.use(errorMiddleware.errorHandler);

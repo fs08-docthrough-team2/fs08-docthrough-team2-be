@@ -267,6 +267,7 @@ async function seedChallenges(users) {
         deadline: toDate(CHALLENGE_DEADLINES_ISO[i]),
         capacity: String(CHALLENGE_CAPACITY[i] ?? ''),
         isDelete: false,
+        isApprove: false,
         isClose: false,
         isReject: false,
         reject_content: null,
