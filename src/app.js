@@ -9,7 +9,7 @@ import authRoutes  from "./api/routes/auth.routes.js"
 import tokenRoutes from "./api/routes/token.routes.js"
 import adminRoutes from "./api/routes/admin.routes.js"
 import userRoutes from "./api/routes/user.routes.js"
-
+import workRoutes from  "./api/routes/challenge.inquiry.work.route.js"
 import { errorHandler } from './common/error.js';
 
 import challengeCRUDRoute from './api/routes/challenge.crud.route.js';
@@ -44,6 +44,7 @@ app.get('/', (req, res) => {
 
 app.use('/api/challenge', challengeCRUDRoute);
 app.use('/api/challenge/inquiry', challengeInquiryRoute);
+app.use('/api/challenge/inquiry', workRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/token", tokenRoutes);
 app.use("/api/admin", adminRoutes);
