@@ -1,7 +1,7 @@
 ### 챌린지 생성 API (CREATE)
 
 POST http://localhost:3000/api/challenge/create
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJhMGMyMzVkMi1jOTdmLTQxYjItYjM2Zi00ZmFmOGMxMzI0M2YiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NjE3MDA0MDYsImV4cCI6MTc2MTc4NjgwNn0.0isiZw8ZdCvY_X4-fkEG_Y9FOYY3AUOEUbDAvsAHgvY
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJhMGMyMzVkMi1jOTdmLTQxYjItYjM2Zi00ZmFmOGMxMzI0M2YiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NjE3MjI5NzksImV4cCI6MTc2MTgwOTM3OX0.62t7pKGr-EUDTni4eFFU1oIF1OJ9uxytq7i2tb7v_lQ
 Content-Type: application/json
 
 {
@@ -11,13 +11,12 @@ Content-Type: application/json
     "type": "OFFICIAL",
     "deadline": "2025-06-05T23:59:59+09:00",
     "capacity": "2",
-    "content": "파이썬은 고급 범용 프로그래밍 언어입니다.",
-    "email": "user2@example.com"
+    "content": "파이썬은 고급 범용 프로그래밍 언어입니다."
 }
 
 ### 챌린지 수정 API (UPDATE)
-PATCH http://localhost:3000/api/challenge/update/b27bd2d1-d43b-4cc4-8721-d5d314c320e0
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJhMGMyMzVkMi1jOTdmLTQxYjItYjM2Zi00ZmFmOGMxMzI0M2YiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NjE3MDA0MDYsImV4cCI6MTc2MTc4NjgwNn0.0isiZw8ZdCvY_X4-fkEG_Y9FOYY3AUOEUbDAvsAHgvY
+PATCH http://localhost:3000/api/challenge/update/1ecb2940-43f2-45c4-ae90-f321b446e496
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJhMGMyMzVkMi1jOTdmLTQxYjItYjM2Zi00ZmFmOGMxMzI0M2YiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NjE3MjI5NzksImV4cCI6MTc2MTgwOTM3OX0.62t7pKGr-EUDTni4eFFU1oIF1OJ9uxytq7i2tb7v_lQ
 content-type: application/json
 
 {
@@ -27,22 +26,22 @@ content-type: application/json
 }
 
 ### 챌린지 취소 API (CANCEL)
-PATCH http://localhost:3000/api/challenge/cancel/b27bd2d1-d43b-4cc4-8721-d5d314c320e0
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJhMGMyMzVkMi1jOTdmLTQxYjItYjM2Zi00ZmFmOGMxMzI0M2YiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NjE3MDA0MDYsImV4cCI6MTc2MTc4NjgwNn0.0isiZw8ZdCvY_X4-fkEG_Y9FOYY3AUOEUbDAvsAHgvY
+PATCH http://localhost:3000/api/challenge/cancel/1ecb2940-43f2-45c4-ae90-f321b446e496
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJhMGMyMzVkMi1jOTdmLTQxYjItYjM2Zi00ZmFmOGMxMzI0M2YiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NjE3MjI5NzksImV4cCI6MTc2MTgwOTM3OX0.62t7pKGr-EUDTni4eFFU1oIF1OJ9uxytq7i2tb7v_lQ
 content-type: application/json
 
 {}
 
 ### 챌린지 삭제 API (DELETE)
-PATCH http://localhost:3000/api/challenge/delete/b27bd2d1-d43b-4cc4-8721-d5d314c320e0
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJhMGMyMzVkMi1jOTdmLTQxYjItYjM2Zi00ZmFmOGMxMzI0M2YiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NjE3MDA0MDYsImV4cCI6MTc2MTc4NjgwNn0.0isiZw8ZdCvY_X4-fkEG_Y9FOYY3AUOEUbDAvsAHgvY
+PATCH http://localhost:3000/api/challenge/delete/1ecb2940-43f2-45c4-ae90-f321b446e496
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJhMGMyMzVkMi1jOTdmLTQxYjItYjM2Zi00ZmFmOGMxMzI0M2YiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NjE3MjI5NzksImV4cCI6MTc2MTgwOTM3OX0.62t7pKGr-EUDTni4eFFU1oIF1OJ9uxytq7i2tb7v_lQ
 content-type: application/json
 
 {}
 
 ### 챌린지 완전 삭제 API (HARD DELETE)
-DELETE http://localhost:3000/api/challenge/hard-delete/b27bd2d1-d43b-4cc4-8721-d5d314c320e0
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJhMGMyMzVkMi1jOTdmLTQxYjItYjM2Zi00ZmFmOGMxMzI0M2YiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NjE3MDA0MDYsImV4cCI6MTc2MTc4NjgwNn0.0isiZw8ZdCvY_X4-fkEG_Y9FOYY3AUOEUbDAvsAHgvY
+DELETE http://localhost:3000/api/challenge/hard-delete/1ecb2940-43f2-45c4-ae90-f321b446e496
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJhMGMyMzVkMi1jOTdmLTQxYjItYjM2Zi00ZmFmOGMxMzI0M2YiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NjE3MjI5NzksImV4cCI6MTc2MTgwOTM3OX0.62t7pKGr-EUDTni4eFFU1oIF1OJ9uxytq7i2tb7v_lQ
 content-type: application/json
 
 {}
