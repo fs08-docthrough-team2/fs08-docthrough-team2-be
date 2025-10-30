@@ -1,5 +1,7 @@
 import challengeService from '../services/challenge.inquiry.services.js';
 import isUUID from 'is-uuid';
+// enum 값 불러오기
+import { ChallengeField, ChallengeStatus, ChallengeType } from '@prisma/client';
 
 async function getChallengeListInput(req, res) {
   // 입력값 불러오기
@@ -11,13 +13,13 @@ async function getChallengeListInput(req, res) {
   if (title && title.trim() === '') {
     title = undefined;
   }
-  if (field && !['NEXT', 'MODERN', 'API', 'WEB', 'CAREER'].includes(field)) {
+  if (field && !Object.values(ChallengeField).includes(field)) {
     return res.status(400).json({ message: '필드 값이 올바르지 않습니다.' });
   }
-  if (type && !['OFFICIAL', 'BLOG'].includes(type)) {
+  if (type && !Object.values(ChallengeType).includes(type)) {
     return res.status(400).json({ message: '타입 값이 올바르지 않습니다.' });
   }
-  if (status && !['INPROGRESS', 'DEADLINE', 'APPROVED', 'REJECTED', 'CANCELLED', 'PENDING'].includes(status)) {
+  if (status && !Object.values(ChallengeStatus).includes(status)) {
     return res.status(400).json({ message: '상태 값이 올바르지 않습니다.' });
   }
   if (!Number.isInteger(pageNum) || !Number.isInteger(pageSizeNum)) {
@@ -120,13 +122,13 @@ async function getUserParticipateListInput(req, res) {
     if (title && title.trim() === '') {
       title = undefined;
     }
-    if (field && !['NEXT', 'MODERN', 'API', 'WEB', 'CAREER'].includes(field)) {
+    if (field && !Object.values(ChallengeField).includes(field)) {
       return res.status(400).json({ message: '필드 값이 올바르지 않습니다.' });
     }
-    if (type && !['OFFICIAL', 'BLOG'].includes(type)) {
+    if (type && !Object.values(ChallengeType).includes(type)) {
       return res.status(400).json({ message: '타입 값이 올바르지 않습니다.' });
     }
-    if (status && !['INPROGRESS', 'DEADLINE', 'APPROVED', 'REJECTED', 'CANCELLED', 'PENDING'].includes(status)) {
+    if (status && !Object.values(ChallengeStatus).includes(status)) {
       return res.status(400).json({ message: '상태 값이 올바르지 않습니다.' });
     }
     if (!Number.isInteger(pageNum) || !Number.isInteger(pageSizeNum)) {
@@ -171,13 +173,13 @@ async function getUserCompleteListInput(req, res) {
   if (title && title.trim() === '') {
     title = undefined;
   }
-  if (field && !['NEXT', 'MODERN', 'API', 'WEB', 'CAREER'].includes(field)) {
+  if (field && !Object.values(ChallengeField).includes(field)) {
     return res.status(400).json({ message: '필드 값이 올바르지 않습니다.' });
   }
-  if (type && !['OFFICIAL', 'BLOG'].includes(type)) {
+  if (type && !Object.values(ChallengeType).includes(type)) {
     return res.status(400).json({ message: '타입 값이 올바르지 않습니다.' });
   }
-  if (status && !['INPROGRESS', 'DEADLINE', 'APPROVED', 'REJECTED', 'CANCELLED', 'PENDING'].includes(status)) {
+  if (status && !Object.values(ChallengeStatus).includes(status)) {
     return res.status(400).json({ message: '상태 값이 올바르지 않습니다.' });
   }
   if (!Number.isInteger(pageNum) || !Number.isInteger(pageSizeNum)) {
@@ -222,13 +224,13 @@ async function getUserChallengeDetailInput(req, res) {
   if (title && title.trim() === '') {
     title = undefined;
   }
-  if (field && !['NEXT', 'MODERN', 'API', 'WEB', 'CAREER'].includes(field)) {
+  if (field && !Object.values(ChallengeField).includes(field)) {
     return res.status(400).json({ message: '필드 값이 올바르지 않습니다.' });
   }
-  if (type && !['OFFICIAL', 'BLOG'].includes(type)) {
+  if (type && !Object.values(ChallengeType).includes(type)) {
     return res.status(400).json({ message: '타입 값이 올바르지 않습니다.' });
   }
-  if (status && !['INPROGRESS', 'DEADLINE', 'APPROVED', 'REJECTED', 'CANCELLED', 'PENDING'].includes(status)) {
+  if (status && !Object.values(ChallengeStatus).includes(status)) {
     return res.status(400).json({ message: '상태 값이 올바르지 않습니다.' });
   }
   if (!Number.isInteger(pageNum) || !Number.isInteger(pageSizeNum)) {
