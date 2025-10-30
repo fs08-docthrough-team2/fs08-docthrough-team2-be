@@ -50,7 +50,7 @@ const EMAILS = [
   'user20@example.com',
 ];
 const PASSWORDS = [
-  'pw1000',
+  'pw100000',
   'pw1001',
   'pw1002',
   'pw1003',
