@@ -11,7 +11,7 @@ export const signupController = asyncHandler(async (req, res) => {
     httpOnly: true,
     //secure:isProduction,
     secure: false,
-    sameSite: isProduction ? "strict" : "lax",
+    sameSite: isProduction ? "none" : "lax",
     maxAge: 7 * 24 * 60 * 60 * 1000, 
   });
 
@@ -33,7 +33,7 @@ export const loginController = asyncHandler(async (req, res) => {
   res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
     secure: isProduction,
-    sameSite: isProduction ? "strict" : "lax",
+    sameSite: isProduction ? "none" : "lax",
     maxAge: 7 * 24 * 60 * 60 * 1000, 
   });
 
