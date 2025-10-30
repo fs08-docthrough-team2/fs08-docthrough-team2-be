@@ -31,12 +31,7 @@ if (!process.env.DATABASE_URL) {
     console.error('[ENV] DATABASE_URL 로드 실패');
   }
 }
-
-<<<<<<< HEAD
-
-=======
 // Express 앱 생성
->>>>>>> 2e50eeda48f06e1c9118ee4907d238d7faa31e64
 const app = express();
 
 // express 미들웨어 설정
