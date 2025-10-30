@@ -454,23 +454,15 @@ router.get('/participate-list/:challengeId',
 
 /**
  * @swagger
- * /api/challenge/inquiry/individual-participate-list/{userEmail}:
+ * /api/challenge/inquiry/individual-participate-list:
  *   get:
  *     tags:
  *       - 챌린지 조회
- *     summary: 각 회원별 참여하는 챌린지 목록 조회
- *     description: 특정 회원이 참여하고 있는 챌린지 목록을 필터링 옵션과 함께 조회합니다.
+ *     summary: 로그인한 회원의 참여 중인 챌린지 목록 조회
+ *     description: 로그인한 회원이 참여하고 있는 챌린지 목록을 필터링 옵션과 함께 조회합니다. JWT 토큰의 userId를 사용합니다.
  *     security:
  *       - BearerAuth: []
  *     parameters:
- *       - in: path
- *         name: userEmail
- *         required: true
- *         schema:
- *           type: string
- *           format: email
- *         description: 사용자 이메일
- *         example: "user2@example.com"
  *       - in: query
  *         name: page
  *         required: true
@@ -595,8 +587,8 @@ router.get('/participate-list/:challengeId',
  *                 message:
  *                   type: string
  *                   examples:
- *                     missingEmail:
- *                       value: "유저 이메일이 필요합니다."
+ *                     invalidUserId:
+ *                       value: "유저 ID가 없거나 올바르지 않습니다."
  *                     invalidField:
  *                       value: "필드 값이 올바르지 않습니다."
  *                     invalidType:
@@ -623,30 +615,22 @@ router.get('/participate-list/:challengeId',
  *         description: 서버 오류
  */
 router.get(
-  '/individual-participate-list/:userEmail',
+  '/individual-participate-list',
   authMiddleware.verifyAccessToken,
   challengeControllers.getUserParticipateListInput,
 );
 
 /**
  * @swagger
- * /api/challenge/inquiry/individual-complete-list/{userEmail}:
+ * /api/challenge/inquiry/individual-complete-list:
  *   get:
  *     tags:
  *       - 챌린지 조회
- *     summary: 각 회원별 참여 완료한 챌린지 목록 조회 (만료된 챌린지)
- *     description: 특정 회원이 참여했던 챌린지 중 마감일이 지난(완료된) 챌린지 목록을 필터링 옵션과 함께 조회합니다.
+ *     summary: 로그인한 회원의 참여 완료한 챌린지 목록 조회 (만료된 챌린지)
+ *     description: 로그인한 회원이 참여했던 챌린지 중 마감일이 지난(완료된) 챌린지 목록을 필터링 옵션과 함께 조회합니다. JWT 토큰의 userId를 사용합니다.
  *     security:
  *       - BearerAuth: []
  *     parameters:
- *       - in: path
- *         name: userEmail
- *         required: true
- *         schema:
- *           type: string
- *           format: email
- *         description: 사용자 이메일
- *         example: "user2@example.com"
  *       - in: query
  *         name: page
  *         required: true
@@ -771,8 +755,8 @@ router.get(
  *                 message:
  *                   type: string
  *                   examples:
- *                     missingEmail:
- *                       value: "유저 이메일이 필요합니다."
+ *                     invalidUserId:
+ *                       value: "유저 ID가 없거나 올바르지 않습니다."
  *                     invalidField:
  *                       value: "필드 값이 올바르지 않습니다."
  *                     invalidType:
@@ -799,30 +783,22 @@ router.get(
  *         description: 서버 오류
  */
 router.get(
-  '/individual-complete-list/:userEmail',
+  '/individual-complete-list',
   authMiddleware.verifyAccessToken,
   challengeControllers.getUserCompleteListInput
 );
 
 /**
  * @swagger
- * /api/challenge/inquiry/individual-challenge-detail/{userEmail}:
+ * /api/challenge/inquiry/individual-challenge-detail:
  *   get:
  *     tags:
  *       - 챌린지 조회
- *     summary: 각 회원별 신청한 챌린지 목록 조회 및 거절 목록 조회
- *     description: 특정 회원이 신청했지만 아직 참여하지 않은 챌린지 목록과 거절된 챌린지 목록을 조회합니다. 마감일이 지나지 않고 종료되지 않은 챌린지만 조회됩니다.
+ *     summary: 로그인한 회원의 신청한 챌린지 목록 조회 및 거절 목록 조회
+ *     description: 로그인한 회원이 신청했지만 아직 참여하지 않은 챌린지 목록과 거절된 챌린지 목록을 조회합니다. 마감일이 지나지 않고 종료되지 않은 챌린지만 조회됩니다. JWT 토큰의 userId를 사용합니다.
  *     security:
  *       - BearerAuth: []
  *     parameters:
- *       - in: path
- *         name: userEmail
- *         required: true
- *         schema:
- *           type: string
- *           format: email
- *         description: 사용자 이메일
- *         example: "user2@example.com"
  *       - in: query
  *         name: page
  *         required: true
@@ -995,8 +971,8 @@ router.get(
  *                 message:
  *                   type: string
  *                   examples:
- *                     missingEmail:
- *                       value: "유저 이메일이 필요합니다."
+ *                     invalidUserId:
+ *                       value: "유저 ID가 없거나 올바르지 않습니다."
  *                     invalidPagination:
  *                       value: "페이지 또는 페이지 크기 값이 올바르지 않습니다."
  *                     invalidPageValue:
@@ -1017,7 +993,7 @@ router.get(
  *         description: 서버 오류
  */
 router.get(
-  '/individual-challenge-detail/:userEmail',
+  '/individual-challenge-detail',
   authMiddleware.verifyAccessToken,
   challengeControllers.getUserChallengeDetailInput,
 );

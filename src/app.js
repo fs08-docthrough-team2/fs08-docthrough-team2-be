@@ -31,6 +31,7 @@ if (!process.env.DATABASE_URL) {
     console.error('[ENV] DATABASE_URL 로드 실패');
   }
 }
+
 // Express 앱 생성
 const app = express();
 

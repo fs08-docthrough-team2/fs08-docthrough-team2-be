@@ -2,11 +2,10 @@ import prisma from '../../common/prisma.js';
 
 async function getChallengeList({ title, field, type, status, page, pageSize, sort }) {
   try {
-    // where 조건 동적 생성
+    // where 조건 설정
     const whereCondition = {
       isDelete: false,
     };
-
     // title이 존재하고 빈 문자열이 아닐 때만 검색 조건 추가
     if (title && title.trim() !== '') {
       whereCondition.title = {
@@ -14,15 +13,12 @@ async function getChallengeList({ title, field, type, status, page, pageSize, so
         mode: 'insensitive',
       };
     }
-
     if (field) {
       whereCondition.field = field;
     }
-
     if (type) {
       whereCondition.type = type;
     }
-
     if (status) {
       whereCondition.status = status;
     }
@@ -56,8 +52,6 @@ async function getChallengeList({ title, field, type, status, page, pageSize, so
       },
     });
 
-    console.log(`Found ${challenges.length} challenges`); // 디버깅용
-
     // 응답 데이터 포맷팅
     const formattedChallenges = challenges.map((challenge) => ({
       challengeId: challenge.challenge_id,
@@ -70,6 +64,7 @@ async function getChallengeList({ title, field, type, status, page, pageSize, so
       maxParticipants: parseInt(challenge.capacity),
     }));
 
+    // 결과를 반환
     return {
       success: true,
       data: formattedChallenges,
@@ -87,6 +82,7 @@ async function getChallengeList({ title, field, type, status, page, pageSize, so
 
 async function getChallengeDetail(challengeId) {
   try {
+    // 챌린지 상세 내용 조회
     const challenge = await prisma.challenge.findUnique({
       where: {
         challenge_id: challengeId,
@@ -108,7 +104,7 @@ async function getChallengeDetail(challengeId) {
         },
       },
     });
-
+    // 결과를 찾을 수 없는 경우, 에러 메시지 반환
     if (!challenge) {
       return {
         success: false,
@@ -116,6 +112,7 @@ async function getChallengeDetail(challengeId) {
       };
     }
 
+    // 결과를 반환
     return {
       success: true,
       data: {
@@ -138,6 +135,7 @@ async function getChallengeDetail(challengeId) {
 
 async function getParticipateList(challengeId, page, pageSize) {
   try {
+    // 참여자 목록 조회
     const participates = await prisma.attend.findMany({
       where: {
         challenge_id: challengeId,
@@ -177,6 +175,7 @@ async function getParticipateList(challengeId, page, pageSize) {
       lastSubmittedAt: participate.updated_at,
     }));
 
+    // 결과를 반환
     return {
       success: true,
       data: {
@@ -192,35 +191,27 @@ async function getParticipateList(challengeId, page, pageSize) {
   }
 }
 
-async function getUserParticipateList(userEmail, title, field, type, status, page, pageSize) {
+async function getUserParticipateList(userID, title, field, type, status, page, pageSize) {
   try {
-    const user_uuid = await prisma.user.findUnique({
-      where: { email: userEmail },
-      select: { user_id: true },
-    });
-
-    // where 조건 동적 생성
+    // Where 조건 설정
     const whereCondition = {
       isDelete: false,
       deadline: { gt: new Date() },
     };
-
     if (field) {
       whereCondition.field = field;
     }
-
     if (type) {
       whereCondition.type = type;
     }
-
     if (status) {
       whereCondition.status = status;
     }
-
-    if (user_uuid) {
-      whereCondition.user_id = user_uuid.user_id;
+    if (userID) {
+      whereCondition.user_id = userID;
     }
 
+    // 챌린지 목록 조회
     const participates = await prisma.challenge.findMany({
       where: whereCondition,
       select: {
@@ -238,6 +229,7 @@ async function getUserParticipateList(userEmail, title, field, type, status, pag
       take: pageSize,
     });
 
+    // 결과를 반환
     return {
       success: true,
       data: {
@@ -253,35 +245,27 @@ async function getUserParticipateList(userEmail, title, field, type, status, pag
   }
 }
 
-async function getUserCompleteList(userEmail, title, field, type, status, page, pageSize) {
+async function getUserCompleteList(userID, title, field, type, status, page, pageSize) {
   try {
-    const user_uuid = await prisma.user.findUnique({
-      where: { email: userEmail },
-      select: { user_id: true },
-    });
-
-    // where 조건 동적 생성
+    // where 조건 설정
     const whereCondition = {
       isDelete: false,
       deadline: { lt: new Date() },
     };
-
     if (field) {
       whereCondition.field = field;
     }
-
     if (type) {
       whereCondition.type = type;
     }
-
     if (status) {
       whereCondition.status = status;
     }
-
-    if (user_uuid) {
-      whereCondition.user_id = user_uuid.user_id;
+    if (userID) {
+      whereCondition.user_id = userID;
     }
 
+    // 챌린지 목록 조회
     const participates = await prisma.challenge.findMany({
       where: whereCondition,
       select: {
@@ -299,6 +283,7 @@ async function getUserCompleteList(userEmail, title, field, type, status, page, 
       take: pageSize,
     });
 
+    // 결과를 반환
     return {
       success: true,
       data: {
@@ -314,36 +299,28 @@ async function getUserCompleteList(userEmail, title, field, type, status, page, 
   }
 }
 
-async function getUserChallengeDetail(userEmail, title, field, type, status, page, pageSize) {
+async function getUserChallengeDetail(userID, title, field, type, status, page, pageSize) {
   try {
-    const user_uuid = await prisma.user.findUnique({
-      where: { email: userEmail },
-      select: { user_id: true },
-    });
-
-    // where 조건 동적 생성
+    // where 조건 설정
     const whereCondition = {
       isDelete: false,
       isClose: false,
       deadline: { gt: new Date() },
     };
-
     if (field) {
       whereCondition.field = field;
     }
-
     if (type) {
       whereCondition.type = type;
     }
-
     if (status) {
       whereCondition.status = status;
     }
-
-    if (user_uuid) {
-      whereCondition.user_id = user_uuid.user_id;
+    if (userID) {
+      whereCondition.user_id = userID;
     }
 
+    // 챌린지 목록 조회
     const participates = await prisma.challenge.findMany({
       where: whereCondition,
       select: {
@@ -363,6 +340,7 @@ async function getUserChallengeDetail(userEmail, title, field, type, status, pag
       take: pageSize,
     });
 
+    // 결과를 반환
     return {
       success: true,
       data: {
@@ -382,7 +360,6 @@ export default {
   getChallengeList,
   getChallengeDetail,
   getParticipateList,
-
   getUserParticipateList,
   getUserCompleteList,
   getUserChallengeDetail,
