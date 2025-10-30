@@ -61,7 +61,7 @@ CREATE TABLE "Attend" (
     "attend_id" TEXT NOT NULL,
     "challenge_id" TEXT NOT NULL,
     "user_id" TEXT NOT NULL,
-    "title" TEXT NOT NULL,
+    "title" TEXT,
     "work_item" TEXT NOT NULL,
     "isSave" BOOLEAN NOT NULL DEFAULT false,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
