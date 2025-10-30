@@ -215,6 +215,7 @@ async function getUserParticipateList(userID, title, field, type, status, page, 
     const participates = await prisma.challenge.findMany({
       where: whereCondition,
       select: {
+        challenge_id: true,
         title: true,
         content: true,
         type: true,
@@ -223,17 +224,36 @@ async function getUserParticipateList(userID, title, field, type, status, page, 
         source: true,
         deadline: true,
         capacity: true,
+        _count: {
+          select: {
+            attends: true,
+          }
+        }
       },
 
       skip: (page - 1) * pageSize,
       take: pageSize,
     });
 
+    // 응답 데이터 포맷팅
+    const formattedParticipates = participates.map((participate) => ({
+      challengeId: participate.challenge_id,
+      title: participate.title,
+      content: participate.content,
+      type: participate.type,
+      status: participate.status,
+      field: participate.field,
+      source: participate.source,
+      deadline: participate.deadline,
+      currentParticipants: participate._count.attends,
+      maxParticipants: parseInt(participate.capacity),
+    }));
+
     // 결과를 반환
     return {
       success: true,
       data: {
-        participates: participates,
+        participates: formattedParticipates,
       },
       pagination: {
         page: page,
@@ -269,6 +289,7 @@ async function getUserCompleteList(userID, title, field, type, status, page, pag
     const participates = await prisma.challenge.findMany({
       where: whereCondition,
       select: {
+        challenge_id: true,
         title: true,
         content: true,
         type: true,
@@ -277,17 +298,36 @@ async function getUserCompleteList(userID, title, field, type, status, page, pag
         source: true,
         deadline: true,
         capacity: true,
+        _count: {
+          select: {
+            attends: true,
+          }
+        }
       },
 
       skip: (page - 1) * pageSize,
       take: pageSize,
     });
 
+    // 응답 데이터 포맷팅
+    const formattedParticipates = participates.map((participate) => ({
+      challengeId: participate.challenge_id,
+      title: participate.title,
+      content: participate.content,
+      type: participate.type,
+      status: participate.status,
+      field: participate.field,
+      source: participate.source,
+      deadline: participate.deadline,
+      currentParticipants: participate._count.attends,
+      maxParticipants: parseInt(participate.capacity),
+    }));
+
     // 결과를 반환
     return {
       success: true,
       data: {
-        participates: participates,
+        participates: formattedParticipates,
       },
       pagination: {
         page: page,
@@ -324,6 +364,7 @@ async function getUserChallengeDetail(userID, title, field, type, status, page, 
     const participates = await prisma.challenge.findMany({
       where: whereCondition,
       select: {
+        challenge_id: true,
         title: true,
         content: true,
         type: true,
@@ -334,17 +375,38 @@ async function getUserChallengeDetail(userID, title, field, type, status, page, 
         capacity: true,
         isReject: true,
         reject_content: true,
+        _count: {
+          select: {
+            attends: true,
+          }
+        }
       },
 
       skip: (page - 1) * pageSize,
       take: pageSize,
     });
 
+    // 응답 데이터 포맷팅
+    const formattedParticipates = participates.map((participate) => ({
+      challengeId: participate.challenge_id,
+      title: participate.title,
+      content: participate.content,
+      type: participate.type,
+      status: participate.status,
+      field: participate.field,
+      source: participate.source,
+      deadline: participate.deadline,
+      currentParticipants: participate._count.attends,
+      maxParticipants: parseInt(participate.capacity),
+      isReject: participate.isReject,
+      rejectContent: participate.reject_content,
+    }));
+
     // 결과를 반환
     return {
       success: true,
       data: {
-        participates: participates,
+        participates: formattedParticipates,
       },
       pagination: {
         page: page,
