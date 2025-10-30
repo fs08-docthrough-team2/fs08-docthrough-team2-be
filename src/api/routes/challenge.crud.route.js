@@ -27,7 +27,7 @@ router.use(corsMiddleware);
  *     tags:
  *       - 챌린지 관리
  *     summary: 챌린지 생성
- *     description: 새로운 챌린지를 생성합니다.
+ *     description: 새로운 챌린지를 생성합니다. JWT 토큰의 userId가 자동으로 사용됩니다.
  *     security:
  *       - BearerAuth: []
  *     requestBody:
@@ -44,7 +44,6 @@ router.use(corsMiddleware);
  *               - deadline
  *               - capacity
  *               - content
- *               - email
  *             properties:
  *               title:
  *                 type: string
@@ -71,17 +70,12 @@ router.use(corsMiddleware);
  *                 example: "2025-06-05T23:59:59+09:00"
  *               capacity:
  *                 type: string
- *                 description: 챌린지 인원 (2명 이상의 문자)
+ *                 description: 챌린지 인원 (2명 이상)
  *                 example: "2"
  *               content:
  *                 type: string
  *                 description: 챌린지 내용 설명
  *                 example: "파이썬은 고급 범용 프로그래밍 언어입니다."
- *               email:
- *                 type: string
- *                 format: email
- *                 description: 챌린지 생성자 이메일
- *                 example: "user2@example.com"
  *     responses:
  *       201:
  *         description: 챌린지 생성 성공
@@ -93,20 +87,26 @@ router.use(corsMiddleware);
  *                 success:
  *                   type: boolean
  *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "챌린지가 성공적으로 생성되었습니다."
  *                 data:
  *                   type: object
  *                   properties:
- *                     newChallenge:
+ *                     createChallenge:
  *                       type: object
  *                       properties:
  *                         challenge_id:
  *                           type: string
  *                           format: uuid
- *                           example: "3e3d85d3-4c98-41db-8459-7fde0fab1e44"
+ *                           example: "59715b34-70a1-4f64-9a88-7d46f8258f5b"
+ *                         challenge_no:
+ *                           type: integer
+ *                           example: 15
  *                         user_id:
  *                           type: string
  *                           format: uuid
- *                           example: "4ee7409f-0a01-4b3e-8a30-3d2e7bf06ddd"
+ *                           example: "a0c235d2-c97f-41b2-b36f-4faf8c13243f"
  *                         title:
  *                           type: string
  *                           example: "파이썬 중급"
@@ -141,6 +141,9 @@ router.use(corsMiddleware);
  *                         isReject:
  *                           type: boolean
  *                           example: false
+ *                         isApprove:
+ *                           type: boolean
+ *                           example: false
  *                         reject_content:
  *                           type: string
  *                           nullable: true
@@ -148,11 +151,11 @@ router.use(corsMiddleware);
  *                         created_at:
  *                           type: string
  *                           format: date-time
- *                           example: "2025-10-28T02:18:06.633Z"
+ *                           example: "2025-10-29T08:02:47.377Z"
  *                         updated_at:
  *                           type: string
  *                           format: date-time
- *                           example: "2025-10-28T02:18:06.633Z"
+ *                           example: "2025-10-29T08:02:47.377Z"
  *       400:
  *         description: 잘못된 요청 (필수 값 누락 또는 유효성 검증 실패)
  *         content:
@@ -180,7 +183,11 @@ router.use(corsMiddleware);
  *       500:
  *         description: 서버 오류
  */
-router.post('/create', authMiddleware.verifyAccessToken, challengeCRUDControllers.createChallengeInput);
+router.post(
+  '/create',
+  authMiddleware.verifyAccessToken,
+  challengeCRUDControllers.createChallengeInput
+);
 
 /**
  * @swagger
@@ -200,7 +207,7 @@ router.post('/create', authMiddleware.verifyAccessToken, challengeCRUDController
  *           type: string
  *           format: uuid
  *         description: 수정할 챌린지의 ID
- *         example: "b82d8c0d-82f6-43fd-8bf5-8e0071366e63"
+ *         example: "59715b34-70a1-4f64-9a88-7d46f8258f5b"
  *     requestBody:
  *       required: true
  *       content:
@@ -246,6 +253,9 @@ router.post('/create', authMiddleware.verifyAccessToken, challengeCRUDController
  *                 success:
  *                   type: boolean
  *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "챌린지가 성공적으로 수정되었습니다."
  *                 data:
  *                   type: object
  *                   properties:
@@ -255,11 +265,14 @@ router.post('/create', authMiddleware.verifyAccessToken, challengeCRUDController
  *                         challenge_id:
  *                           type: string
  *                           format: uuid
- *                           example: "3e3d85d3-4c98-41db-8459-7fde0fab1e44"
+ *                           example: "59715b34-70a1-4f64-9a88-7d46f8258f5b"
+ *                         challenge_no:
+ *                           type: integer
+ *                           example: 15
  *                         user_id:
  *                           type: string
  *                           format: uuid
- *                           example: "4ee7409f-0a01-4b3e-8a30-3d2e7bf06ddd"
+ *                           example: "a0c235d2-c97f-41b2-b36f-4faf8c13243f"
  *                         title:
  *                           type: string
  *                           example: "파이썬 고급"
@@ -294,6 +307,9 @@ router.post('/create', authMiddleware.verifyAccessToken, challengeCRUDController
  *                         isReject:
  *                           type: boolean
  *                           example: false
+ *                         isApprove:
+ *                           type: boolean
+ *                           example: false
  *                         reject_content:
  *                           type: string
  *                           nullable: true
@@ -301,11 +317,11 @@ router.post('/create', authMiddleware.verifyAccessToken, challengeCRUDController
  *                         created_at:
  *                           type: string
  *                           format: date-time
- *                           example: "2025-10-28T02:18:06.633Z"
+ *                           example: "2025-10-29T08:02:47.377Z"
  *                         updated_at:
  *                           type: string
  *                           format: date-time
- *                           example: "2025-10-28T02:19:46.233Z"
+ *                           example: "2025-10-29T08:03:12.292Z"
  *       401:
  *         description: 인증 실패 (토큰 없음 또는 유효하지 않음)
  *         content:
@@ -321,7 +337,11 @@ router.post('/create', authMiddleware.verifyAccessToken, challengeCRUDController
  *       500:
  *         description: 서버 오류
  */
-router.patch('/update/:challengeId', authMiddleware.verifyAccessToken, challengeCRUDControllers.updateChallengeInput);
+router.patch(
+  '/update/:challengeId',
+  authMiddleware.verifyAccessToken,
+  challengeCRUDControllers.updateChallengeInput
+);
 
 /**
  * @swagger
@@ -330,7 +350,7 @@ router.patch('/update/:challengeId', authMiddleware.verifyAccessToken, challenge
  *     tags:
  *       - 챌린지 관리
  *     summary: 챌린지 취소
- *     description: 챌린지를 취소 상태로 변경합니다. (isClose를 true로, status를 DEADLINE으로 설정)
+ *     description: 챌린지를 취소 상태로 변경합니다. (isClose를 true로, status를 CANCELLED로 설정)
  *     security:
  *       - BearerAuth: []
  *     parameters:
@@ -341,7 +361,7 @@ router.patch('/update/:challengeId', authMiddleware.verifyAccessToken, challenge
  *           type: string
  *           format: uuid
  *         description: 취소할 챌린지의 ID
- *         example: "b82d8c0d-82f6-43fd-8bf5-8e0071366e63"
+ *         example: "59715b34-70a1-4f64-9a88-7d46f8258f5b"
  *     requestBody:
  *       required: true
  *       content:
@@ -360,20 +380,26 @@ router.patch('/update/:challengeId', authMiddleware.verifyAccessToken, challenge
  *                 success:
  *                   type: boolean
  *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "챌린지가 성공적으로 취소되었습니다."
  *                 data:
  *                   type: object
  *                   properties:
- *                     updateChallenge:
+ *                     cancelChallenge:
  *                       type: object
  *                       properties:
  *                         challenge_id:
  *                           type: string
  *                           format: uuid
- *                           example: "3e3d85d3-4c98-41db-8459-7fde0fab1e44"
+ *                           example: "59715b34-70a1-4f64-9a88-7d46f8258f5b"
+ *                         challenge_no:
+ *                           type: integer
+ *                           example: 15
  *                         user_id:
  *                           type: string
  *                           format: uuid
- *                           example: "4ee7409f-0a01-4b3e-8a30-3d2e7bf06ddd"
+ *                           example: "a0c235d2-c97f-41b2-b36f-4faf8c13243f"
  *                         title:
  *                           type: string
  *                           example: "파이썬 고급"
@@ -385,7 +411,7 @@ router.patch('/update/:challengeId', authMiddleware.verifyAccessToken, challenge
  *                           example: "OFFICIAL"
  *                         status:
  *                           type: string
- *                           example: "DEADLINE"
+ *                           example: "CANCELLED"
  *                         field:
  *                           type: string
  *                           example: "API"
@@ -408,6 +434,9 @@ router.patch('/update/:challengeId', authMiddleware.verifyAccessToken, challenge
  *                         isReject:
  *                           type: boolean
  *                           example: false
+ *                         isApprove:
+ *                           type: boolean
+ *                           example: false
  *                         reject_content:
  *                           type: string
  *                           nullable: true
@@ -415,11 +444,11 @@ router.patch('/update/:challengeId', authMiddleware.verifyAccessToken, challenge
  *                         created_at:
  *                           type: string
  *                           format: date-time
- *                           example: "2025-10-28T02:18:06.633Z"
+ *                           example: "2025-10-29T08:02:47.377Z"
  *                         updated_at:
  *                           type: string
  *                           format: date-time
- *                           example: "2025-10-28T02:20:01.954Z"
+ *                           example: "2025-10-29T08:03:25.973Z"
  *       401:
  *         description: 인증 실패 (토큰 없음 또는 유효하지 않음)
  *         content:
@@ -435,7 +464,11 @@ router.patch('/update/:challengeId', authMiddleware.verifyAccessToken, challenge
  *       500:
  *         description: 서버 오류
  */
-router.patch('/cancel/:challengeId', authMiddleware.verifyAccessToken, challengeCRUDControllers.cancelChallengeInput);
+router.patch(
+  '/cancel/:challengeId',
+  authMiddleware.verifyAccessToken,
+  challengeCRUDControllers.cancelChallengeInput
+);
 
 /**
  * @swagger
@@ -455,7 +488,7 @@ router.patch('/cancel/:challengeId', authMiddleware.verifyAccessToken, challenge
  *           type: string
  *           format: uuid
  *         description: 삭제할 챌린지의 ID
- *         example: "b82d8c0d-82f6-43fd-8bf5-8e0071366e63"
+ *         example: "59715b34-70a1-4f64-9a88-7d46f8258f5b"
  *     requestBody:
  *       required: true
  *       content:
@@ -474,20 +507,26 @@ router.patch('/cancel/:challengeId', authMiddleware.verifyAccessToken, challenge
  *                 success:
  *                   type: boolean
  *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "챌린지가 성공적으로 삭제되었습니다."
  *                 data:
  *                   type: object
  *                   properties:
- *                     updateChallenge:
+ *                     deleteChallenge:
  *                       type: object
  *                       properties:
  *                         challenge_id:
  *                           type: string
  *                           format: uuid
- *                           example: "3e3d85d3-4c98-41db-8459-7fde0fab1e44"
+ *                           example: "59715b34-70a1-4f64-9a88-7d46f8258f5b"
+ *                         challenge_no:
+ *                           type: integer
+ *                           example: 15
  *                         user_id:
  *                           type: string
  *                           format: uuid
- *                           example: "4ee7409f-0a01-4b3e-8a30-3d2e7bf06ddd"
+ *                           example: "a0c235d2-c97f-41b2-b36f-4faf8c13243f"
  *                         title:
  *                           type: string
  *                           example: "파이썬 고급"
@@ -522,6 +561,9 @@ router.patch('/cancel/:challengeId', authMiddleware.verifyAccessToken, challenge
  *                         isReject:
  *                           type: boolean
  *                           example: false
+ *                         isApprove:
+ *                           type: boolean
+ *                           example: false
  *                         reject_content:
  *                           type: string
  *                           nullable: true
@@ -529,11 +571,11 @@ router.patch('/cancel/:challengeId', authMiddleware.verifyAccessToken, challenge
  *                         created_at:
  *                           type: string
  *                           format: date-time
- *                           example: "2025-10-28T02:18:06.633Z"
+ *                           example: "2025-10-29T08:02:47.377Z"
  *                         updated_at:
  *                           type: string
  *                           format: date-time
- *                           example: "2025-10-28T02:20:19.951Z"
+ *                           example: "2025-10-29T08:03:37.304Z"
  *       401:
  *         description: 인증 실패 (토큰 없음 또는 유효하지 않음)
  *         content:
@@ -549,7 +591,11 @@ router.patch('/cancel/:challengeId', authMiddleware.verifyAccessToken, challenge
  *       500:
  *         description: 서버 오류
  */
-router.patch('/delete/:challengeId', authMiddleware.verifyAccessToken, challengeCRUDControllers.deleteChallengeInput);
+router.patch(
+  '/delete/:challengeId',
+  authMiddleware.verifyAccessToken,
+  challengeCRUDControllers.deleteChallengeInput
+);
 
 /**
  * @swagger
@@ -569,7 +615,7 @@ router.patch('/delete/:challengeId', authMiddleware.verifyAccessToken, challenge
  *           type: string
  *           format: uuid
  *         description: 완전 삭제할 챌린지의 ID
- *         example: "b47e3739-e2b3-4ea6-8967-e596e819c4c3"
+ *         example: "59715b34-70a1-4f64-9a88-7d46f8258f5b"
  *     requestBody:
  *       required: false
  *       content:
@@ -588,6 +634,9 @@ router.patch('/delete/:challengeId', authMiddleware.verifyAccessToken, challenge
  *                 success:
  *                   type: boolean
  *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "챌린지가 성공적으로 영구 삭제되었습니다."
  *                 data:
  *                   type: object
  *                   properties:
@@ -597,11 +646,14 @@ router.patch('/delete/:challengeId', authMiddleware.verifyAccessToken, challenge
  *                         challenge_id:
  *                           type: string
  *                           format: uuid
- *                           example: "3e3d85d3-4c98-41db-8459-7fde0fab1e44"
+ *                           example: "59715b34-70a1-4f64-9a88-7d46f8258f5b"
+ *                         challenge_no:
+ *                           type: integer
+ *                           example: 15
  *                         user_id:
  *                           type: string
  *                           format: uuid
- *                           example: "4ee7409f-0a01-4b3e-8a30-3d2e7bf06ddd"
+ *                           example: "a0c235d2-c97f-41b2-b36f-4faf8c13243f"
  *                         title:
  *                           type: string
  *                           example: "파이썬 고급"
@@ -636,6 +688,9 @@ router.patch('/delete/:challengeId', authMiddleware.verifyAccessToken, challenge
  *                         isReject:
  *                           type: boolean
  *                           example: false
+ *                         isApprove:
+ *                           type: boolean
+ *                           example: false
  *                         reject_content:
  *                           type: string
  *                           nullable: true
@@ -643,11 +698,11 @@ router.patch('/delete/:challengeId', authMiddleware.verifyAccessToken, challenge
  *                         created_at:
  *                           type: string
  *                           format: date-time
- *                           example: "2025-10-28T02:18:06.633Z"
+ *                           example: "2025-10-29T08:02:47.377Z"
  *                         updated_at:
  *                           type: string
  *                           format: date-time
- *                           example: "2025-10-28T02:20:19.951Z"
+ *                           example: "2025-10-29T08:03:37.304Z"
  *       401:
  *         description: 인증 실패 (토큰 없음 또는 유효하지 않음)
  *         content:
@@ -673,7 +728,12 @@ router.patch('/delete/:challengeId', authMiddleware.verifyAccessToken, challenge
  *       500:
  *         description: 서버 오류
  */
-router.delete("/hard-delete/:challengeId", authMiddleware.verifyAccessToken, authMiddleware.verifyAdmin, challengeCRUDControllers.hardDeleteChallengeInput);
+router.delete(
+  "/hard-delete/:challengeId",
+  authMiddleware.verifyAccessToken,
+  authMiddleware.verifyAdmin,
+  challengeCRUDControllers.hardDeleteChallengeInput
+);
 
 // 에러 핸들링 미들웨어 적용
 router.use(errorMiddleware.errorHandler);
