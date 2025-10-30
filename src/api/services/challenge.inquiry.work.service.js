@@ -244,6 +244,18 @@ export async function createWork(req, { challenge_id, title, workItem }){
     throw err;
   }
 
+  const existinWork =  await prisma.attend.findFirst({
+    where:{
+      challenge_id,
+      user_id: userId,
+      isSave: false,
+    },
+  });
+
+  if(existinWork){
+    const err = new Error("이미 제출된 작업물이 존재합니다.");
+  }
+  
   const attend = await prisma.attend.create({
     data:{
       challenge_id,

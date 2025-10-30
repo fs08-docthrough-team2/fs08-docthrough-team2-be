@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import dotenv from "dotenv";
 import {
   findUserByEmail,
+  findUserByNickName,
   createUser,
 } 
 from '../repositories/auth.repository.js';
@@ -17,6 +18,10 @@ export async function signup(email, password, nickName) {
   const existing = await findUserByEmail(email);
   if (existing) 
     throw new Error("이미 등록된 이메일입니다.");
+
+  const existingNickName = await findUserByNickName(nickName);
+  if(existingNickName)
+    throw new Error("이미 사용 중인 닉네임입니다.");
 
   const hashed = await argon2.hash(password);
 

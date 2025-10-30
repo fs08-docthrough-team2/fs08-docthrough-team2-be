@@ -9,23 +9,23 @@ import {
   updateWorkController,
   deleteWorkController,
   toggleLikeController
-}
-from "../controllers/challenge.inquiry.work.controller.js";
+} from "../controllers/challenge.inquiry.work.controller.js";
 
 const router = express.Router();
 
 /**
  * @swagger
  * tags:
- *   name: ChallengeWork
- *   description: 첼린지 작업물 관련 API
+ *   - name: ChallengeWork
+ *     description: 첼린지 작업물(Translated Work) 관련 API
  */
 
 /**
  * @swagger
- * /api/challenge/inquiry/work/traslated-list:
+ * /api/challenge/inquiry/work/translated-list:
  *   get:
  *     summary: 제출된 작업물 리스트 조회
+ *     description: 특정 첼린지에 제출된 모든 작업물 목록을 페이지네이션 형태로 반환합니다.
  *     tags: [ChallengeWork]
  *     parameters:
  *       - in: query
@@ -48,34 +48,91 @@ const router = express.Router();
  *         description: 페이지 크기
  *     responses:
  *       200:
- *         description: 작업물 리스트 반환
+ *         description: 작업물 리스트 반환 성공
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     items:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           attendId:
+ *                             type: string
+ *                             example: "123e4567-e89b-12d3-a456-426614174000"
+ *                           nickName:
+ *                             type: string
+ *                             example: "참가자1"
+ *                           role:
+ *                             type: string
+ *                             example: "USER"
+ *                           likeCount:
+ *                             type: integer
+ *                             example: 12
+ *                           createdAt:
+ *                             type: string
+ *                             example: "2025-10-29T12:00:00.000Z"
+ *                     pagination:
+ *                       type: object
+ *                       properties:
+ *                         page: { type: integer, example: 1 }
+ *                         size: { type: integer, example: 10 }
+ *                         total: { type: integer, example: 45 }
+ *                         totalPages: { type: integer, example: 5 }
  */
-router.get("/work/traslated-list", getWorkListController);
+router.get("/translated-list", getWorkListController);
 
 /**
  * @swagger
- * /api/challenge/inquiry/work/trasleted-detail/{attend_id}:
+ * /api/challenge/inquiry/work/translated-detail/{attend_id}:
  *   get:
  *     summary: 제출된 작업물 상세 조회
+ *     description: 특정 참가자의 제출된 작업물 상세 정보를 조회합니다.
  *     tags: [ChallengeWork]
  *     parameters:
  *       - in: path
  *         name: attend_id
+ *         required: true
  *         schema:
  *           type: string
- *         required: true
- *         description: 작업물 ID
+ *         description: 참가자 참석 ID
  *     responses:
  *       200:
- *         description: 작업물 상세 데이터 반환
+ *         description: 작업물 상세 조회 성공
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success: { type: boolean, example: true }
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     attendId: { type: string, example: "abc123" }
+ *                     title: { type: string, example: "나의 번역작품" }
+ *                     workItem: { type: string, example: "번역된 문장 내용..." }
+ *                     createdAt: { type: string, example: "2025-10-29T12:00:00.000Z" }
+ *                     nickName: { type: string, example: "홍길동" }
+ *                     role: { type: string, example: "USER" }
+ *                     likeCount: { type: integer, example: 5 }
+ *                     isClose: { type: boolean, example: false }
  */
-router.get("/work/trasleted-detail/:attend_id", getWorkDetailController);
+router.get("/translated-detail/:attend_id", getWorkDetailController);
 
 /**
  * @swagger
- * /api/challenge/inquiry/work/traslated-list/save:
+ * /api/challenge/inquiry/work/translated-list/save:
  *   get:
- *     summary: 임시 저장 리스트 조회
+ *     summary: 임시 저장된 작업물 리스트 조회
+ *     description: 사용자가 임시로 저장한 작업물 리스트를 조회합니다.
  *     tags: [ChallengeWork]
  *     parameters:
  *       - in: query
@@ -90,34 +147,54 @@ router.get("/work/trasleted-detail/:attend_id", getWorkDetailController);
  *           default: 5
  *     responses:
  *       200:
- *         description: 임시 저장 리스트 반환
+ *         description: 임시 저장 리스트 반환 성공
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               example:
+ *                 success: true
+ *                 data:
+ *                   items:
+ *                     - attendId: "temp1"
+ *                       title: "초안 제목"
+ *                       createdAt: "2025-10-30T09:00:00Z"
  */
-router.get("/work/traslated-list/save", getSaveListController);
+router.get("/translated-list/save", getSaveListController);
 
 /**
  * @swagger
- * /api/challenge/inquiry/work/trasleted-detail/save/{attend_id}:
+ * /api/challenge/inquiry/work/translated-detail/save/{attend_id}:
  *   get:
  *     summary: 임시 저장 상세 조회
+ *     description: 특정 임시 저장 작업물의 상세 내용을 조회합니다.
  *     tags: [ChallengeWork]
  *     parameters:
  *       - in: path
  *         name: attend_id
+ *         required: true
  *         schema:
  *           type: string
- *         required: true
- *         description: 임시 저장된 작업물 ID
  *     responses:
  *       200:
- *         description: 임시 저장 상세 반환
+ *         description: 임시 저장 상세 조회 성공
+ *         content:
+ *           application/json:
+ *             example:
+ *               success: true
+ *               data:
+ *                 attendId: "temp1"
+ *                 title: "초안 제목"
+ *                 workItem: "작업물 초안 내용"
  */
-router.get("/work/trasleted-detail/save/:attend_id", getSaveDetailController);
+router.get("/translated-detail/save/:attend_id", getSaveDetailController);
 
 /**
  * @swagger
- * /api/challenge/inquiry/work/trasleted-detail:
+ * /api/challenge/inquiry/work/translated-detail:
  *   post:
- *     summary: 제출된 작업물 생성
+ *     summary: 작업물 제출
+ *     description: 사용자 작업물을 제출(저장)합니다.
  *     tags: [ChallengeWork]
  *     requestBody:
  *       required: true
@@ -125,31 +202,28 @@ router.get("/work/trasleted-detail/save/:attend_id", getSaveDetailController);
  *         application/json:
  *           schema:
  *             type: object
- *             required:
- *               - challenge_id
- *               - title
- *               - workItem
+ *             required: [challenge_id, title, workItem]
  *             properties:
- *               challenge_id:
- *                 type: string
- *                 description: 첼린지 ID
- *               title:
- *                 type: string
- *                 description: 작업물 제목
- *               workItem:
- *                 type: string
- *                 description: 작업물 내용
+ *               challenge_id: { type: string, example: "challenge123" }
+ *               title: { type: string, example: "내 번역 작품" }
+ *               workItem: { type: string, example: "본문 번역 내용..." }
  *     responses:
- *       200:
- *         description: 제출된 작업물 생성 성공
+ *       201:
+ *         description: 작업물 제출 성공
+ *         content:
+ *           application/json:
+ *             example:
+ *               success: true
+ *               message: "작업물이 제출되었습니다."
  */
-router.post("/work/trasleted-detail", createWorkController);
+router.post("/translated-detail", createWorkController);
 
 /**
  * @swagger
- * /api/challenge/inquiry/work/trasleted-detail/save:
+ * /api/challenge/inquiry/work/translated-detail/save:
  *   post:
- *     summary: 임시 저장 생성
+ *     summary: 작업물 임시 저장
+ *     description: 작업물을 임시 저장합니다.
  *     tags: [ChallengeWork]
  *     requestBody:
  *       required: true
@@ -157,97 +231,102 @@ router.post("/work/trasleted-detail", createWorkController);
  *         application/json:
  *           schema:
  *             type: object
- *             required:
- *               - challenge_id
- *               - title
- *               - workItem
+ *             required: [challenge_id, title, workItem]
  *             properties:
- *               challenge_id:
- *                 type: string
- *                 description: 첼린지 ID
- *               title:
- *                 type: string
- *                 description: 작업물 제목
- *               workItem:
- *                 type: string
- *                 description: 작업물 내용
+ *               challenge_id: { type: string, example: "challenge123" }
+ *               title: { type: string, example: "임시 제목" }
+ *               workItem: { type: string, example: "작성중인 내용..." }
  *     responses:
  *       200:
- *         description: 임시 저장 생성 성공
+ *         description: 임시 저장 성공
+ *         content:
+ *           application/json:
+ *             example:
+ *               success: true
+ *               message: "임시 저장되었습니다."
  */
-router.post("/work/trasleted-detail/save", createSaveWorkController);
+router.post("/translated-detail/save", createSaveWorkController);
 
 /**
  * @swagger
- * /api/challenge/inquiry/work/trasleted-detail/{attend_id}:
+ * /api/challenge/inquiry/work/translated-detail/{attend_id}:
  *   patch:
  *     summary: 작업물 수정
+ *     description: 제출된 작업물의 제목 및 내용을 수정합니다.
  *     tags: [ChallengeWork]
  *     parameters:
  *       - in: path
  *         name: attend_id
+ *         required: true
  *         schema:
  *           type: string
- *         required: true
- *         description: 작업물 ID
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             type: object
- *             required:
- *               - title
- *               - workItem
+ *             required: [title, workItem]
  *             properties:
- *               title:
- *                 type: string
- *                 description: 수정할 제목
- *               workItem:
- *                 type: string
- *                 description: 수정할 내용
+ *               title: { type: string, example: "수정된 제목" }
+ *               workItem: { type: string, example: "수정된 번역 내용..." }
  *     responses:
  *       200:
- *         description: 작업물 수정 성공
+ *         description: 수정 성공
+ *         content:
+ *           application/json:
+ *             example:
+ *               success: true
+ *               message: "작업물이 수정되었습니다."
  */
-router.patch("/work/trasleted-detail/:attend_id", updateWorkController);
+router.patch("/translated-detail/:attend_id", updateWorkController);
 
 /**
  * @swagger
- * /api/challenge/inquiry/work/trasleted-detail/{attend_id}:
+ * /api/challenge/inquiry/work/translated-detail/{attend_id}:
  *   delete:
  *     summary: 작업물 삭제
+ *     description: 제출된 작업물을 삭제합니다.
  *     tags: [ChallengeWork]
  *     parameters:
  *       - in: path
  *         name: attend_id
+ *         required: true
  *         schema:
  *           type: string
- *         required: true
- *         description: 작업물 ID
  *     responses:
  *       200:
- *         description: 작업물 삭제 성공
+ *         description: 삭제 성공
+ *         content:
+ *           application/json:
+ *             example:
+ *               success: true
+ *               message: "작업물이 삭제되었습니다."
  */
-router.delete("/work/trasleted-detail/:attend_id", deleteWorkController);
+router.delete("/translated-detail/:attend_id", deleteWorkController);
 
 /**
  * @swagger
- * /api/challenge/inquiry/work/trasleted-detail/like/{attend_id}:
+ * /api/challenge/inquiry/work/translated-detail/like/{attend_id}:
  *   post:
  *     summary: 좋아요 토글
+ *     description: 특정 작업물의 좋아요 상태를 토글합니다.
  *     tags: [ChallengeWork]
  *     parameters:
  *       - in: path
  *         name: attend_id
+ *         required: true
  *         schema:
  *           type: string
- *         required: true
- *         description: 작업물 ID
  *     responses:
  *       200:
  *         description: 좋아요 상태 변경 성공
+ *         content:
+ *           application/json:
+ *             example:
+ *               success: true
+ *               message: "좋아요가 반영되었습니다."
  */
-router.post("/work/trasleted-detail/like/:attend_id", toggleLikeController);
+router.post("/translated-detail/like/:attend_id", toggleLikeController);
 
 export default router;
