@@ -32,13 +32,14 @@ export async function signup(email, password, nickName) {
   const { accessToken, refreshToken } = await generateTokens(user);
   await updateRefreshToken(user.user_id, refreshToken);
 
-  return {
-    userId: user.user_id,
-    email: user.email,
-    nickName: user.nick_name,
-    role: user.role,
-    accessToken,
+  return { 
+    accessToken, 
     refreshToken,
+    user:{
+      email: user.email,
+      nickName: user.nick_name,
+      role: user.role,
+    } 
   };
 }
 
