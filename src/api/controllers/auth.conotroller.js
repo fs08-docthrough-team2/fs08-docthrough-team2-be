@@ -1,41 +1,26 @@
 import { asyncHandler } from "../../common/error.js";
 import { signup, login, logout } from "../services/auth.service.js";
+import { cookiesOption } from "../../common/auth.js";
 
 export const signupController = asyncHandler(async (req, res) => {
   const { email, password, nickName } = req.body;
-  const user = await signup(email, password, nickName);
+  const { user, accessToken, refreshToken } = await signup(email, password, nickName);
 
-  const isProduction = process.env.NODE_ENV === "production";
-
-  res.cookie("refreshToken", user.refreshToken, {
-    httpOnly: true,
-    //secure:isProduction,
-    secure: false,
-    sameSite: isProduction ? "none" : "lax",
-    maxAge: 7 * 24 * 60 * 60 * 1000, 
-  });
+  res.cookie("refreshToken", refreshToken, cookiesOption);
 
   res.status(201).json({
     message: "회원가입 성공",
     user,
-    accessToken:user.accessToken,
+    accessToken,
   });
 });
 
 export const loginController = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
-  const result = await login(email, password);
+  
+  const { user, accessToken, refreshToken } = await login(email, password);
 
-  const { user, accessToken, refreshToken } = result;
-
-  const isProduction = process.env.NODE_ENV === "production";
-
-  res.cookie("refreshToken", refreshToken, {
-    httpOnly: true,
-    secure: isProduction,
-    sameSite: isProduction ? "none" : "lax",
-    maxAge: 7 * 24 * 60 * 60 * 1000, 
-  });
+  res.cookie("refreshToken", refreshToken, cookiesOption);
 
   res.status(200).json({
     message: "로그인 성공",
