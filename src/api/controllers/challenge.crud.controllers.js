@@ -61,6 +61,12 @@ async function cancelChallengeInput(req, res) {
       message: "유저 ID가 없거나 올바르지 않습니다."
     });
   }
+  if (challengeID === undefined) {
+    return res.status(400).json({
+      success: false,
+      message: "챌린지 ID가 없거나 올바르지 않습니다."
+    });
+  }
 
   // 서비스 호출
   const response = await challengeCRUDServices.cancelChallenge(challengeID, userID);
