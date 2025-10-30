@@ -53,7 +53,7 @@ async function getChallengeDetailInput(req, res) {
   const challengeID = !isUUID.v4(req.params.challengeId) ? undefined : req.params.challengeId;
 
   // 입력값 검증
-  if (challengeID === undefined) {
+  if (!challengeID) {
     return res.status(400).json({
       success: false,
       message: "챌린지 ID가 없거나 올바르지 않습니다."
@@ -75,7 +75,7 @@ async function getParticipateListInput(req, res) {
   const pageSizeNum = Number(pageSize);
 
   // 입력값 검증
-    if (challengeID === undefined) {
+    if (!challengeID) {
       return res.status(400).json({
         success: false,
         message: "챌린지 ID가 없거나 올바르지 않습니다."
@@ -111,7 +111,7 @@ async function getUserParticipateListInput(req, res) {
     const pageSizeNum = Number(pageSize);
 
     // 입력값 검증
-    if (userID === undefined) {
+    if (!userID) {
       return res.status(400).json({
         success: false,
         message: "유저 ID가 없거나 올바르지 않습니다."
@@ -162,7 +162,7 @@ async function getUserCompleteListInput(req, res) {
   const pageSizeNum = Number(pageSize);
 
   // 입력값 검증
-  if (userID === undefined) {
+  if (!userID) {
     return res.status(400).json({
       success: false,
       message: "유저 ID가 없거나 올바르지 않습니다."
@@ -213,7 +213,7 @@ async function getUserChallengeDetailInput(req, res) {
   const pageSizeNum = Number(pageSize);
 
   // 입력 검증
-  if (userID === undefined) {
+  if (!userID) {
     return res.status(400).json({
       success: false,
       message: "유저 ID가 없거나 올바르지 않습니다."
