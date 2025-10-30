@@ -95,7 +95,7 @@ model Attend {
   attend_id    String   @id @default(uuid())
   challenge_id String
   user_id      String
-  title        String
+  title        String?
   work_item    String
   isSave       Boolean  @default(false)
   created_at   DateTime @default(now())

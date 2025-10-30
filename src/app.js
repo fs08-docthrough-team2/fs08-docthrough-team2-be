@@ -32,7 +32,11 @@ if (!process.env.DATABASE_URL) {
   }
 }
 
+<<<<<<< HEAD
+
+=======
 // Express 앱 생성
+>>>>>>> 2e50eeda48f06e1c9118ee4907d238d7faa31e64
 const app = express();
 
 // express 미들웨어 설정
