@@ -2,12 +2,15 @@
 import challengeAdminServices from '../services/challenge.admin.services.js';
 import isUUID from 'is-uuid';
 
+// 선택지에 대한 상수화
+const SORTLIST = ['신청시간빠름순', '신청시간느림순', '마감기한빠름순', '마감기한느림순', 'desc', 'asc'];
+const STATUSLIST = ['신청승인', '신청거절', '신청취소', '신청대기'];
+
 async function getChallengeListInput(req, res) {
   // 입력값 불러오기
   const { searchKeyword, status, sort = 'desc' } = req.query;
   const page = parseInt(req.query.page) || 1;
   const pageSize = parseInt(req.query.pageSize) || 10;
-  const userID = !isUUID.v4(req.auth?.userId) ? undefined : req.auth?.userId;
 
   // 입력값 검증
   if (page <= 0 || pageSize <= 0) {
@@ -16,13 +19,13 @@ async function getChallengeListInput(req, res) {
       message: "페이지 번호와 페이지 크기는 1 이상의 값이어야 합니다."
     });
   }
-  if (sort && !['신청시간빠름순', '신청시간느림순', '마감기한빠름순', '마감기한느림순', 'desc', 'asc'].includes(sort)) {
+  if (sort && !SORTLIST.includes(sort)) {
     return res.status(400).json({
       success: false,
       message: "유효하지 않은 정렬 기준입니다."
     });
   }
-  if (status && !['신청승인', '신청거절', '신청취소', '신청대기'].includes(status)) {
+  if (status && !STATUSLIST.includes(status)) {
     return res.status(400).json({
       success: false,
       message: "유효하지 않은 상태 필터입니다."
@@ -43,7 +46,7 @@ async function getChallengeDetailInput(req, res) {
   const challengeID = !isUUID.v4(req.params.challengeId) ? undefined : req.params.challengeId;
 
   // 입력값 검증
-  if (challengeID === undefined) {
+  if (!challengeID) {
     return res.status(400).json({
       success: false,
       message: "챌린지 ID가 없거나 올바르지 않습니다."
@@ -65,13 +68,13 @@ async function approveChallengeInput(req, res) {
   const userID = !isUUID.v4(req.auth?.userId) ? undefined : req.auth?.userId;
 
   // 입력값 검증
-  if (userID === undefined) {
+  if (!userID) {
     return res.status(400).json({
       success: false,
       message: "유저 ID가 없거나 올바르지 않습니다."
     });
   }
-  if (challengeID === undefined) {
+  if (!challengeID) {
     return res.status(400).json({
       success: false,
       message: "챌린지 ID가 없거나 올바르지 않습니다."
@@ -94,13 +97,13 @@ async function rejectChallengeInput(req, res) {
   const { reject_comment } = req.body;
 
   // 입력값 검증
-  if (userID === undefined) {
+  if (!userID) {
     return res.status(400).json({
       success: false,
       message: "유저 ID가 없거나 올바르지 않습니다."
     });
   }
-  if (challengeID === undefined) {
+  if (!challengeID) {
     return res.status(400).json({
       success: false,
       message: "챌린지 ID가 없거나 올바르지 않습니다."
