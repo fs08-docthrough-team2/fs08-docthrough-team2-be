@@ -5,8 +5,15 @@ import isUUID from 'is-uuid';
 async function createChallengeInput(req, res) {
   // 입력값 불러오기
   const { title, source, field, type, deadline, capacity, content } = req.body;
+  const userID = !isUUID.v4(req.auth?.userId) ? undefined : req.auth?.userId;
 
   // 입력값 검증
+  if (!userID) {
+    return res.status(400).json({
+      success: false,
+      message: "유저 ID가 없거나 올바르지 않습니다."
+    });
+  }
   if (!title || !source || !field || !type || !deadline || !capacity || !content) {
     return res.status(400).json({ error: '챌린지 추가에 필요한 값이 입력되지 않았습니다.' });
   }
@@ -16,7 +23,7 @@ async function createChallengeInput(req, res) {
 
   // 서비스 호출
   const response = await challengeCRUDServices.createChallenge(
-    title, source, field, type, deadline, capacity, content
+    title, source, field, type, deadline, capacity, content, userID
   );
 
   // 호출 결과 반환
