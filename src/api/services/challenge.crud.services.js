@@ -1,4 +1,5 @@
 import prisma from '../../common/prisma.js';
+import noticeService from '../../api/services/notice.services.js';
 
 async function createChallenge(title, source, field, type, deadline, capacity, content, userID) {
   try {
@@ -19,8 +20,6 @@ async function createChallenge(title, source, field, type, deadline, capacity, c
         isReject: false,
       }
     });
-
-    // TODO: 생성 알림 함수 호출 (userID 이용)
 
     // 결과를 반환
     return {
@@ -43,7 +42,8 @@ async function updateChallenge(req, userID) {
       data: req.body
     });
 
-    // TODO: 수정 알림 함수 호출 (userID 이용)
+    // 챌린지 수정 알림 함수 호출
+    await noticeService.addModifyNotice("챌린지","수정", userID, updateChallenge.title);
 
     // 결과를 반환
     return {
@@ -66,7 +66,8 @@ async function cancelChallenge(challengeID, userID) {
       data: { isClose: true, status: 'CANCELLED' }
     });
 
-    // TODO: 취소 알림 함수 호출 (userID 이용)
+    // 챌린지 취소 알림 함수 호출
+    await noticeService.addModifyNotice("챌린지","취소", userID, cancelChallenge.title);
 
     // 결과를 반환
     return {
@@ -89,7 +90,8 @@ async function deleteChallenge(challengeID, userID) {
       data: { isDelete: true, status: 'DEADLINE' }
     });
 
-    // TODO: 삭제 알림 함수 호출 (userID 이용)
+    // 챌린지 삭제 알림 함수 호출
+    await noticeService.addModifyNotice("챌린지","삭제", userID, deleteChallenge.title);
 
     // 결과를 반환
     return {
@@ -111,7 +113,8 @@ async function hardDeleteChallenge(challengeID, userID) {
       where: { challenge_id: challengeID }
     });
 
-    // TODO: 완전 삭제 알림 함수 호출 (userID 이용)
+    // 챌린지 완전 삭제 알림 함수 호출
+    await noticeService.addModifyNotice("챌린지","완전 삭제", userID, deleteChallenge.title);
 
     // 결과를 반환
     return {
