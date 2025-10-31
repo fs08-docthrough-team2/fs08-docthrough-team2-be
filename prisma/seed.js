@@ -50,7 +50,7 @@ const EMAILS = [
   'user20@example.com',
 ];
 const PASSWORDS = [
-  'pw1000',
+  'pw100000',
   'pw1001',
   'pw1002',
   'pw1003',
@@ -239,12 +239,12 @@ async function seedUsers() {
         refresh_token: refreshHash,
         isDelete: false,
       },
-      select: { user_id: true, email: true },
+      select: { user_id: true, email: true, nick_name: true },
     });
     created.push(u);
   }
   console.log(`[Seed][User] ${created.length} rows`);
-  return created; // [{user_id, email}...]
+  return created; // [{user_id, email, nick_name}...]
 }
 
 async function seedChallenges(users) {
@@ -320,6 +320,7 @@ async function seedAttends(challenges, users) {
         data: {
           challenge_id: ch.challenge_id,
           user_id: u.user_id,
+          title: `${u.nick_name}의 ${ch.title} 참여`,
           work_item: WORK_ITEMS[wi % WORK_ITEMS.length],
           isSave: Math.random() < 0.6,
         },

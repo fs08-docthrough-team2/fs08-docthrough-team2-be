@@ -3,7 +3,7 @@ import {
   verifyAccessToken,
   refreshAccessToken
 } from "../services/token.service.js";
-
+import { cookiesOption } from "../../common/auth.js";
 
 export const verifyAccessTokenController = asyncHandler(async (req, res) => {
   const refreshToken = req.cookies?.refreshToken; 
@@ -49,19 +49,15 @@ export const verifyAccessTokenController = asyncHandler(async (req, res) => {
 });
 
 export const refreshTokenController = asyncHandler(async (req, res) => {
-  const refreshToken = req.cookies?.refreshToken;
-  const result = await refreshAccessToken(refreshToken);
+  const oldRefreshToken = req.cookies?.refreshToken;
 
-  res.cookie("refreshToken", result.refreshToken, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
-    maxAge: 7 * 24 * 60 * 60 * 1000,
-  });
+  const { accessToken, refreshToken, user} = await refreshAccessToken(oldRefreshToken);
+
+  res.cookie("refreshToken", refreshToken, cookiesOption)
 
   res.status(200).json({
     message: "Access Token 재발급 성공",
-    accessToken: result.accessToken,
-    user: result.user,
+    accessToken,
+    user,
   });
 });

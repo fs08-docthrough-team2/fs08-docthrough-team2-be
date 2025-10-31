@@ -64,7 +64,6 @@ const verifyRefreshToken = [
       const token = req.cookies.refreshToken;
       if (!token) throwUnauthorizedError();
       const user = await findUserById(req.auth.userId);
-      
       if (!user || user.refresh_token !== token) {
         const err = new Error('Refresh Token 불일치');
         err.status = 401;
@@ -97,9 +96,18 @@ async function verifyAdmin(req, res, next) {
   }
 }
 
+const isProduction = process.env.NODE_ENV === "production";
+export const cookiesOption = {
+  httpOnly: true,
+  secure: isProduction,
+  sameSite: isProduction ? "none" : "lax",
+  maxAge: 7 * 24 * 60 * 60 * 1000, 
+}
+
 export default {
   verifySessionLogin,
   verifyAccessToken,
   verifyRefreshToken,
   verifyAdmin,
+  cookiesOption,
 };

@@ -24,14 +24,10 @@ export async function createUser(data){
   return prisma.user.create({ data });
 }
 
-// // 토큰 갱신
-// export async function updateRefreshToken(user_id, refresh_token){
-//   return prisma.user.update({
-//     where:{
-//       userId:user_id,
-//     },
-//     data: {
-//       refreshToken: refresh_token
-//     },
-//   });
-// };
+export async function findUserByNickName(nick_name){
+  return prisma.user.findFirst({
+    where: { 
+      nick_name 
+    },
+  });
+}
