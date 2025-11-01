@@ -1,28 +1,8 @@
 import prisma from "../../common/prisma.js";
-import jwt from "jsonwebtoken";
 import dotenv from "dotenv"
 
-import { getUserProfileFromToken } from "./user.service.js";
-import { th } from "date-fns/locale";
+import { getUserFromToken } from "./user.service.js";
 
-async function getUserFromToken(req){
-  let token = null;
-  if(req.cookies?.accessToken){
-    token = req.cookies.accessToken;
-  }
-
-  else if(req.headers.authorization?.startsWith("Bearer ")){
-    token = req.headers.authorization.split(" ")[1];
-  }
-
-  if(!token) 
-    throw new Error("인증 토큰이 없습니다.");
-
-  const decoded = jwt.verify(token, process.env.JWT_SECRET);
-  const user = await getUserProfileFromToken(decoded);
-  
-  return { ...user, userId: decoded.userId};
-}
 
 
 //리스트
@@ -305,7 +285,7 @@ export async function createSaveWork(req, { challenge_id, title, workItem}){
 
 // 수정
 export async function updateWork(req, attend_id, { title, workItem }){
-  const { userId } = await getUserFromToken(req);
+  const user = await getUserFromToken(req);
 
   const attend = await prisma.attend.findUnique({
     where: { attend_id },
@@ -315,13 +295,18 @@ export async function updateWork(req, attend_id, { title, workItem }){
           isClose: true
         },
       },
+      user:{ 
+        select:{
+          user_id: true,
+        },
+      },
     },
   });
 
   if(!attend) 
     throw new Error("작업물을 찾을 수 없습니다.");
 
-  if(attend.user_id !== userId)
+  if(attend.user_id !== user.userId && user.role !== "ADMIN")
     throw new Error("본인만 수정할 수 있습니다.");
 
   if(attend.challenge?.isClose)
@@ -339,7 +324,7 @@ export async function updateWork(req, attend_id, { title, workItem }){
 }
 
 export async function deleteWork(req, attend_id){
-  const { userId } = await getUserFromToken(req);
+  const user = await getUserFromToken(req);
 
   const attend = await prisma.attend.findUnique({
     where: { attend_id },
@@ -349,13 +334,18 @@ export async function deleteWork(req, attend_id){
           isClose:true
         },
       },
+      user: {
+        select: {
+          user_id:true
+        },
+      },
     },
   });
 
   if(!attend)
     throw new Error("작업물을 찾을 수 없습니다.");
 
-  if(attend.user_id !== userId)
+  if(attend.user_id !== user.userId && user.role !== "ADMIN");
     throw new Error("본인만 삭제할 수 있습니다.");
 
   if(attend.challenge?.isClose){

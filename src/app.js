@@ -15,7 +15,8 @@ import userRoutes from "./api/routes/user.routes.js"
 import challengeAdminRoute from './api/routes/challenge.admin.route.js';
 import challengeInquiryRoute from './api/routes/challenge.inquiry.route.js';
 import challengeCRUDRoute from './api/routes/challenge.crud.route.js'
-import challengeInquiryworkRoute from "./api/routes/challenge.inquiry.work.route.js"; 
+import challengeworkRoute from "./api/routes/challenge.work.route.js"; 
+import challengeFeedbackRoute from "./api/routes/challenge.feedback.route.js"
 
 // 공통 미들웨어 임포트
 import { errorHandler } from './common/error.js';
@@ -51,7 +52,8 @@ app.use('/api/challenge/admin', challengeAdminRoute)
 app.use('/api/challenge/inquiry', challengeInquiryRoute);
 app.use('/api/challenge', challengeCRUDRoute);
 
-app.use('/api/challenge/inquiry/work', challengeInquiryworkRoute);
+app.use('/api/challenge/work', challengeworkRoute);
+app.use('/api/challenge/feedback', challengeFeedbackRoute);
 app.use("/api/auth", authRoutes);
 app.use("/api/token", tokenRoutes);
 app.use("/api/admin", adminRoutes);
