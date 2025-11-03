@@ -42,7 +42,7 @@ const options = {
       },
     ],
   },
-  apis: [path.resolve(__dirname, "../api/routes/*.js")], // JSDoc 기반 문서 생성
+  apis: [path.resolve(__dirname, "../docs/*.js")], // JSDoc 기반 문서 생성
 };
 
 
