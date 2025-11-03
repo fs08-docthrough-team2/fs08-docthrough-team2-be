@@ -50,16 +50,46 @@ export const getSaveDetailController = asyncHandler(async (req, res) => {
 
 // 생성
 export const createWorkController = asyncHandler(async (req, res) => {
-  const { challenge_id, title, workItem } = req.body;
-  const data = await createWork(req, { challenge_id, title, workItem});
+  let { challengeId, title, workItem } = req.body;
+
+  if (!challengeId) {
+    res.status(400);
+    throw new Error("challenge_id는 필수입니다.");
+  }
+
+  if (!title) {
+    title = "";
+  }
+
+  if (!workItem) {
+    res.status(400);
+    throw new Error("workItem은 필수입니다.");
+  }
+
+  const data = await createWork(req, challengeId, title, workItem);
   res.json( { success: true, data });
 });
 
 
 // 임시 저장 생성
 export const createSaveWorkController = asyncHandler(async (req, res) => {
-  const { challenge_id, title, workItem } = req.body;
-  const data = await createSaveWork(req, { challenge_id, title, workItem});
+  let { challengeId, title, workItem } = req.body;
+
+  if (!challengeId) {
+    res.status(400);
+    throw new Error("challenge_id는 필수입니다.");
+  }
+
+  if (!title) {
+    title = "";
+  }
+
+  if (!workItem) {
+    res.status(400);
+    throw new Error("workItem은 필수입니다.");
+  }
+
+  const data = await createSaveWork(req, challengeId, title, workItem);
   res.json( { success: true, data });
 });
 
