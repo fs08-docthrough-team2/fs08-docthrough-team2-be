@@ -77,10 +77,7 @@ export async function login(email, password) {
     throw new Error('비밀번호가 올바르지 않습니다.');
 
   const accessToken = jwt.sign(
-    { 
-      userId: user.user_id, 
-      role: user.role 
-    },
+    { userId: user.user_id, role: user.role },
     process.env.JWT_SECRET,
     { expiresIn: process.env.JWT_EXPIRES_IN || "1d"},
   );
