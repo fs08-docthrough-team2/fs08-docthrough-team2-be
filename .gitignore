@@ -144,3 +144,6 @@ vite.config.ts.timestamp-*
 
 /src/generated/prisma
 /.claude/
+
+# HTTP Client private environment (contains tokens)
+http-client.private.env.json
