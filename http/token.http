@@ -1,0 +1,12 @@
+### POST Verify Access Token
+# Requires refreshToken in http-client.private.env.json
+POST {{baseUrl}}/api/token/verify
+Authorization: Bearer {{refreshToken}}
+
+### POST Refresh Token
+POST {{baseUrl}}/api/token/refresh
+content-type: application/json
+
+{
+  "refreshToken": "{{refreshToken}}"
+}
