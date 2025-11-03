@@ -1,13 +1,11 @@
 // 설명: API 라우트 정의하는 파일
 import express from 'express';
-import corsMiddleware from '../../common/cors.js';
 import errorMiddleware from '../../common/error.js';
 import authMiddleware from '../../common/auth.js';
 
 import challengeControllers from '../controllers/challenge.inquiry.controllers.js';
 
 const router = express.Router();
-router.use(corsMiddleware);
 
 /**
  * @swagger
@@ -205,7 +203,7 @@ router.use(corsMiddleware);
 router.get(
   '/challenge-list',
   authMiddleware.verifyAccessToken,
-  challengeControllers.getChallengeListInput
+  challengeControllers.getChallengeListInput,
 );
 
 /**
@@ -325,7 +323,7 @@ router.get(
 router.get(
   '/challenge-detail/:challengeId',
   authMiddleware.verifyAccessToken,
-  challengeControllers.getChallengeDetailInput
+  challengeControllers.getChallengeDetailInput,
 );
 
 /**
@@ -447,9 +445,10 @@ router.get(
  *       500:
  *         description: 서버 오류
  */
-router.get('/participate-list/:challengeId',
+router.get(
+  '/participate-list/:challengeId',
   authMiddleware.verifyAccessToken,
-  challengeControllers.getParticipateListInput
+  challengeControllers.getParticipateListInput,
 );
 
 /**
@@ -785,7 +784,7 @@ router.get(
 router.get(
   '/individual-complete-list',
   authMiddleware.verifyAccessToken,
-  challengeControllers.getUserCompleteListInput
+  challengeControllers.getUserCompleteListInput,
 );
 
 /**

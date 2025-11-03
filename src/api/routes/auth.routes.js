@@ -5,12 +5,9 @@ import {
   loginController,
   logoutController,
 } from '../controllers/auth.conotroller.js';
-import corsMiddleware from '../../common/cors.js';
 import * as errorMiddleware from '../../common/error.js';
 
 const router = express.Router();
-
-router.use(corsMiddleware);
 
 /**
  * @swagger
