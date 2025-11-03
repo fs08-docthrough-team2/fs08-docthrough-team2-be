@@ -1,6 +1,6 @@
-import express from "express";
-import { 
-  getWorkListController, 
+import express from 'express';
+import {
+  getWorkListController,
   getSaveListController,
   getWorkDetailController,
   getSaveDetailController,
@@ -8,8 +8,8 @@ import {
   createSaveWorkController,
   updateWorkController,
   deleteWorkController,
-  toggleLikeController
-} from "../controllers/challenge.work.controller.js";
+  toggleLikeController,
+} from '../controllers/challenge.work.controller.js';
 
 const router = express.Router();
 
@@ -48,7 +48,7 @@ const router = express.Router();
  *       200:
  *         description: 작업물 리스트 반환 성공
  */
-router.get("/translated-list", getWorkListController);
+router.get('/translated-list', getWorkListController);
 
 /**
  * @swagger
@@ -67,7 +67,7 @@ router.get("/translated-list", getWorkListController);
  *       200:
  *         description: 작업물 상세 조회 성공
  */
-router.get("/translated-detail/:attend_id", getWorkDetailController);
+router.get('/translated-detail/:attend_id', getWorkDetailController);
 
 /**
  * @swagger
@@ -91,7 +91,7 @@ router.get("/translated-detail/:attend_id", getWorkDetailController);
  *       200:
  *         description: 임시 저장 리스트 반환 성공
  */
-router.get("/translated-list/save", getSaveListController);
+router.get('/translated-list/save', getSaveListController);
 
 /**
  * @swagger
@@ -110,7 +110,7 @@ router.get("/translated-list/save", getSaveListController);
  *       200:
  *         description: 임시 저장 상세 조회 성공
  */
-router.get("/translated-detail/save/:attend_id", getSaveDetailController);
+router.get('/translated-detail/save/:attend_id', getSaveDetailController);
 
 /**
  * @swagger
@@ -137,7 +137,7 @@ router.get("/translated-detail/save/:attend_id", getSaveDetailController);
  *       201:
  *         description: 작업물 제출 성공
  */
-router.post("/translated-detail", createWorkController);
+router.post('/translated-detail', createWorkController);
 
 /**
  * @swagger
@@ -164,7 +164,7 @@ router.post("/translated-detail", createWorkController);
  *       200:
  *         description: 임시 저장 성공
  */
-router.post("/translated-detail/save", createSaveWorkController);
+router.post('/translated-detail/save', createSaveWorkController);
 
 /**
  * @swagger
@@ -195,7 +195,7 @@ router.post("/translated-detail/save", createSaveWorkController);
  *       200:
  *         description: 수정 성공
  */
-router.patch("/translated-detail/:attend_id", updateWorkController);
+router.patch('/translated-detail/:attend_id', updateWorkController);
 
 /**
  * @swagger
@@ -214,7 +214,7 @@ router.patch("/translated-detail/:attend_id", updateWorkController);
  *       200:
  *         description: 삭제 성공
  */
-router.delete("/translated-detail/:attend_id", deleteWorkController);
+router.delete('/translated-detail/:attend_id', deleteWorkController);
 
 /**
  * @swagger
@@ -233,6 +233,6 @@ router.delete("/translated-detail/:attend_id", deleteWorkController);
  *       200:
  *         description: 좋아요 상태 변경 성공
  */
-router.post("/translated-detail/like/:attend_id", toggleLikeController);
+router.post('/translated-detail/like/:attend_id', toggleLikeController);
 
 export default router;

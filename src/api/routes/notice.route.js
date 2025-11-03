@@ -1,13 +1,11 @@
 // 설명: API 라우트 정의하는 파일
 import express from 'express';
-import corsMiddleware from '../../common/cors.js';
 import errorMiddleware from '../../common/error.js';
 
 import noticeControllers from '../controllers/notice.controllers.js';
 import authMiddleware from '../../common/auth.js';
 
 const router = express.Router();
-router.use(corsMiddleware);
 
 /**
  * @swagger
@@ -47,7 +45,7 @@ router.use(corsMiddleware);
  *         content:
  *           type: string
  *           description: 알림 내용
- *           example: 챌린지가 생성되었습니다: 파이썬 초급
+ *           example: "챌린지가 생성되었습니다: 파이썬 초급"
  *         isRead:
  *           type: boolean
  *           description: 읽음 여부
