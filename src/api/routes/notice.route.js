@@ -33,21 +33,21 @@ router.use(corsMiddleware);
  *           type: string
  *           format: uuid
  *           description: 알림 ID
- *           example: a1b2c3d4-e5f6-47a8-b9c0-d1e2f3a4b5c6
+ *           example: 8f4832e8-d573-4576-9514-2b373e9a20ae
  *         user_id:
  *           type: string
  *           format: uuid
  *           description: 사용자 ID
- *           example: 45212078-c1c4-45c4-9b83-bac031f9169d
+ *           example: a2547373-5303-48e6-b452-c7bd9ff095fd
  *         type:
  *           type: string
  *           enum: [CHALLENGE, APPROVAL, FEEDBACK, DEADLINE, ATTEND]
  *           description: 알림 타입
- *           example: APPROVAL
+ *           example: CHALLENGE
  *         content:
  *           type: string
  *           description: 알림 내용
- *           example: 챌린지가 승인되었습니다. 챌린지 제목 리액트 hooks, 변경일 2025-11-03
+ *           example: 챌린지가 생성되었습니다: 파이썬 초급
  *         isRead:
  *           type: boolean
  *           description: 읽음 여부
@@ -56,12 +56,12 @@ router.use(corsMiddleware);
  *           type: string
  *           format: date-time
  *           description: 생성 일시
- *           example: 2025-11-03T12:34:56.789Z
+ *           example: 2025-10-28T06:08:15.157Z
  *         updated_at:
  *           type: string
  *           format: date-time
  *           description: 수정 일시
- *           example: 2025-11-03T12:34:56.789Z
+ *           example: 2025-10-28T06:08:15.157Z
  *
  *     Pagination:
  *       type: object
@@ -112,7 +112,7 @@ router.use(corsMiddleware);
  *           type: string
  *           format: uuid
  *         description: 알림 ID (UUID v4 형식)
- *         example: a1b2c3d4-e5f6-47a8-b9c0-d1e2f3a4b5c6
+ *         example: 8f4832e8-d573-4576-9514-2b373e9a20ae
  *     responses:
  *       200:
  *         description: 알림 읽음 처리 성공

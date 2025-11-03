@@ -1,10 +1,10 @@
-import express from "express";
+import express from 'express';
 
-import { 
+import {
   signupController,
   loginController,
   logoutController,
-} from "../controllers/auth.conotroller.js";
+} from '../controllers/auth.conotroller.js';
 import corsMiddleware from '../../common/cors.js';
 import * as errorMiddleware from '../../common/error.js';
 
@@ -35,20 +35,20 @@ router.use(corsMiddleware);
  *             properties:
  *               email:
  *                 type: string
- *                 example: "user@test.com"
+ *                 example: "newuser@example.com"
  *               password:
  *                 type: string
- *                 example: "password123"
+ *                 example: "pw1020"
  *               nickName:
  *                 type: string
- *                 example: "NewUser"
+ *                 example: "새유저21"
  *     responses:
  *       201:
  *         description: 회원가입 성공
  *       409:
  *         description: 중복된 이메일
  */
-router.post("/signup", signupController);
+router.post('/signup', signupController);
 
 /**
  * @swagger
@@ -66,18 +66,17 @@ router.post("/signup", signupController);
  *             properties:
  *               email:
  *                 type: string
- *                 example: "user@test.com"
+ *                 example: "admin@example.com"
  *               password:
  *                 type: string
- *                 example: "password123"
+ *                 example: "pw100000"
  *     responses:
  *       200:
  *         description: 로그인 성공 시 Access/Refresh 토큰 반환
  *       401:
  *         description: 인증 실패
  */
-router.post("/login", loginController);
-
+router.post('/login', loginController);
 
 /**
  * @swagger
@@ -92,7 +91,7 @@ router.post("/login", loginController);
  *       401:
  *         description: Refresh Token이 없거나 유효하지 않음
  */
-router.post("/logout", logoutController);
+router.post('/logout', logoutController);
 
 // 에러 핸들링 미들웨어 적용
 router.use(errorMiddleware.errorHandler);
