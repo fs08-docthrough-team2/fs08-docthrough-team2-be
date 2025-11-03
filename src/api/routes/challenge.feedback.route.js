@@ -5,10 +5,9 @@ import {
   createFeedbackController,
   updateFeedbackController,
   deleteFeedbackController,
-} from "../controllers/challenge.feedback.controller.js";
+} from '../controllers/challenge.feedback.controller.js';
 
 const router = express.Router();
-
 
 /**
  * @swagger
@@ -39,7 +38,7 @@ const router = express.Router();
  *       200:
  *         description: 피드백 목록 반환 성공
  */
-router.get("/translated-detail/feedback-list", getFeedbackListController);
+router.get('/translated-detail/feedback-list', getFeedbackListController);
 
 /**
  * @swagger
@@ -57,7 +56,7 @@ router.get("/translated-detail/feedback-list", getFeedbackListController);
  *       200:
  *         description: 피드백 상세 조회 성공
  */
-router.get("/translated-detail/feedback-detail", getFeedbackDetailController);
+router.get('/translated-detail/feedback-detail', getFeedbackDetailController);
 
 /**
  * @swagger
@@ -80,7 +79,7 @@ router.get("/translated-detail/feedback-detail", getFeedbackDetailController);
  *       201:
  *         description: 피드백 작성 성공
  */
-router.post("/translated-detail/feedback-detail", createFeedbackController);
+router.post('/translated-detail/feedback-detail', createFeedbackController);
 
 /**
  * @swagger
@@ -103,7 +102,7 @@ router.post("/translated-detail/feedback-detail", createFeedbackController);
  *       200:
  *         description: 수정 성공
  */
-router.patch("/translated-detail/feedback-detail", updateFeedbackController);
+router.patch('/translated-detail/feedback-detail', updateFeedbackController);
 
 /**
  * @swagger
@@ -121,6 +120,6 @@ router.patch("/translated-detail/feedback-detail", updateFeedbackController);
  *       200:
  *         description: 삭제 성공
  */
-router.delete("/translated-detail/feedback-detail", deleteFeedbackController);
+router.delete('/translated-detail/feedback-detail', deleteFeedbackController);
 
 export default router;

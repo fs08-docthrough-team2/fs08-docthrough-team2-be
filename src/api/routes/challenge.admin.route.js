@@ -1,13 +1,11 @@
 // routes/challenge.admin.routes.js
 import express from 'express';
-import corsMiddleware from '../../common/cors.js';
 import errorMiddleware from '../../common/error.js';
 import authMiddleware from '../../common/auth.js';
 
 import challengeAdminControllers from '../controllers/challenge.admin.controllers.js';
 
 const router = express.Router();
-router.use(corsMiddleware);
 
 /**
  * @swagger
@@ -331,7 +329,7 @@ router.get(
   '/inquiry/challenge-list',
   authMiddleware.verifyAccessToken,
   authMiddleware.verifyAdmin,
-  challengeAdminControllers.getChallengeListInput
+  challengeAdminControllers.getChallengeListInput,
 );
 
 /**
@@ -397,7 +395,7 @@ router.get(
   '/inquiry/challenge/:challengeId',
   authMiddleware.verifyAccessToken,
   authMiddleware.verifyAdmin,
-  challengeAdminControllers.getChallengeDetailInput
+  challengeAdminControllers.getChallengeDetailInput,
 );
 
 /**
@@ -476,7 +474,7 @@ router.patch(
   '/new-challenge/approve/:challengeId',
   authMiddleware.verifyAccessToken,
   authMiddleware.verifyAdmin,
-  challengeAdminControllers.approveChallengeInput
+  challengeAdminControllers.approveChallengeInput,
 );
 
 /**
@@ -568,7 +566,7 @@ router.patch(
   '/new-challenge/reject/:challengeId',
   authMiddleware.verifyAccessToken,
   authMiddleware.verifyAdmin,
-  challengeAdminControllers.rejectChallengeInput
+  challengeAdminControllers.rejectChallengeInput,
 );
 
 // 에러 핸들링 미들웨어 적용
