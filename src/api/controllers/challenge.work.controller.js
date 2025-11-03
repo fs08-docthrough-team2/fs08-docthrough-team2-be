@@ -10,7 +10,7 @@ import {
   deleteWork,
   toggleLike,
 }
-from "../services/challenge.inquiry.work.service.js";
+from "../services/challenge.work.services.js";
 
 // 작업물 리스트 조회
 export const getWorkListController = asyncHandler(async (req, res) =>{
