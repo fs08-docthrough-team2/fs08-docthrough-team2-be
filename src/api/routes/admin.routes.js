@@ -1,11 +1,10 @@
-import express from "express";
-import auth from "../../common/auth.js";
+import express from 'express';
+import auth from '../../common/auth.js';
 import {
   getAllUsersController,
   getUserByEmailController,
   updateUserRoleByEmailController,
-}
-from "../controllers/admin.controller.js";
+} from '../controllers/admin.controller.js';
 
 const router = express.Router();
 
@@ -42,12 +41,12 @@ router.use(verifyAccessToken, verifyAdmin);
  *         name: search
  *         schema:
  *           type: string
- *           example: test
+ *           example: 유저
  *     responses:
  *       200:
  *         description: 사용자 목록 반환
  */
-router.get("/users", getAllUsersController);
+router.get('/users', getAllUsersController);
 
 /**
  * @swagger
@@ -64,12 +63,12 @@ router.get("/users", getAllUsersController);
  *         required: true
  *         schema:
  *           type: string
- *           example: user@test.com
+ *           example: user2@example.com
  *     responses:
  *       200:
  *         description: 사용자 정보 반환
  */
-router.get("/users/:email", getUserByEmailController);
+router.get('/users/:email', getUserByEmailController);
 
 /**
  * @swagger
@@ -86,7 +85,7 @@ router.get("/users/:email", getUserByEmailController);
  *         required: true
  *         schema:
  *           type: string
- *           example: user@test.com
+ *           example: user3@example.com
  *     requestBody:
  *       required: true
  *       content:
@@ -104,6 +103,6 @@ router.get("/users/:email", getUserByEmailController);
  *       400:
  *         description: 잘못된 역할 값
  */
-router.patch("/users/:email/role", updateUserRoleByEmailController);
+router.patch('/users/:email/role', updateUserRoleByEmailController);
 
 export default router;

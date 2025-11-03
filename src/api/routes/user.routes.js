@@ -1,6 +1,6 @@
-import express from "express";
-import auth from "../../common/auth.js"
-import { getMyInfoController } from "../controllers/user.controller.js";
+import express from 'express';
+import auth from '../../common/auth.js';
+import { getMyInfoController } from '../controllers/user.controller.js';
 
 const router = express.Router();
 
@@ -28,13 +28,13 @@ const router = express.Router();
  *               properties:
  *                 nickName:
  *                   type: string
- *                   example: "테스터"
+ *                   example: "유저2"
  *                 role:
  *                   type: string
  *                   example: "USER"
  *       401:
  *         description: 인증 실패
  */
-router.get("/my", auth.verifyAccessToken, getMyInfoController);
+router.get('/my', auth.verifyAccessToken, getMyInfoController);
 
 export default router;
