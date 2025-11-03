@@ -48,34 +48,34 @@ router.use(corsMiddleware);
  *               title:
  *                 type: string
  *                 description: 챌린지 제목
- *                 example: "파이썬 중급"
+ *                 example: "타입스크립트 고급"
  *               source:
  *                 type: string
  *                 description: 챌린지 참고 자료 URL
- *                 example: "https://docs.python.org/3/tutorial/index.html"
+ *                 example: "https://www.typescriptlang.org/docs/"
  *               field:
  *                 type: string
  *                 enum: [NEXT, MODERN, API, WEB, CAREER]
  *                 description: 챌린지 분야
- *                 example: "API"
+ *                 example: "WEB"
  *               type:
  *                 type: string
  *                 enum: [OFFICIAL, BLOG]
  *                 description: 챌린지 유형
- *                 example: "OFFICIAL"
+ *                 example: "BLOG"
  *               deadline:
  *                 type: string
  *                 format: date-time
  *                 description: 챌린지 마감일 (ISO 8601 형식)
- *                 example: "2025-06-05T23:59:59+09:00"
+ *                 example: "2025-12-31T23:59:59+09:00"
  *               capacity:
  *                 type: string
  *                 description: 챌린지 인원 (2명 이상)
- *                 example: "2"
+ *                 example: "15"
  *               content:
  *                 type: string
  *                 description: 챌린지 내용 설명
- *                 example: "파이썬은 고급 범용 프로그래밍 언어입니다."
+ *                 example: "타입스크립트의 고급 기능을 학습합니다."
  *     responses:
  *       201:
  *         description: 챌린지 생성 성공
@@ -186,7 +186,7 @@ router.use(corsMiddleware);
 router.post(
   '/create',
   authMiddleware.verifyAccessToken,
-  challengeCRUDControllers.createChallengeInput
+  challengeCRUDControllers.createChallengeInput,
 );
 
 /**
@@ -207,7 +207,7 @@ router.post(
  *           type: string
  *           format: uuid
  *         description: 수정할 챌린지의 ID
- *         example: "59715b34-70a1-4f64-9a88-7d46f8258f5b"
+ *         example: "0685b51d-953f-4943-bef7-8eebba911e8e"
  *     requestBody:
  *       required: true
  *       content:
@@ -340,7 +340,7 @@ router.post(
 router.patch(
   '/update/:challengeId',
   authMiddleware.verifyAccessToken,
-  challengeCRUDControllers.updateChallengeInput
+  challengeCRUDControllers.updateChallengeInput,
 );
 
 /**
@@ -467,7 +467,7 @@ router.patch(
 router.patch(
   '/cancel/:challengeId',
   authMiddleware.verifyAccessToken,
-  challengeCRUDControllers.cancelChallengeInput
+  challengeCRUDControllers.cancelChallengeInput,
 );
 
 /**
@@ -594,7 +594,7 @@ router.patch(
 router.patch(
   '/delete/:challengeId',
   authMiddleware.verifyAccessToken,
-  challengeCRUDControllers.deleteChallengeInput
+  challengeCRUDControllers.deleteChallengeInput,
 );
 
 /**
@@ -729,10 +729,10 @@ router.patch(
  *         description: 서버 오류
  */
 router.delete(
-  "/hard-delete/:challengeId",
+  '/hard-delete/:challengeId',
   authMiddleware.verifyAccessToken,
   authMiddleware.verifyAdmin,
-  challengeCRUDControllers.hardDeleteChallengeInput
+  challengeCRUDControllers.hardDeleteChallengeInput,
 );
 
 // 에러 핸들링 미들웨어 적용
