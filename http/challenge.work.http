@@ -1,43 +1,43 @@
 ### GET Work List
-GET {{baseUrl}}/api/challenge/translated-list
+GET {{baseUrl}}/api/challenge/work/translated-list
 
 ### GET Work Detail
-GET {{baseUrl}}/api/challenge/translated-detail/1
+GET {{baseUrl}}/api/challenge/work/translated-detail/dda81aff-0289-4d6d-996b-b1c9863e86a3
 
 ### GET Save List
-GET {{baseUrl}}/api/challenge/translated-list/save
+GET {{baseUrl}}/api/challenge/work/translated-list/save
 
 ### GET Save Detail
-GET {{baseUrl}}/api/challenge/translated-detail/save/1
+GET {{baseUrl}}/api/challenge/work/translated-detail/save/1
 
 ### POST Create Work
-POST {{baseUrl}}/api/challenge/translated-detail
+POST {{baseUrl}}/api/challenge/work/translated-detail
 content-type: application/json
 
 {
-  "challengeId": 1,
-  "translation": "번역 내용"
+  "challengeId": "0685b51d-953f-4943-bef7-8eebba911e8e",
+  "workItem": "번역 내용"
 }
 
 ### POST Create Save Work
-POST {{baseUrl}}/api/challenge/translated-detail/save
+POST {{baseUrl}}/api/challenge/work/translated-detail/save
 content-type: application/json
 
 {
-  "challengeId": 1,
-  "translation": "임시 저장 내용"
+  "challengeId": "0685b51d-953f-4943-bef7-8eebba911e8e",
+  "workItem": "임시 저장 내용"
 }
 
 ### PATCH Update Work
-PATCH {{baseUrl}}/api/challenge/translated-detail/1
+PATCH {{baseUrl}}/api/challenge/work/translated-detail/
 content-type: application/json
 
 {
-  "translation": "수정된 번역 내용"
+  "workItem": "수정된 번역 내용"
 }
 
 ### DELETE Work
-DELETE {{baseUrl}}/api/challenge/translated-detail/1
+DELETE {{baseUrl}}/api/challenge/work/translated-detail/1
 
 ### POST Toggle Like
-POST {{baseUrl}}/api/challenge/translated-detail/like/1
+POST {{baseUrl}}/api/challenge/work/translated-detail/like/1
