@@ -8,4 +8,12 @@ content-type: application/json
   "password": "admin2"
 }
 
-###
+### GET request to example server
+
+POST http://localhost:3000/api/auth/login
+content-type: application/json
+
+{
+  "email": "user2@example.com",
+  "password": "pw1001"
+}

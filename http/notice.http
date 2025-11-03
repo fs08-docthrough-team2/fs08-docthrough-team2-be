@@ -1,0 +1,13 @@
+### 알림 읽음 상태 업데이트 API
+
+POST http://localhost:3000/api/notice/add-mark-read/2f05e5f2-aeb9-4eec-9844-64275a79a4fd
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxNDBjNzcyYy1lYzc2LTRmMzQtYjBiOC05ODkyYjY0MDgzMmEiLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc2MTg4OTEzMywiZXhwIjoxNzYxOTc1NTMzfQ.gRhptilD8Kd-H6XyZeLCzoaS0Y2I7A6ctJD_etwKy2o
+Content-Type: application/json
+
+{}
+
+
+### 알림 목록 조회 API
+
+GET http://localhost:3000/api/notice/get-list?page=1&pageSize=10
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxNDBjNzcyYy1lYzc2LTRmMzQtYjBiOC05ODkyYjY0MDgzMmEiLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc2MTg4OTEzMywiZXhwIjoxNzYxOTc1NTMzfQ.gRhptilD8Kd-H6XyZeLCzoaS0Y2I7A6ctJD_etwKy2o

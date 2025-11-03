@@ -15,7 +15,10 @@ import userRoutes from "./api/routes/user.routes.js"
 import challengeAdminRoute from './api/routes/challenge.admin.route.js';
 import challengeInquiryRoute from './api/routes/challenge.inquiry.route.js';
 import challengeCRUDRoute from './api/routes/challenge.crud.route.js'
+
+import noticeRoute from './api/routes/notice.route.js';
 import challengeworkRoute from "./api/routes/challenge.work.route.js"; 
+
 import challengeFeedbackRoute from "./api/routes/challenge.feedback.route.js"
 
 // 공통 미들웨어 임포트
@@ -51,6 +54,7 @@ app.get('/', (req, res) => {
 app.use('/api/challenge/admin', challengeAdminRoute)
 app.use('/api/challenge/inquiry', challengeInquiryRoute);
 app.use('/api/challenge', challengeCRUDRoute);
+app.use('/api/notice', noticeRoute);
 
 app.use('/api/challenge/work', challengeworkRoute);
 app.use('/api/challenge/feedback', challengeFeedbackRoute);
@@ -58,6 +62,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/token", tokenRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/user", userRoutes);
+
 // Swagger 문서
 swaggerDocs(app);
 
