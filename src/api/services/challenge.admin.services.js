@@ -1,4 +1,5 @@
 import prisma from '../../common/prisma.js';
+import noticeService from './notice.services.js';
 
 async function getChallengeList(searchKeyword, status, page, pageSize, sort) {
   try {
@@ -104,8 +105,8 @@ async function getChallengeList(searchKeyword, status, page, pageSize, sort) {
   }
 }
 
-async function getChallengeDetail(challengeId){
-  try{
+async function getChallengeDetail(challengeId) {
+  try {
     // 챌린지 상세 내용 조회
     const challengeDetail = await prisma.challenge.findUnique({
       where: { challenge_id: challengeId },
@@ -123,63 +124,78 @@ async function getChallengeDetail(challengeId){
         deadline: challengeDetail.deadline,
         capacity: challengeDetail.capacity,
         source: challengeDetail.source,
-      }
+      },
     };
   } catch (error) {
     throw error;
   }
 }
 
-async function approveChallenge(challengeId, userID){
+async function approveChallenge(challengeId) {
   try {
     // 챌린지 승인 상태 변경
     const approvedChallenge = await prisma.challenge.update({
       where: { challenge_id: challengeId },
-      data: { isApprove: true, isReject: false, reject_content: null, }
+      data: { isApprove: true, isReject: false, reject_content: null, status: 'APPROVED' },
     });
 
-    // TODO: 승인 알림 함수 호출 (userID 이용)
+    // 승인 알림 전송
+    await noticeService.addChallengeStateNotice(
+      '승인',
+      approvedChallenge.user_id,
+      approvedChallenge.title,
+    );
 
     // 결과를 반환
     return {
       success: true,
-      message: "챌린지가 승인되었습니다.",
+      message: '챌린지가 승인되었습니다.',
       data: {
         approvedChallenge: approvedChallenge,
-      }
+      },
     };
   } catch (error) {
     throw error;
   }
 }
 
-async function rejectChallenge(challengeId, reject_comment, userID){
+async function rejectChallenge(challengeId, reject_comment) {
   try {
     // 챌린지 거절 상태 변경
     const rejectedChallenge = await prisma.challenge.update({
       where: { challenge_id: challengeId },
-      data: { isReject: true, isApprove: false, reject_content: reject_comment, }
+      data: {
+        isReject: true,
+        isApprove: false,
+        reject_content: reject_comment,
+        status: 'REJECTED',
+      },
     });
 
-    // TODO: 거절 알림 함수 호출 (userID 이용)
+    // 거절 알림 전송 (사유 포함)
+    await noticeService.addAdminChallengeUpdateNotice(
+      '거절',
+      rejectedChallenge.user_id,
+      rejectedChallenge.title,
+      reject_comment,
+    );
 
     // 결과를 반환
     return {
       success: true,
-      message: "챌린지가 거절되었습니다.",
+      message: '챌린지가 거절되었습니다.',
       data: {
         rejectedChallenge: rejectedChallenge,
-      }
+      },
     };
   } catch (error) {
     throw error;
   }
-
 }
 
 export default {
   getChallengeList,
   getChallengeDetail,
   approveChallenge,
-  rejectChallenge
+  rejectChallenge,
 };
