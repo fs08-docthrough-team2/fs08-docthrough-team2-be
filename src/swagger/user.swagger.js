@@ -29,3 +29,41 @@
  *       401:
  *         description: 인증 실패
  */
+
+/**
+ * @swagger
+ * /api/user/my:
+ *   patch:
+ *     summary: 내 정보 수정
+ *     description: 로그인한 유저가 닉네임 또는 비밀번호를 수정합니다.
+ *     tags: [User]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               nickName:
+ *                 type: string
+ *                 example: "새닉네임"
+ *               password:
+ *                 type: string
+ *                 example: "newPassword123!"
+ *     responses:
+ *       200:
+ *         description: 수정 완료
+ *       400:
+ *         description: 잘못된 요청
+ *       401:
+ *         description: 인증 실패
+ *   delete:
+ *     summary: 회원 탈퇴 (논리적 삭제)
+ *     description: 로그인한 유저의 계정을 논리적으로 삭제합니다.
+ *     tags: [User]
+ *     responses:
+ *       200:
+ *         description: 탈퇴 완료
+ *       401:
+ *         description: 인증 실패
+ */

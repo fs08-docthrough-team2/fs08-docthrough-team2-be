@@ -23,6 +23,7 @@ import challengeFeedbackRoute from "./api/routes/challenge.feedback.route.js"
 
 // 공통 미들웨어 임포트
 import { errorHandler } from './middleware/error.middleware.js';
+import swaggerUi from "swagger-ui-express";
 import { swaggerDocs } from './config/swagger.config.js';
 import cors from './config/cors.config.js';
 import prisma from './config/prisma.config.js';
