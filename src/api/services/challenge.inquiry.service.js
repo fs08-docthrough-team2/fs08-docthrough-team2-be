@@ -197,12 +197,6 @@ async function getUserParticipateList(userID, title, field, type, status, page, 
     const whereCondition = {
       isDelete: false,
       deadline: { gt: new Date() },
-      attends: {
-        some: {
-          user_id: userID,  // ✅ 사용자가 참여한 챌린지
-          isSave: false,    // 임시저장이 아닌 실제 참여
-        }
-      }
     };
     if (field) {
       whereCondition.field = field;
@@ -274,12 +268,6 @@ async function getUserCompleteList(userID, title, field, type, status, page, pag
     const whereCondition = {
       isDelete: false,
       deadline: { lt: new Date() },
-      attends: {
-        some: {
-          user_id: userID,
-          isSave: false,
-        }
-      }
     };
     if (field) {
       whereCondition.field = field;
