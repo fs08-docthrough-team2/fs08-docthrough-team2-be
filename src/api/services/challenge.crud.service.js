@@ -1,4 +1,4 @@
-import prisma from '../../common/prisma.js';
+import prisma from '../../config/prisma.config.js';
 import noticeService from '../../api/services/notice.service.js';
 
 async function createChallenge(title, source, field, type, deadline, capacity, content, userID) {

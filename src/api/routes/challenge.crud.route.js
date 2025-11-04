@@ -1,7 +1,7 @@
 // 설명: API 라우트 정의하는 파일
 import express from 'express';
-import errorMiddleware from '../../common/error.js';
-import authMiddleware from '../../common/auth.js';
+import errorMiddleware from '../../middleware/error.middleware.js';
+import authMiddleware from '../../middleware/auth.middleware.js';
 
 import challengeCRUDControllers from '../controllers/challenge.crud.controllers.js';
 

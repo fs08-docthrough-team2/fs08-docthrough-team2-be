@@ -5,7 +5,7 @@ import {
   loginController,
   logoutController,
 } from '../controllers/auth.controller.js';
-import * as errorMiddleware from '../../common/error.js';
+import * as errorMiddleware from '../../middleware/error.middleware.js';
 
 const router = express.Router();
 
