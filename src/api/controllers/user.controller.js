@@ -1,4 +1,4 @@
-import { asyncHandler } from "../../common/error.js";
+import { asyncHandler } from "../../middleware/error.middleware.js";
 import { getUserProfileFromToken } from "../services/user.service.js";
 
 export const getMyInfoController = asyncHandler(async(req, res) => {

@@ -1,4 +1,4 @@
-import prisma from '../src/common/prisma.js';
+import prisma from '../src/config/prisma.config.js';
 
 async function resetDatabase() {
   try {

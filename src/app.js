@@ -7,10 +7,10 @@ import express from 'express';
 import morgan from 'morgan';
 
 // 라우트 임포트
-import authRoutes  from "./api/routes/auth.routes.js" 
-import tokenRoutes from "./api/routes/token.routes.js"
-import adminRoutes from "./api/routes/admin.routes.js"
-import userRoutes from "./api/routes/user.routes.js"
+import authRoutes  from "./api/routes/auth.route.js"
+import tokenRoutes from "./api/routes/token.route.js"
+import adminRoutes from "./api/routes/admin.route.js"
+import userRoutes from "./api/routes/user.route.js"
 
 import challengeAdminRoute from './api/routes/challenge.admin.route.js';
 import challengeInquiryRoute from './api/routes/challenge.inquiry.route.js';
@@ -22,10 +22,10 @@ import challengeworkRoute from "./api/routes/challenge.work.route.js";
 import challengeFeedbackRoute from "./api/routes/challenge.feedback.route.js"
 
 // 공통 미들웨어 임포트
-import { errorHandler } from './common/error.js';
-import { swaggerDocs } from './common/swagger.js';
-import cors from './common/cors.js';
-import prisma from './common/prisma.js';
+import { errorHandler } from './middleware/error.middleware.js';
+import { swaggerDocs } from './config/swagger.config.js';
+import cors from './config/cors.config.js';
+import prisma from './config/prisma.config.js';
 
 // 환경 변수 설정
 const __dirname = path.dirname(fileURLToPath(import.meta.url));

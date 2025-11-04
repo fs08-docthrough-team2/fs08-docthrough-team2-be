@@ -1,4 +1,4 @@
-import prisma from "../../common/prisma.js";
+import prisma from "../../config/prisma.config.js";
 import { getUserFromToken } from "./user.service.js";
 
 // 전체 리스트 조회

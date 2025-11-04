@@ -1,5 +1,5 @@
 import express from 'express';
-import auth from '../../common/auth.js';
+import auth from '../../middleware/auth.middleware.js';
 import {
   getAllUsersController,
   getUserByEmailController,

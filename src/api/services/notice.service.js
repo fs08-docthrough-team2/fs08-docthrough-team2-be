@@ -1,5 +1,5 @@
 // 챌린지에 변경 사항이 수정되거나 삭제되었을 때 전송되는 알림
-import prisma from '../../common/prisma.js';
+import prisma from '../../config/prisma.config.js';
 
 // 알림 타입을 지정하는 상수 선언
 const TYPE_CHALLENGE = 'CHALLENGE';

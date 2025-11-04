@@ -1,4 +1,4 @@
-import prisma from "../../common/prisma.js"
+import prisma from "../../config/prisma.config.js"
 
 
 // id로 찾기

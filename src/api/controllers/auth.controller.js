@@ -1,6 +1,6 @@
-import { asyncHandler } from "../../common/error.js";
+import { asyncHandler } from "../../middleware/error.middleware.js";
 import { signup, login, logout } from "../services/auth.service.js";
-import { cookiesOption } from "../../common/auth.js";
+import { cookiesOption } from "../../middleware/auth.middleware.js";
 
 export const signupController = asyncHandler(async (req, res) => {
   const { email, password, nickName } = req.body;
