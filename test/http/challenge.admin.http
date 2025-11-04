@@ -1,0 +1,24 @@
+### Admin 챌린지 조회 API
+# Requires accessToken in http-client.private.env.json
+GET {{baseUrl}}/api/challenge/admin/inquiry/challenge-list?page=1&pageSize=10
+Authorization: Bearer {{accessToken}}
+
+### Admin 챌린지 상세 조회 API
+GET {{baseUrl}}/api/challenge/admin/inquiry/challenge/0685b51d-953f-4943-bef7-8eebba911e8e
+Authorization: Bearer {{accessToken}}
+
+### 챌린지 승인 API
+PATCH {{baseUrl}}/api/challenge/admin/new-challenge/approve/070d2ea6-3a6e-483d-8736-bfd5e7d89bf1
+Authorization: Bearer {{accessToken}}
+content-type: application/json
+
+{}
+
+### 챌린지 거절 API
+PATCH {{baseUrl}}/api/challenge/admin/new-challenge/reject/070d2ea6-3a6e-483d-8736-bfd5e7d89bf1
+Authorization: Bearer {{accessToken}}
+content-type: application/json
+
+{
+  "reject_comment": "챌린지 내용이 부적절합니다."
+}

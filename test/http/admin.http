@@ -1,0 +1,17 @@
+### GET All Users (Admin only)
+# Requires accessToken in http-client.private.env.json
+GET {{baseUrl}}/api/admin/users
+Authorization: Bearer {{accessToken}}
+
+### GET User By Email (Admin only)
+GET {{baseUrl}}/api/admin/users/user2@example.com
+Authorization: Bearer {{accessToken}}
+
+### PATCH Update User Role By Email (Admin only)
+PATCH {{baseUrl}}/api/admin/users/user2@example.com/role
+Authorization: Bearer {{accessToken}}
+content-type: application/json
+
+{
+  "role": "admin"
+}

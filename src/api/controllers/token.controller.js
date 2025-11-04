@@ -1,9 +1,9 @@
-import { asyncHandler } from "../../common/error.js";
+import { asyncHandler } from "../../middleware/error.middleware.js";
 import {
   verifyAccessToken,
   refreshAccessToken
 } from "../services/token.service.js";
-import { cookiesOption } from "../../common/auth.js";
+import { cookiesOption } from "../../middleware/auth.middleware.js";
 
 export const verifyAccessTokenController = asyncHandler(async (req, res) => {
   const refreshToken = req.cookies?.refreshToken; 

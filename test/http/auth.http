@@ -1,0 +1,31 @@
+### POST Signup
+POST {{baseUrl}}/api/auth/signup
+content-type: application/json
+
+{
+  "email": "newuser@example.com",
+  "password": "password123",
+  "name": "New User"
+}
+
+### POST Login (Admin)
+POST {{baseUrl}}/api/auth/login
+content-type: application/json
+
+{
+  "email": "admin@example.com",
+  "password": "pw1000"
+}
+
+### POST Login (User)
+POST {{baseUrl}}/api/auth/login
+content-type: application/json
+
+{
+  "email": "user2@example.com",
+  "password": "pw1001"
+}
+
+### POST Logout
+POST {{baseUrl}}/api/auth/logout
+Authorization: Bearer {{accessToken}}

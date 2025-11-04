@@ -1,5 +1,5 @@
 import { Prisma } from "@prisma/client";
-import prisma from "../../common/prisma.js"
+import prisma from "../../config/prisma.config.js"
 
 export async function findAllUsers({ page, limit, search }) {
   const skip = (page - 1) * limit;

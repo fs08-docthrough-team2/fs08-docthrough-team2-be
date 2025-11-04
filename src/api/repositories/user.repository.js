@@ -1,4 +1,4 @@
-import prisma from "../../common/prisma.js";
+import prisma from "../../config/prisma.config.js";
 
 export async function findUserProfileByToken(user_id){
   return prisma.user.findUnique({
