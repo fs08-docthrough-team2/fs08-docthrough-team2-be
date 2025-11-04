@@ -2,7 +2,7 @@
 import express from 'express';
 import errorMiddleware from '../../middleware/error.middleware.js';
 
-import noticeControllers from '../controllers/notice.controllers.js';
+import noticeControllers from '../controllers/notice.controller.js';
 import authMiddleware from '../../middleware/auth.middleware.js';
 
 const router = express.Router();

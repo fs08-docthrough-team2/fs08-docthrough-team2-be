@@ -1,4 +1,3 @@
-import { Prisma } from "@prisma/client";
 import prisma from "../../config/prisma.config.js"
 
 export async function findAllUsers({ page, limit, search }) {
