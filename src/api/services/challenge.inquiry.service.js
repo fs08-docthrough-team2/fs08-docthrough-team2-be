@@ -196,7 +196,7 @@ async function getUserParticipateList(userID, title, field, type, status, page, 
     // Where 조건 설정 - 사용자가 참여한 챌린지 찾기
     const whereCondition = {
       isDelete: false,
-      deadline: { lt: new Date() },
+      deadline: { gt: new Date() },
     };
     if (field) {
       whereCondition.field = field;
@@ -276,7 +276,7 @@ async function getUserCompleteList(userID, title, field, type, status, page, pag
     // where 조건 설정 - 사용자가 참여한 완료된 챌린지
     const whereCondition = {
       isDelete: false,
-      deadline: { gt: new Date() },
+      deadline: { lte: new Date() },
     };
     if (field) {
       whereCondition.field = field;
