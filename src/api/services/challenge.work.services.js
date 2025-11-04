@@ -2,6 +2,7 @@ import prisma from "../../common/prisma.js";
 import dotenv from "dotenv"
 
 import { getUserFromToken } from "./user.service.js";
+import noticeServices from './notice.services.js';
 
 
 
@@ -208,11 +209,11 @@ export async function getSaveDetail(req, attend_id){
 }
 
 // 생성
-export async function createWork(req, { challenge_id, title, workItem }){
+export async function createWork(req, challenge_id, title, workItem){
   const { userId } = await getUserFromToken(req);
 
   const challenge = await prisma.challenge.findUnique({
-    where: { challenge_id },
+    where: { challenge_id: challenge_id },
     select: {
       isClose: true
     },
@@ -240,11 +241,18 @@ export async function createWork(req, { challenge_id, title, workItem }){
     data:{
       challenge_id,
       user_id: userId,
-      title,
       work_item: workItem,
       isSave: false,
     },
   });
+
+  // 작업물 제출 알림 추가
+  const challengeTitle = await prisma.challenge.findUnique({
+    where: { challenge_id },
+    select: { title: true },
+  });
+  await noticeServices.addWorkSubmitNotice(userId, challengeTitle.title);
+
   return {
     message: "작업물 제출",
     attendId: attend.attend_id
@@ -252,9 +260,9 @@ export async function createWork(req, { challenge_id, title, workItem }){
 }
 
 // 임시 저장 생성
-export async function createSaveWork(req, { challenge_id, title, workItem}){
+export async function createSaveWork(req, challenge_id, title, workItem){
   const { userId } = await getUserFromToken(req);
-  
+
   const challenge = await prisma.challenge.findUnique({
     where:{
       challenge_id
@@ -272,11 +280,17 @@ export async function createSaveWork(req, { challenge_id, title, workItem}){
     data:{
       challenge_id,
       user_id: userId,
-      title,
       work_item: workItem,
       isSave: true,
     },
   });
+
+  const challengeTitle = await prisma.challenge.findUnique({
+    where: { challenge_id },
+    select: { title: true },
+  });
+  await noticeServices.addModifyNotice("작업물", "임시 저장", userId, challengeTitle.title);
+
   return{
     message: "임시 저장 완료",
     attendId: attend.attend_id
@@ -321,6 +335,15 @@ export async function updateWork(req, attend_id, { title, workItem }){
       updated_at: new Date()
     },
   });
+
+  // 작업물 업데이트 알림 추가
+  const challenge_id = attend.challenge_id;
+  const challengeTitle = await prisma.challenge.findUnique({
+    where: { challenge_id },
+    select: { title: true },
+  });
+  const userId = attend.user.user_id;
+  await noticeServices.addModifyNotice("작업물", "업데이트", userId, challengeTitle);
 }
 
 export async function deleteWork(req, attend_id){
@@ -331,7 +354,8 @@ export async function deleteWork(req, attend_id){
     include: { 
       challenge: {
         select: {
-          isClose:true
+          isClose:true,
+          challenge_id: true
         },
       },
       user: {
@@ -353,6 +377,17 @@ export async function deleteWork(req, attend_id){
   }
 
   await prisma.attend.delete({ where: { attend_id }});
+
+  // 작업물 삭제 알림 추가
+  const challenge_id = attend.challenge_id;
+  const challengeTitle = await prisma.challenge.findUnique({
+    where: { challenge_id },
+    select: { title: true },
+  });
+  const userId = attend.user.user_id;
+  await noticeServices.addModifyNotice("작업물", "삭제", userId, challengeTitle);
+
+  // 삭제 완료 메시지 반환
   return { message: "삭제 완료 "};
 }
 
