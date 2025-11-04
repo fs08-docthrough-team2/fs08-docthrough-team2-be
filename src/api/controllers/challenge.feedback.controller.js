@@ -5,7 +5,7 @@ import {
   createFeedback,
   updateFeedback,
   deleteFeedback 
-} from "../services/challenge.feedback.serices.js"
+} from "../services/challenge.feedback.service.js"
 
 
 // 전체 리스트 컨트롤러
