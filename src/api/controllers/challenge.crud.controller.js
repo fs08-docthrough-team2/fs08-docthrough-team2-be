@@ -1,5 +1,5 @@
 // 설명: 요청 파싱(params/query/body) + 입력 검증 결과 처리하는 파일입니다.
-import challengeCRUDServices from '../services/challenge.crud.services.js';
+import challengeCRUDServices from '../services/challenge.crud.service.js';
 import isUUID from 'is-uuid';
 
 async function createChallengeInput(req, res) {

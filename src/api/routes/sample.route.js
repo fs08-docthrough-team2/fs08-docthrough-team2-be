@@ -2,7 +2,7 @@
 import express from 'express';
 import errorMiddleware from '../../common/error.js';
 
-import sampleControllers from '../controllers/sample.controllers.js';
+import sampleControllers from '../controllers/sample.controller.js';
 
 const router = express.Router();
 

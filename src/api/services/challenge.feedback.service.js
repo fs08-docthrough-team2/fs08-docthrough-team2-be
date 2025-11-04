@@ -1,4 +1,3 @@
-import { tr } from "date-fns/locale";
 import prisma from "../../common/prisma.js";
 import { getUserFromToken } from "./user.service.js";
 

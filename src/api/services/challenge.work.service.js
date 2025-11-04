@@ -1,8 +1,7 @@
 import prisma from "../../common/prisma.js";
-import dotenv from "dotenv"
 
 import { getUserFromToken } from "./user.service.js";
-import noticeServices from './notice.services.js';
+import noticeServices from './notice.service.js';
 
 
 

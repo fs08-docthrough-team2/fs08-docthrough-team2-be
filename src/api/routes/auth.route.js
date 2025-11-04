@@ -4,7 +4,7 @@ import {
   signupController,
   loginController,
   logoutController,
-} from '../controllers/auth.conotroller.js';
+} from '../controllers/auth.controller.js';
 import * as errorMiddleware from '../../common/error.js';
 
 const router = express.Router();
