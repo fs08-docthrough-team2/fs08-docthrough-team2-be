@@ -207,6 +207,9 @@ async function getUserParticipateList(userID, title, field, type, status, page, 
     if (status) {
       whereCondition.status = status;
     }
+    if (userID) {
+      whereCondition.user_id = userID;
+    }
 
     // 챌린지 목록 조회
     const participates = await prisma.challenge.findMany({
@@ -277,6 +280,9 @@ async function getUserCompleteList(userID, title, field, type, status, page, pag
     }
     if (status) {
       whereCondition.status = status;
+    }
+    if (userID) {
+      whereCondition.user_id = userID;
     }
 
     // 챌린지 목록 조회
