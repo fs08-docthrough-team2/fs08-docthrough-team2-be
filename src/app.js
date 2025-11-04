@@ -17,16 +17,15 @@ import challengeInquiryRoute from './api/routes/challenge.inquiry.route.js';
 import challengeCRUDRoute from './api/routes/challenge.crud.route.js'
 
 import noticeRoute from './api/routes/notice.route.js';
-import challengeworkRoute from "./api/routes/challenge.work.route.js"; 
-
+import challengeworkRoute from "./api/routes/challenge.work.route.js";
 import challengeFeedbackRoute from "./api/routes/challenge.feedback.route.js"
 
 // 공통 미들웨어 임포트
 import { errorHandler } from './middleware/error.middleware.js';
-import swaggerUi from "swagger-ui-express";
 import { swaggerDocs } from './config/swagger.config.js';
 import cors from './config/cors.config.js';
 import prisma from './config/prisma.config.js';
+import { startScheduler } from './config/cron.config.js';
 
 // 환경 변수 설정
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -79,6 +78,9 @@ app.listen(PORT, async () => {
     // 데이터베이스 연결 테스트
     await prisma.$connect();
     console.log('✅ Database connected');
+
+    // 스케줄러 시작 (deadline 체크 및 알림)
+    startScheduler();
 
     // 서버 연결 테스트 엔드포인트
     app.get('/health', (req, res) => {

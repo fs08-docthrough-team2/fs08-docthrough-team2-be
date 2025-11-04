@@ -108,7 +108,7 @@ async function getParticipateListInput(req, res) {
 async function getUserParticipateListInput(req, res) {
     // 입력값 불러오기
     const userID = !isUUID.v4(req.auth?.userId) ? undefined : req.auth?.userId;
-    let { page, pageSize, title, field, type, status } = req.query;
+    let { page = 1, pageSize = 10, title, field, type, status } = req.query;
     const pageNum = Number(page);
     const pageSizeNum = Number(pageSize);
 
@@ -159,7 +159,7 @@ async function getUserParticipateListInput(req, res) {
 async function getUserCompleteListInput(req, res) {
   // 입력값 불러오기
   const userID = !isUUID.v4(req.auth?.userId) ? undefined : req.auth?.userId;
-  let { page, pageSize, title, field, type, status } = req.query;
+  let { page = 1, pageSize = 10, title, field, type, status } = req.query;
   const pageNum = Number(page);
   const pageSizeNum = Number(pageSize);
 
@@ -210,7 +210,7 @@ async function getUserCompleteListInput(req, res) {
 async function getUserChallengeDetailInput(req, res) {
   // 입력값 불러오기
   const userID = !isUUID.v4(req.auth?.userId) ? undefined : req.auth?.userId;
-  let { page, pageSize, title, field, type, status } = req.query;
+  let { page = 1, pageSize = 10, title, field, type, status } = req.query;
   const pageNum = Number(page);
   const pageSizeNum = Number(pageSize);
 
