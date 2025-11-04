@@ -193,10 +193,16 @@ async function getParticipateList(challengeId, page, pageSize) {
 
 async function getUserParticipateList(userID, title, field, type, status, page, pageSize) {
   try {
-    // Where 조건 설정
+    // Where 조건 설정 - 사용자가 참여한 챌린지 찾기
     const whereCondition = {
       isDelete: false,
       deadline: { gt: new Date() },
+      attends: {
+        some: {
+          user_id: userID,  // ✅ 사용자가 참여한 챌린지
+          isSave: false,    // 임시저장이 아닌 실제 참여
+        }
+      }
     };
     if (field) {
       whereCondition.field = field;
@@ -206,9 +212,6 @@ async function getUserParticipateList(userID, title, field, type, status, page, 
     }
     if (status) {
       whereCondition.status = status;
-    }
-    if (userID) {
-      whereCondition.user_id = userID;
     }
 
     // 챌린지 목록 조회
@@ -267,10 +270,16 @@ async function getUserParticipateList(userID, title, field, type, status, page, 
 
 async function getUserCompleteList(userID, title, field, type, status, page, pageSize) {
   try {
-    // where 조건 설정
+    // where 조건 설정 - 사용자가 참여한 완료된 챌린지
     const whereCondition = {
       isDelete: false,
       deadline: { lt: new Date() },
+      attends: {
+        some: {
+          user_id: userID,
+          isSave: false,
+        }
+      }
     };
     if (field) {
       whereCondition.field = field;
@@ -280,9 +289,6 @@ async function getUserCompleteList(userID, title, field, type, status, page, pag
     }
     if (status) {
       whereCondition.status = status;
-    }
-    if (userID) {
-      whereCondition.user_id = userID;
     }
 
     // 챌린지 목록 조회

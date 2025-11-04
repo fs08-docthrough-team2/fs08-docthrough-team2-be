@@ -5,7 +5,7 @@ content-type: application/json
 {
   "email": "newuser@example.com",
   "password": "password123",
-  "name": "New User"
+  "nickName": "New User"
 }
 
 ### POST Login (Admin)
