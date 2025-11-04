@@ -7,10 +7,10 @@ import express from 'express';
 import morgan from 'morgan';
 
 // 라우트 임포트
-import authRoutes  from "./api/routes/auth.routes.js" 
-import tokenRoutes from "./api/routes/token.routes.js"
-import adminRoutes from "./api/routes/admin.routes.js"
-import userRoutes from "./api/routes/user.routes.js"
+import authRoutes  from "./api/routes/auth.route.js"
+import tokenRoutes from "./api/routes/token.route.js"
+import adminRoutes from "./api/routes/admin.route.js"
+import userRoutes from "./api/routes/user.route.js"
 
 import challengeAdminRoute from './api/routes/challenge.admin.route.js';
 import challengeInquiryRoute from './api/routes/challenge.inquiry.route.js';
