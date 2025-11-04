@@ -1,4 +1,4 @@
-import { asyncHandler } from "../../common/error.js";
+import { asyncHandler } from "../../middleware/error.middleware.js";
 import{ 
   getAllUsers,
   getUserByEmail,

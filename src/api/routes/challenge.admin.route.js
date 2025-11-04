@@ -1,7 +1,7 @@
 // routes/challenge.admin.routes.js
 import express from 'express';
-import errorMiddleware from '../../common/error.js';
-import authMiddleware from '../../common/auth.js';
+import errorMiddleware from '../../middleware/error.middleware.js';
+import authMiddleware from '../../middleware/auth.middleware.js';
 
 import challengeAdminControllers from '../controllers/challenge.admin.controllers.js';
 

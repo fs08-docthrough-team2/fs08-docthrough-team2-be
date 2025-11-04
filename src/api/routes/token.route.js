@@ -4,9 +4,9 @@ import {
   verifyAccessTokenController,
   refreshTokenController,
 } from '../controllers/token.controller.js';
-import * as errorMiddleware from '../../common/error.js';
+import * as errorMiddleware from '../../middleware/error.middleware.js';
 
-import auth from '../../common/auth.js';
+import auth from '../../middleware/auth.middleware.js';
 
 const router = express.Router();
 

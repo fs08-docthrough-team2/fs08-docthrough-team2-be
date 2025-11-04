@@ -1,9 +1,9 @@
 // 설명: API 라우트 정의하는 파일
 import express from 'express';
-import errorMiddleware from '../../common/error.js';
+import errorMiddleware from '../../middleware/error.middleware.js';
 
 import noticeControllers from '../controllers/notice.controllers.js';
-import authMiddleware from '../../common/auth.js';
+import authMiddleware from '../../middleware/auth.middleware.js';
 
 const router = express.Router();
 

@@ -22,10 +22,10 @@ import challengeworkRoute from "./api/routes/challenge.work.route.js";
 import challengeFeedbackRoute from "./api/routes/challenge.feedback.route.js"
 
 // 공통 미들웨어 임포트
-import { errorHandler } from './common/error.js';
-import { swaggerDocs } from './common/swagger.js';
-import cors from './common/cors.js';
-import prisma from './common/prisma.js';
+import { errorHandler } from './middleware/error.middleware.js';
+import { swaggerDocs } from './config/swagger.config.js';
+import cors from './config/cors.config.js';
+import prisma from './config/prisma.config.js';
 
 // 환경 변수 설정
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
