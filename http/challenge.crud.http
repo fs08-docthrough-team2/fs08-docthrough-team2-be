@@ -1,7 +1,7 @@
 ### 챌린지 생성 API (CREATE)
-
-POST http://localhost:3000/api/challenge/create
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxNDBjNzcyYy1lYzc2LTRmMzQtYjBiOC05ODkyYjY0MDgzMmEiLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc2MTg4OTEzMywiZXhwIjoxNzYxOTc1NTMzfQ.gRhptilD8Kd-H6XyZeLCzoaS0Y2I7A6ctJD_etwKy2o
+# Requires accessToken in http-client.private.env.json
+POST {{baseUrl}}/api/challenge/create
+Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
 {
@@ -15,8 +15,8 @@ Content-Type: application/json
 }
 
 ### 챌린지 수정 API (UPDATE)
-PATCH http://localhost:3000/api/challenge/update/2f23367e-027e-4544-ab18-adde5f523ec5
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxNDBjNzcyYy1lYzc2LTRmMzQtYjBiOC05ODkyYjY0MDgzMmEiLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc2MTg4OTEzMywiZXhwIjoxNzYxOTc1NTMzfQ.gRhptilD8Kd-H6XyZeLCzoaS0Y2I7A6ctJD_etwKy2o
+PATCH {{baseUrl}}/api/challenge/update/2f23367e-027e-4544-ab18-adde5f523ec5
+Authorization: Bearer {{accessToken}}
 content-type: application/json
 
 {
@@ -26,22 +26,22 @@ content-type: application/json
 }
 
 ### 챌린지 취소 API (CANCEL)
-PATCH http://localhost:3000/api/challenge/cancel/2f23367e-027e-4544-ab18-adde5f523ec5
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxNDBjNzcyYy1lYzc2LTRmMzQtYjBiOC05ODkyYjY0MDgzMmEiLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc2MTg4OTEzMywiZXhwIjoxNzYxOTc1NTMzfQ.gRhptilD8Kd-H6XyZeLCzoaS0Y2I7A6ctJD_etwKy2o
+PATCH {{baseUrl}}/api/challenge/cancel/2f23367e-027e-4544-ab18-adde5f523ec5
+Authorization: Bearer {{accessToken}}
 content-type: application/json
 
 {}
 
 ### 챌린지 삭제 API (DELETE)
-PATCH http://localhost:3000/api/challenge/delete/2f23367e-027e-4544-ab18-adde5f523ec5
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxNDBjNzcyYy1lYzc2LTRmMzQtYjBiOC05ODkyYjY0MDgzMmEiLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc2MTg4OTEzMywiZXhwIjoxNzYxOTc1NTMzfQ.gRhptilD8Kd-H6XyZeLCzoaS0Y2I7A6ctJD_etwKy2o
+PATCH {{baseUrl}}/api/challenge/delete/2f23367e-027e-4544-ab18-adde5f523ec5
+Authorization: Bearer {{accessToken}}
 content-type: application/json
 
 {}
 
 ### 챌린지 완전 삭제 API (HARD DELETE)
-DELETE http://localhost:3000/api/challenge/hard-delete/2f23367e-027e-4544-ab18-adde5f523ec5
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJhMGMyMzVkMi1jOTdmLTQxYjItYjM2Zi00ZmFmOGMxMzI0M2YiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NjE4OTEzMTYsImV4cCI6MTc2MTk3NzcxNn0.3Lh2HJ8fj-DzGgyE2_L6YJ5Jvt88OpCYqwfWwEKnKow
+DELETE {{baseUrl}}/api/challenge/hard-delete/2f23367e-027e-4544-ab18-adde5f523ec5
+Authorization: Bearer {{accessToken}}
 content-type: application/json
 
 {}

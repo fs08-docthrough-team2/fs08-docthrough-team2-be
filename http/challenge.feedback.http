@@ -1,0 +1,26 @@
+### GET Feedback List
+GET {{baseUrl}}/api/challenge/translated-detail/feedback-list?attend_id=1
+
+### GET Feedback Detail
+GET {{baseUrl}}/api/challenge/translated-detail/feedback-detail?feedback_id=1
+
+### POST Create Feedback
+POST {{baseUrl}}/api/challenge/translated-detail/feedback-detail
+content-type: application/json
+
+{
+  "attend_id": 1,
+  "content": "피드백 내용"
+}
+
+### PATCH Update Feedback
+PATCH {{baseUrl}}/api/challenge/translated-detail/feedback-detail
+content-type: application/json
+
+{
+  "feedback_id": 1,
+  "content": "수정된 피드백 내용"
+}
+
+### DELETE Feedback
+DELETE {{baseUrl}}/api/challenge/translated-detail/feedback-detail?feedback_id=1

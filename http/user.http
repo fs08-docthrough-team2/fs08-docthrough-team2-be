@@ -1,0 +1,4 @@
+### GET My Info
+# Requires accessToken in http-client.private.env.json
+GET {{baseUrl}}/api/users/my
+Authorization: Bearer {{accessToken}}
