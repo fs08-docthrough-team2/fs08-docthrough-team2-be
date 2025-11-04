@@ -3,7 +3,7 @@ import express from 'express';
 import errorMiddleware from '../../middleware/error.middleware.js';
 import authMiddleware from '../../middleware/auth.middleware.js';
 
-import challengeAdminControllers from '../controllers/challenge.admin.controllers.js';
+import challengeAdminControllers from '../controllers/challenge.admin.controller.js';
 
 const router = express.Router();
 
