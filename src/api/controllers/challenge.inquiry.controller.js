@@ -1,4 +1,4 @@
-import challengeService from '../services/challenge.inquiry.services.js';
+import challengeService from '../services/challenge.inquiry.service.js';
 import isUUID from 'is-uuid';
 // enum 값 불러오기
 import { ChallengeField, ChallengeStatus, ChallengeType } from '@prisma/client';

@@ -1,5 +1,5 @@
 // 설명: 요청 파싱(params/query/body) + 입력 검증 결과 처리하는 파일입니다.
-import challengeAdminServices from '../services/challenge.admin.services.js';
+import challengeAdminServices from '../services/challenge.admin.service.js';
 import isUUID from 'is-uuid';
 
 // 선택지에 대한 상수화

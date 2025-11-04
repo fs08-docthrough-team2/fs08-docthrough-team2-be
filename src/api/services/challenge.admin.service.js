@@ -1,5 +1,5 @@
 import prisma from '../../common/prisma.js';
-import noticeService from './notice.services.js';
+import noticeService from './notice.service.js';
 
 async function getChallengeList(searchKeyword, status, page, pageSize, sort) {
   try {

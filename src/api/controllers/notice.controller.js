@@ -1,5 +1,5 @@
 // 설명: 요청 파싱(params/query/body) + 입력 검증 결과 처리하는 파일입니다.
-import noticeService from '../services/notice.services.js';
+import noticeService from '../services/notice.service.js';
 import isUUID from 'is-uuid';
 
 async function addMarkNoticeAsReadInput(req, res) {
