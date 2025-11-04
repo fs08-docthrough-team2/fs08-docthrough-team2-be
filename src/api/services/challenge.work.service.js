@@ -367,16 +367,17 @@ export async function deleteWork(req, attend_id){
 
   if(!attend)
     throw new Error("작업물을 찾을 수 없습니다.");
-
-  if(attend.user_id !== user.userId && user.role !== "ADMIN");
+  //오타 if(); <- ; 들어가서 삭제 불가능 판정 
+  if(attend.user_id !== user.userId && user.role !== "ADMIN")
     throw new Error("본인만 삭제할 수 있습니다.");
 
   if(attend.challenge?.isClose){
     throw new Error("이미 종료된 첼린지입니다.");
   }
-
+  await prisma.like.deleteMany({ where: { attend_id }});
+  await prisma.feedback.deleteMany({ where: { attend_id }})
   await prisma.attend.delete({ where: { attend_id }});
-
+  
   // 작업물 삭제 알림 추가
   const challenge_id = attend.challenge_id;
   const challengeTitle = await prisma.challenge.findUnique({
