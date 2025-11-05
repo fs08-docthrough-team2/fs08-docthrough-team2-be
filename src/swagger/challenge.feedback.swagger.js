@@ -60,7 +60,7 @@
  *             type: object
  *             required: [attendId, content]
  *             properties:
- *               attend_id: { type: string, example: "a1b2c3" }
+ *               attendId: { type: string, example: "a1b2c3" }
  *               content: { type: string, example: "좋은 번역이에요!" }
  *     responses:
  *       201:

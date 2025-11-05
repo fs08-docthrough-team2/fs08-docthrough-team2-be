@@ -3,13 +3,13 @@ import { getUserFromToken } from "./user.service.js";
 import noticeServices from './notice.service.js';
 
 // 전체 리스트 조회
-export async function getFeedbackList({ attend_id, page=1, size=10}) {
+export async function getFeedbackList({ attendId, page=1, size=10}) {
   const skip = (page -1) * size;
 
-  const total = await feedbackRepository.countFeedbacks(attend_id);
+  const total = await feedbackRepository.countFeedbacks(attendId);
 
   const items = await feedbackRepository.findFeedbacksByAttendId({
-    attendId: attend_id,
+    attendId,
     skip,
     take: size,
   });
@@ -37,8 +37,8 @@ export async function getFeedbackList({ attend_id, page=1, size=10}) {
 }
 
 // 단일 조회
-export async function getFeedbackDetail({ feedback_id }){
-  const feedback = await feedbackRepository.findFeedbackById(feedback_id);
+export async function getFeedbackDetail({ feedbackId  }){
+  const feedback = await feedbackRepository.findFeedbackById(feedbackId );
   
   if(!feedback) 
     throw new Error("피드백을 찾을 수 없습니다.");
@@ -61,16 +61,16 @@ export async function getFeedbackDetail({ feedback_id }){
 }
 
 //생성
-export async function createFeedback(req, { attend_id, content}) {
+export async function createFeedback(req, { attendId, content }) {
   const { userId } = await getUserFromToken(req);
 
-  const attend = await feedbackRepository.findAttendWithChallengeById(attend_id);
+  const attend = await feedbackRepository.findAttendWithChallengeById(attendId);
 
   if(!attend)
     throw new Error("작업물을 찾을 수 없습니다.")
 
   const feedback = await feedbackRepository.createFeedback({
-    attend_id,
+    attend_id: attendId,
     user_id: userId,
     content,
   });
@@ -80,14 +80,21 @@ export async function createFeedback(req, { attend_id, content}) {
   const workAuthorId = attend.user_id;
   await noticeServices.addFeedbackReceiveNotice(workAuthorId, challengeTitle);
 
-  return { message: "피드백이 등록되었습니다.", feedback_id:feedback.feedback_id};
+  return { 
+    message: "피드백이 등록되었습니다.",
+    feedback: {
+      feedbackId: feedback.feedback_id,
+      content: feedback.content,
+      createdAt: feedback.created_at,
+      updatedAt: feedback.updated_at,
+    },
+  };
 }
 
-//수정
-export async function updateFeedback(req, { feedback_id, content}){
+export async function updateFeedback(req, { feedbackId, content}){
   const { userId, role } = await getUserFromToken(req);
 
-  const feedback = await feedbackRepository.findFeedbackWithChallengeById(feedback_id);
+  const feedback = await feedbackRepository.findFeedbackWithChallengeById(feedbackId);
 
   if(!feedback)
     throw new Error("피드백을 찾을 수 없습니다.");
@@ -96,20 +103,27 @@ export async function updateFeedback(req, { feedback_id, content}){
     throw new Error("수정 권한이 없습니다.");
   }
 
-  await feedbackRepository.updateFeedbackById(feedback_id, content);
+  const items = await feedbackRepository.updateFeedbackById(feedbackId, content);
 
   // 알림 생성
   const challengeTitle = feedback.attend.challenge.title;
   await noticeServices.addModifyNotice("피드백", "수정", userId, challengeTitle);
 
-  return { message: "피드백이 수정되었습니다." };
+  return { 
+    message: "피드백이 수정되었습니다.",
+    feedback: {
+      feedbackId: items.feedback_id,
+      content: items.content,
+      updatedAt: items.updated_at,
+    }
+  };
 }
 
 //삭제
-export async function deleteFeedback(req, { feedback_id }){
+export async function deleteFeedback(req, { feedbackId }){
   const { userId, role } = await getUserFromToken(req);
 
-  const feedback = await feedbackRepository.findFeedbackWithChallengeById(feedback_id);
+  const feedback = await feedbackRepository.findFeedbackWithChallengeById(feedbackId);
 
   if(!feedback)
     throw new Error("피드백을 찾을 수 없습니다.");
@@ -121,10 +135,17 @@ export async function deleteFeedback(req, { feedback_id }){
   // 챌린지 제목 저장 (삭제 전에)
   const challengeTitle = feedback.attend.challenge.title;
 
-  await feedbackRepository.deleteFeedbackById(feedback_id);
+  const items = await feedbackRepository.deleteFeedbackById(feedbackId);
 
   // 알림 생성
   await noticeServices.addModifyNotice("피드백", "삭제", userId, challengeTitle);
 
-  return { message: "피드백이 삭제되었습니다." };
+  return { 
+    message: "피드백이 삭제되었습니다.", 
+    feedback: {
+      feedbackId: items.feedback_id,
+      content: items.content,
+      createdAt: items.created_at,
+    }, 
+  };
 }
