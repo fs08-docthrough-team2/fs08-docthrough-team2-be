@@ -64,6 +64,7 @@ export const VALIDATION_MESSAGE = {
   REQUIRED_REJECT_COMMENT: '거절 사유를 입력해주세요.',
   REQUIRED_CHALLENGE_ID: 'challenge_id는 필수입니다.',
   REQUIRED_WORK_ITEM: 'workItem은 필수입니다.',
+  INVALID_ID: 'userID가 잘못되었거나 없습니다.',
 };
 
 // 서버 에러 메시지
