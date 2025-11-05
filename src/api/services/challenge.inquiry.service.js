@@ -1,4 +1,4 @@
-import prisma from '../../config/prisma.config.js';
+import * as challengeInquiryRepository from '../repositories/challenge.inquiry.repository.js';
 
 async function getChallengeList({ title, field, type, status, page, pageSize, sort }) {
   try {
@@ -24,27 +24,10 @@ async function getChallengeList({ title, field, type, status, page, pageSize, so
     }
 
     // 전체 개수 조회
-    const totalCount = await prisma.challenge.count({
-      where: whereCondition,
-    });
+    const totalCount = await challengeInquiryRepository.countChallenges(whereCondition);
 
     // 챌린지 목록 조회
-    const challenges = await prisma.challenge.findMany({
-      select: {
-        challenge_id: true,
-        title: true,
-        field: true,
-        type: true,
-        status: true,
-        created_at: true,
-        deadline: true,
-        capacity: true,
-        _count: {
-          select: {
-            attends: true,
-          },
-        },
-      },
+    const challenges = await challengeInquiryRepository.findChallengesWithAttendCount({
       where: whereCondition,
       skip: (page - 1) * pageSize,
       take: pageSize,
@@ -85,27 +68,7 @@ async function getChallengeList({ title, field, type, status, page, pageSize, so
 async function getChallengeDetail(challengeId) {
   try {
     // 챌린지 상세 내용 조회
-    const challenge = await prisma.challenge.findUnique({
-      where: {
-        challenge_id: challengeId,
-      },
-      select: {
-        challenge_id: true,
-        title: true,
-        content: true,
-        field: true,
-        type: true,
-        status: true,
-        deadline: true,
-        capacity: true,
-        source: true,
-        _count: {
-          select: {
-            attends: true,
-          },
-        },
-      },
-    });
+    const challenge = await challengeInquiryRepository.findChallengeDetailById(challengeId);
     // 결과를 찾을 수 없는 경우, 에러 메시지 반환
     if (!challenge) {
       return {
@@ -138,31 +101,8 @@ async function getChallengeDetail(challengeId) {
 async function getParticipateList(challengeId, page, pageSize) {
   try {
     // 참여자 목록 조회
-    const participates = await prisma.attend.findMany({
-      where: {
-        challenge_id: challengeId,
-        isSave: true,
-      },
-      select: {
-        attend_id: true,
-        user_id: true,
-        updated_at: true,
-        user: {
-          select: {
-            nick_name: true,
-          },
-        },
-        _count: {
-          select: {
-            likes: {
-              where: {
-                liker: true,
-              },
-            },
-          },
-        },
-      },
-      orderBy: [{ likes: { _count: 'desc' } }],
+    const participates = await challengeInquiryRepository.findParticipatesByChallenge({
+      challengeId,
       skip: (page - 1) * pageSize,
       take: pageSize,
     });
@@ -220,25 +160,8 @@ async function getUserParticipateList(userID, title, field, type, status, page, 
     }
 
     // 챌린지 목록 조회
-    const participates = await prisma.challenge.findMany({
+    const participates = await challengeInquiryRepository.findUserChallenges({
       where: whereCondition,
-      select: {
-        challenge_id: true,
-        title: true,
-        content: true,
-        type: true,
-        status: true,
-        field: true,
-        source: true,
-        deadline: true,
-        capacity: true,
-        _count: {
-          select: {
-            attends: true,
-          }
-        }
-      },
-
       skip: (page - 1) * pageSize,
       take: pageSize,
     });
@@ -300,25 +223,8 @@ async function getUserCompleteList(userID, title, field, type, status, page, pag
     }
 
     // 챌린지 목록 조회
-    const participates = await prisma.challenge.findMany({
+    const participates = await challengeInquiryRepository.findUserChallenges({
       where: whereCondition,
-      select: {
-        challenge_id: true,
-        title: true,
-        content: true,
-        type: true,
-        status: true,
-        field: true,
-        source: true,
-        deadline: true,
-        capacity: true,
-        _count: {
-          select: {
-            attends: true,
-          }
-        }
-      },
-
       skip: (page - 1) * pageSize,
       take: pageSize,
     });
@@ -375,27 +281,8 @@ async function getUserChallengeDetail(userID, title, field, type, status, page, 
     }
 
     // 챌린지 목록 조회
-    const participates = await prisma.challenge.findMany({
+    const participates = await challengeInquiryRepository.findUserChallengeDetails({
       where: whereCondition,
-      select: {
-        challenge_id: true,
-        title: true,
-        content: true,
-        type: true,
-        status: true,
-        field: true,
-        source: true,
-        deadline: true,
-        capacity: true,
-        isReject: true,
-        reject_content: true,
-        _count: {
-          select: {
-            attends: true,
-          }
-        }
-      },
-
       skip: (page - 1) * pageSize,
       take: pageSize,
     });

@@ -1,4 +1,4 @@
-import prisma from '../../config/prisma.config.js';
+import * as challengeAdminRepository from '../repositories/challenge.admin.repository.js';
 import noticeService from './notice.service.js';
 
 async function getChallengeList(searchKeyword, status, page, pageSize, sort) {
@@ -51,26 +51,10 @@ async function getChallengeList(searchKeyword, status, page, pageSize, sort) {
     }
 
     // 전체 개수 조회
-    const totalCount = await prisma.challenge.count({
-      where: whereCondition,
-    });
+    const totalCount = await challengeAdminRepository.countChallenges(whereCondition);
 
     // 챌린지 목록 조회
-    const challenges = await prisma.challenge.findMany({
-      select: {
-        challenge_no: true,
-        title: true,
-        type: true,
-        field: true,
-        status: true,
-        deadline: true,
-        created_at: true,
-        _count: {
-          select: {
-            attends: true,
-          },
-        },
-      },
+    const challenges = await challengeAdminRepository.findChallengesForAdmin({
       where: whereCondition,
       skip: (page - 1) * pageSize,
       take: pageSize,
@@ -108,9 +92,7 @@ async function getChallengeList(searchKeyword, status, page, pageSize, sort) {
 async function getChallengeDetail(challengeId) {
   try {
     // 챌린지 상세 내용 조회
-    const challengeDetail = await prisma.challenge.findUnique({
-      where: { challenge_id: challengeId },
-    });
+    const challengeDetail = await challengeAdminRepository.findChallengeById(challengeId);
 
     // 결과를 반환
     return {
@@ -134,10 +116,7 @@ async function getChallengeDetail(challengeId) {
 async function approveChallenge(challengeId) {
   try {
     // 챌린지 승인 상태 변경
-    const approvedChallenge = await prisma.challenge.update({
-      where: { challenge_id: challengeId },
-      data: { isApprove: true, isReject: false, reject_content: null, status: 'APPROVED' },
-    });
+    const approvedChallenge = await challengeAdminRepository.approveChallengeById(challengeId);
 
     // 승인 알림 전송
     await noticeService.addChallengeStateNotice(
@@ -162,15 +141,10 @@ async function approveChallenge(challengeId) {
 async function rejectChallenge(challengeId, reject_comment) {
   try {
     // 챌린지 거절 상태 변경
-    const rejectedChallenge = await prisma.challenge.update({
-      where: { challenge_id: challengeId },
-      data: {
-        isReject: true,
-        isApprove: false,
-        reject_content: reject_comment,
-        status: 'REJECTED',
-      },
-    });
+    const rejectedChallenge = await challengeAdminRepository.rejectChallengeById(
+      challengeId,
+      reject_comment
+    );
 
     // 거절 알림 전송 (사유 포함)
     await noticeService.addAdminChallengeUpdateNotice(
