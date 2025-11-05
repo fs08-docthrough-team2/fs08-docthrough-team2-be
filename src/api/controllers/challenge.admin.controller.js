@@ -1,4 +1,5 @@
 // 설명: 요청 파싱(params/query/body) + 입력 검증 결과 처리하는 파일입니다.
+import { asyncHandler } from '../../middleware/error.middleware.js';
 import challengeAdminServices from '../services/challenge.admin.service.js';
 import isUUID from 'is-uuid';
 import HTTP_STATUS from '../../constants/http.constant.js';
@@ -11,7 +12,7 @@ import { VALIDATION_ERROR_CODE } from '../../constants/error-code.constant.js';
 const SORTLIST = ['신청시간빠름순', '신청시간느림순', '마감기한빠름순', '마감기한느림순', 'desc', 'asc'];
 const STATUSLIST = ['신청승인', '신청거절', '신청취소', '신청대기'];
 
-async function getChallengeListInput(req, res) {
+const getChallengeListInput = asyncHandler(async (req, res) => {
   // 입력값 불러오기
   const { searchKeyword, status, sort = 'desc' } = req.query;
   const page = parseInt(req.query.page) || PAGINATION.DEFAULT_PAGE;
@@ -50,9 +51,9 @@ async function getChallengeListInput(req, res) {
 
   // 호출 결과 반환
   return res.status(HTTP_STATUS.OK).json(response);
-}
+});
 
-async function getChallengeDetailInput(req, res) {
+const getChallengeDetailInput = asyncHandler(async (req, res) => {
   // 입력값 불러오기
   const challengeID = !isUUID.v4(req.params.challengeId) ? undefined : req.params.challengeId;
 
@@ -73,9 +74,9 @@ async function getChallengeDetailInput(req, res) {
 
   // 호출 결과 반환
   return res.status(HTTP_STATUS.OK).json(response);
-}
+});
 
-async function approveChallengeInput(req, res) {
+const approveChallengeInput = asyncHandler(async (req, res) => {
   // 입력값 불러오기
   const challengeID = !isUUID.v4(req.params.challengeId) ? undefined : req.params.challengeId;
   const userID = !isUUID.v4(req.auth?.userId) ? undefined : req.auth?.userId;
@@ -105,9 +106,9 @@ async function approveChallengeInput(req, res) {
 
   // 호출 결과 반환
   return res.status(HTTP_STATUS.OK).json(response);
-}
+});
 
-async function rejectChallengeInput(req, res) {
+const rejectChallengeInput = asyncHandler(async (req, res) => {
   // 입력값 불러오기
   const challengeID = !isUUID.v4(req.params.challengeId) ? undefined : req.params.challengeId;
   const userID = !isUUID.v4(req.auth?.userId) ? undefined : req.auth?.userId;
@@ -146,7 +147,7 @@ async function rejectChallengeInput(req, res) {
 
   // 호출 결과 반환
   return res.status(HTTP_STATUS.OK).json(response);
-}
+});
 
 export default {
   getChallengeListInput,

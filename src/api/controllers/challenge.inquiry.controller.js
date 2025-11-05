@@ -1,3 +1,4 @@
+import { asyncHandler } from '../../middleware/error.middleware.js';
 import challengeService from '../services/challenge.inquiry.service.js';
 import isUUID from 'is-uuid';
 // enum 값 불러오기
@@ -9,7 +10,7 @@ import { PAGINATION, SORT_ORDER } from '../../constants/pagination.constant.js';
 import { errorResponse } from '../../utils/response.util.js';
 import { VALIDATION_ERROR_CODE } from '../../constants/error-code.constant.js';
 
-async function getChallengeListInput(req, res) {
+const getChallengeListInput = asyncHandler(async (req, res) => {
   // 입력값 불러오기
   let { title, field, type, status, page = PAGINATION.DEFAULT_PAGE, pageSize = PAGINATION.DEFAULT_PAGE_SIZE, sort = SORT_ORDER.ASC } = req.query;
   const pageNum = Number(page);
@@ -89,9 +90,9 @@ async function getChallengeListInput(req, res) {
 
   // 호출 결과 반환
   return res.status(HTTP_STATUS.OK).json(listData);
-}
+});
 
-async function getChallengeDetailInput(req, res) {
+const getChallengeDetailInput = asyncHandler(async (req, res) => {
   // 입력값 불러오기 및 데이터 검증
   const challengeID = !isUUID.v4(req.params.challengeId) ? undefined : req.params.challengeId;
 
@@ -110,9 +111,9 @@ async function getChallengeDetailInput(req, res) {
 
   // 호출 결과 반환
   return res.status(HTTP_STATUS.OK).json(detailData);
-}
+});
 
-async function getParticipateListInput(req, res) {
+const getParticipateListInput = asyncHandler(async (req, res) => {
   // 입력값 불러오기
   const { page, pageSize } = req.query;
   const challengeID = !isUUID.v4(req.params.challengeId) ? undefined : req.params.challengeId;
@@ -154,9 +155,9 @@ async function getParticipateListInput(req, res) {
 
   // 호출 결과 반환
   return res.status(HTTP_STATUS.OK).json(participateData);
-}
+});
 
-async function getUserParticipateListInput(req, res) {
+const getUserParticipateListInput = asyncHandler(async (req, res) => {
     // 입력값 불러오기
     const userID = !isUUID.v4(req.auth?.userId) ? undefined : req.auth?.userId;
     let { page = PAGINATION.DEFAULT_PAGE, pageSize = PAGINATION.DEFAULT_PAGE_SIZE, title, field, type, status } = req.query;
@@ -237,9 +238,9 @@ async function getUserParticipateListInput(req, res) {
 
     // 호출 결과 반환
     return res.status(HTTP_STATUS.OK).json(userParticipateData);
-}
+});
 
-async function getUserCompleteListInput(req, res) {
+const getUserCompleteListInput = asyncHandler(async (req, res) => {
   // 입력값 불러오기
   const userID = !isUUID.v4(req.auth?.userId) ? undefined : req.auth?.userId;
   let { page = PAGINATION.DEFAULT_PAGE, pageSize = PAGINATION.DEFAULT_PAGE_SIZE, title, field, type, status } = req.query;
@@ -320,9 +321,9 @@ async function getUserCompleteListInput(req, res) {
 
   // 호출 결과 반환
   return res.status(HTTP_STATUS.OK).json(userCompleteData);
-}
+});
 
-async function getUserChallengeDetailInput(req, res) {
+const getUserChallengeDetailInput = asyncHandler(async (req, res) => {
   // 입력값 불러오기
   const userID = !isUUID.v4(req.auth?.userId) ? undefined : req.auth?.userId;
   let { page = PAGINATION.DEFAULT_PAGE, pageSize = PAGINATION.DEFAULT_PAGE_SIZE, title, field, type, status } = req.query;
@@ -403,7 +404,7 @@ async function getUserChallengeDetailInput(req, res) {
 
   // 응답 반환
   return res.status(HTTP_STATUS.OK).json(userChallengeDetailData);
-}
+});
 
 export default {
   getChallengeListInput,
