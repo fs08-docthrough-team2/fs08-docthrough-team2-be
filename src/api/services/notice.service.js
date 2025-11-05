@@ -116,16 +116,25 @@ async function addChallengeDeadlineNotice(userID, challengeTitle) {
 }
 
 // 알림을 읽었을 때 상태를 업데이트하는 함수
-async function addMarkNoticeAsRead(noticeId, res) {
+async function addMarkNoticeAsRead(noticeId) {
   const notice = await noticeRepository.findNoticeById(noticeId);
 
-  if (notice?.isRead) {
-    return res.status(400).json({ message: '이미 읽음 상태인 알림입니다.' });
+  if (!notice) {
+    const error = new Error('알림을 찾을 수 없습니다.');
+    error.status = 404;
+    throw error;
   }
+
+  if (notice.isRead) {
+    const error = new Error('이미 읽음 상태인 알림입니다.');
+    error.status = 400;
+    throw error;
+  }
+
   // 알림 읽음 상태 업데이트 로직
   await noticeRepository.updateNoticeAsRead(noticeId);
 
-  return res.status(200).json({ message: '알림이 읽음 상태로 업데이트되었습니다.' });
+  return notice;
 }
 
 // 어드민이 챌린지를 수정/삭제했을 때 신청자에게 사유가 전송되는 알림
