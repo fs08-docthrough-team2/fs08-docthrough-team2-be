@@ -15,6 +15,11 @@ export async function getWorkList({ challenge_id, page = 1, size = 10 }){
     take: size,
   });
 
+  // attends가 배열인지 확인
+  if (!Array.isArray(attends)) {
+    throw new Error("작업물 목록 조회에 실패했습니다.");
+  }
+
   const rows = attends.map((a)=> ({
     attendsId: a.attend_id,
     nickName: a.user.nick_name,
@@ -75,6 +80,11 @@ export async function getSaveList(req, { page = 1, size = 5 }){
     skip,
     take: size,
   });
+
+  // attends가 배열인지 확인
+  if (!Array.isArray(attends)) {
+    throw new Error("임시 저장 목록 조회에 실패했습니다.");
+  }
 
   const rows = attends.map((a) => ({
     attendId: a.attend_id,

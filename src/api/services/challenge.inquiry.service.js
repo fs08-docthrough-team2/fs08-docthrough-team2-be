@@ -36,6 +36,11 @@ async function getChallengeList({ title, field, type, status, page, pageSize, so
       },
     });
 
+    // challenges가 배열인지 확인
+    if (!Array.isArray(challenges)) {
+      throw new Error('챌린지 목록 조회에 실패했습니다.');
+    }
+
     // 응답 데이터 포맷팅
     const formattedChallenges = challenges.map((challenge) => ({
       challengeId: challenge.challenge_id,
@@ -106,6 +111,11 @@ async function getParticipateList(challengeId, page, pageSize) {
       skip: (page - 1) * pageSize,
       take: pageSize,
     });
+
+    // participates가 배열인지 확인
+    if (!Array.isArray(participates)) {
+      throw new Error('참여자 목록 조회에 실패했습니다.');
+    }
 
     // 순위 추가
     const participatesWithRank = participates.map((participate, index) => ({
