@@ -1,4 +1,4 @@
-import prisma from "../../config/prisma.config.js";
+import * as workRepository from "../repositories/challenge.work.repository.js";
 
 import { getUserFromToken } from "./user.service.js";
 import noticeServices from './notice.service.js';
@@ -9,24 +9,8 @@ import noticeServices from './notice.service.js';
 export async function getWorkList({ challenge_id, page = 1, size = 10 }){
   const skip = (page - 1) * size;
 
-  const attends = await prisma.attend.findMany({
-    where: { challenge_id, isSave: false },
-    select: {
-      attend_id: true,
-      created_at: true,
-      user: {
-        select: {
-          nick_name: true, 
-          role: true,
-        },
-      },
-      likes: {
-        select: {
-          liker: true
-        },
-      },
-    },
-    orderBy: [{ created_at:"desc" }],
+  const attends = await workRepository.findWorksByChallengeId({
+    challengeId: challenge_id,
     skip,
     take: size,
   });
@@ -41,9 +25,7 @@ export async function getWorkList({ challenge_id, page = 1, size = 10 }){
 
   rows.sort((a, b) => b.likeCount - a.likeCount || b.createdAt - a.createdAt);
 
-  const total = await prisma.attend.count({ 
-    where: { challenge_id, isSave: false },
-  });
+  const total = await workRepository.countWorksByChallengeId(challenge_id);
 
   return {
     items: rows.slice(skip, skip + size),
@@ -59,34 +41,7 @@ export async function getWorkList({ challenge_id, page = 1, size = 10 }){
 
 //상세
 export async function getWorkDetail(attend_id){
-  const attend = await prisma. attend.findUnique({
-    where: { 
-      attend_id , 
-      isSave: false
-    },
-    select:  {
-      attend_id: true,
-      title: true,
-      work_item: true,
-      created_at: true,
-      user: {
-        select: {
-          nick_name: true,
-          role: true
-        },
-      },
-      likes: {
-        select: {
-          liker: true
-        },
-      },
-      challenge: {
-        select: { 
-          isClose: true
-        },
-      },
-    },
-  });
+  const attend = await workRepository.findWorkById(attend_id);
 
   if(!attend){
     throw new Error("작업물을 찾을 수 없습니다.");
@@ -113,29 +68,10 @@ export async function getSaveList(req, { page = 1, size = 5 }){
   const { userId } = await getUserFromToken(req);
   const skip = (page - 1) * size;
 
-  const total = await prisma.attend.count({
-    where: { 
-      user_id: userId, 
-      isSave: true
-    }
-  });
+  const total = await workRepository.countSavesByUserId(userId);
 
-  const attends = await prisma.attend.findMany({
-    where: {
-      user_id: userId,
-      isSave: true,
-    },
-    select:{
-      attend_id: true,
-      title:true,
-      created_at: true,
-      user:{
-        select:{
-          nick_name:true
-        },
-      },
-    },
-    orderBy: [{ created_at: "desc" }],
+  const attends = await workRepository.findSavesByUserId({
+    userId,
     skip,
     take: size,
   });
@@ -163,30 +99,7 @@ export async function getSaveList(req, { page = 1, size = 5 }){
 export async function getSaveDetail(req, attend_id){
   const viewer = await getUserFromToken(req);
 
-  const attend = await prisma.attend.findUnique({
-    where: {
-      attend_id,
-      isSave:true
-    },
-    select: {
-      attend_id: true,
-      title: true,
-      work_item: true,
-      created_at: true,
-      user_id: true,
-      user:{
-        select: {
-          nick_name: true,
-          role: true
-        },
-      },
-      challenge: {
-        select: {
-          isClose: true
-        }
-      },
-    },
-  });
+  const attend = await workRepository.findSaveById(attend_id);
 
   if (!attend)
     throw new Error("임시 저장된 작업물을 찾을 수 없습니다.");
@@ -211,12 +124,7 @@ export async function getSaveDetail(req, attend_id){
 export async function createWork(req, challenge_id, title, workItem){
   const { userId } = await getUserFromToken(req);
 
-  const challenge = await prisma.challenge.findUnique({
-    where: { challenge_id: challenge_id },
-    select: {
-      isClose: true
-    },
-  });
+  const challenge = await workRepository.findChallengeIsClose(challenge_id);
 
   if(challenge?.isClose){
     const err = new Error("이미 종료된 첼린지 입니다.");
@@ -224,33 +132,21 @@ export async function createWork(req, challenge_id, title, workItem){
     throw err;
   }
 
-  const existinWork =  await prisma.attend.findFirst({
-    where:{
-      challenge_id,
-      user_id: userId,
-      isSave: false,
-    },
-  });
+  const existinWork = await workRepository.findExistingWork(challenge_id, userId);
 
   if(existinWork){
     const err = new Error("이미 제출된 작업물이 존재합니다.");
   }
-  
-  const attend = await prisma.attend.create({
-    data:{
-      challenge_id,
-      user_id: userId,
-      work_item: workItem,
-      isSave: false,
-    },
+
+  const attend = await workRepository.createWork({
+    challenge_id,
+    user_id: userId,
+    work_item: workItem,
+    isSave: false,
   });
 
   // 작업물 제출 알림 추가
-  const challengeTitle = await prisma.challenge.findUnique({
-    where: { challenge_id },
-    select: { title: true },
-  });
-  await noticeServices.addWorkSubmitNotice(userId, challengeTitle.title);
+  await noticeServices.addWorkSubmitNotice(userId, challenge.title);
 
   return {
     message: "작업물 제출",
@@ -262,33 +158,20 @@ export async function createWork(req, challenge_id, title, workItem){
 export async function createSaveWork(req, challenge_id, title, workItem){
   const { userId } = await getUserFromToken(req);
 
-  const challenge = await prisma.challenge.findUnique({
-    where:{
-      challenge_id
-    },
-    select: {
-      isClose: true
-    },
-  });
+  const challenge = await workRepository.findChallengeIsClose(challenge_id);
 
   if(challenge?.isClose){
     throw new Error("이미 종료된 첼린지 입니다.");
   }
 
-  const attend = await prisma.attend.create({
-    data:{
-      challenge_id,
-      user_id: userId,
-      work_item: workItem,
-      isSave: true,
-    },
+  const attend = await workRepository.createWork({
+    challenge_id,
+    user_id: userId,
+    work_item: workItem,
+    isSave: true,
   });
 
-  const challengeTitle = await prisma.challenge.findUnique({
-    where: { challenge_id },
-    select: { title: true },
-  });
-  await noticeServices.addModifyNotice("작업물", "임시 저장", userId, challengeTitle.title);
+  await noticeServices.addModifyNotice("작업물", "임시 저장", userId, challenge.title);
 
   return{
     message: "임시 저장 완료",
@@ -300,23 +183,9 @@ export async function createSaveWork(req, challenge_id, title, workItem){
 export async function updateWork(req, attend_id, { title, workItem }){
   const user = await getUserFromToken(req);
 
-  const attend = await prisma.attend.findUnique({
-    where: { attend_id },
-    include: {
-      challenge:{
-        select:{
-          isClose: true
-        },
-      },
-      user:{ 
-        select:{
-          user_id: true,
-        },
-      },
-    },
-  });
+  const attend = await workRepository.findWorkWithChallengeById(attend_id);
 
-  if(!attend) 
+  if(!attend)
     throw new Error("작업물을 찾을 수 없습니다.");
 
   if(attend.user_id !== user.userId && user.role !== "ADMIN")
@@ -324,68 +193,39 @@ export async function updateWork(req, attend_id, { title, workItem }){
 
   if(attend.challenge?.isClose)
     throw new Error("이미 종료된 첼린지");
-  const updated = await prisma.attend.update({
-    where: {
-      attend_id
-    },
-    data:{
-      title,
-      work_item: workItem,
-      updated_at: new Date()
-    },
+
+  const updated = await workRepository.updateWorkById(attend_id, {
+    title,
+    work_item: workItem,
   });
 
   // 작업물 업데이트 알림 추가
-  const challenge_id = attend.challenge_id;
-  const challengeTitle = await prisma.challenge.findUnique({
-    where: { challenge_id },
-    select: { title: true },
-  });
   const userId = attend.user.user_id;
-  await noticeServices.addModifyNotice("작업물", "업데이트", userId, challengeTitle);
+  await noticeServices.addModifyNotice("작업물", "업데이트", userId, attend.challenge.title);
 }
 
 export async function deleteWork(req, attend_id){
   const user = await getUserFromToken(req);
 
-  const attend = await prisma.attend.findUnique({
-    where: { attend_id },
-    include: { 
-      challenge: {
-        select: {
-          isClose:true,
-          challenge_id: true
-        },
-      },
-      user: {
-        select: {
-          user_id:true
-        },
-      },
-    },
-  });
+  const attend = await workRepository.findWorkWithChallengeById(attend_id);
 
   if(!attend)
     throw new Error("작업물을 찾을 수 없습니다.");
-  //오타 if(); <- ; 들어가서 삭제 불가능 판정 
+  //오타 if(); <- ; 들어가서 삭제 불가능 판정
   if(attend.user_id !== user.userId && user.role !== "ADMIN")
     throw new Error("본인만 삭제할 수 있습니다.");
 
   if(attend.challenge?.isClose){
     throw new Error("이미 종료된 첼린지입니다.");
   }
-  await prisma.like.deleteMany({ where: { attend_id }});
-  await prisma.feedback.deleteMany({ where: { attend_id }})
-  await prisma.attend.delete({ where: { attend_id }});
-  
+
+  await workRepository.deleteLikesByAttendId(attend_id);
+  await workRepository.deleteFeedbacksByAttendId(attend_id);
+  await workRepository.deleteWorkById(attend_id);
+
   // 작업물 삭제 알림 추가
-  const challenge_id = attend.challenge_id;
-  const challengeTitle = await prisma.challenge.findUnique({
-    where: { challenge_id },
-    select: { title: true },
-  });
   const userId = attend.user.user_id;
-  await noticeServices.addModifyNotice("작업물", "삭제", userId, challengeTitle);
+  await noticeServices.addModifyNotice("작업물", "삭제", userId, attend.challenge.title);
 
   // 삭제 완료 메시지 반환
   return { message: "삭제 완료 "};
@@ -394,24 +234,17 @@ export async function deleteWork(req, attend_id){
 export async function toggleLike(req, attend_id) {
   const { userId } = await getUserFromToken(req);
 
-  const exisitg = await prisma.like.findFirst({
-    where:{
-      user_id: userId,
-      attend_id
-    },
-  });
+  const exisitg = await workRepository.findExistingLike(userId, attend_id);
 
   if(exisitg){
-    await prisma.like.delete({ where: { like_id: exisitg.like_id } });
+    await workRepository.deleteLikeById(exisitg.like_id);
     return { message: "좋아요 취소" };
   }
   else{
-    await prisma.like.create({
-      data:{
-        user_id: userId,
-        attend_id,
-        liker:true,
-      },
+    await workRepository.createLike({
+      user_id: userId,
+      attend_id,
+      liker: true,
     });
     return{ message: "좋아요 추가" }
   }

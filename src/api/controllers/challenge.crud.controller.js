@@ -1,4 +1,5 @@
 // 설명: 요청 파싱(params/query/body) + 입력 검증 결과 처리하는 파일입니다.
+import { asyncHandler } from '../../middleware/error.middleware.js';
 import challengeCRUDServices from '../services/challenge.crud.service.js';
 import isUUID from 'is-uuid';
 import HTTP_STATUS from '../../constants/http.constant.js';
@@ -10,7 +11,7 @@ import { VALIDATION_ERROR_CODE } from '../../constants/error-code.constant.js';
  * 챌린지 생성 (Zod 검증 완료 후 호출)
  * SQL 인젝션, XSS 방지 완료
  */
-async function createChallengeInput(req, res) {
+const createChallengeInput = asyncHandler(async (req, res) => {
   // Zod 미들웨어에서 이미 검증 완료
   const { title, source, field, type, deadline, capacity, content } = req.body;
   const userID = req.auth?.userId;
@@ -32,12 +33,12 @@ async function createChallengeInput(req, res) {
 
   // 호출 결과 반환
   return res.status(HTTP_STATUS.CREATED).json(response);
-}
+});
 
 /**
  * 챌린지 수정 (Zod 검증 완료 후 호출)
  */
-async function updateChallengeInput(req, res) {
+const updateChallengeInput = asyncHandler(async (req, res) => {
   // Zod 미들웨어에서 params 검증 완료
   const userID = req.auth?.userId;
 
@@ -56,12 +57,12 @@ async function updateChallengeInput(req, res) {
 
   // 호출 결과 반환
   return res.status(HTTP_STATUS.OK).json(response);
-}
+});
 
 /**
  * 챌린지 취소 (Zod 검증 완료 후 호출)
  */
-async function cancelChallengeInput(req, res) {
+const cancelChallengeInput = asyncHandler(async (req, res) => {
   // Zod 미들웨어에서 challengeId 검증 완료
   const userID = req.auth?.userId;
   const challengeID = req.params.challengeId;
@@ -81,12 +82,12 @@ async function cancelChallengeInput(req, res) {
 
   // 호출 결과 반환
   return res.status(HTTP_STATUS.OK).json(response);
-}
+});
 
 /**
  * 챌린지 삭제 (Zod 검증 완료 후 호출)
  */
-async function deleteChallengeInput(req, res) {
+const deleteChallengeInput = asyncHandler(async (req, res) => {
   // Zod 미들웨어에서 challengeId 검증 완료
   const userID = req.auth?.userId;
   const challengeID = req.params.challengeId;
@@ -106,12 +107,12 @@ async function deleteChallengeInput(req, res) {
 
   // 호출 결과 반환
   return res.status(HTTP_STATUS.OK).json(response);
-}
+});
 
 /**
  * 챌린지 완전 삭제 (Zod 검증 완료 후 호출)
  */
-async function hardDeleteChallengeInput(req, res) {
+const hardDeleteChallengeInput = asyncHandler(async (req, res) => {
   // Zod 미들웨어에서 challengeId 검증 완료
   const userID = req.auth?.userId;
   const challengeID = req.params.challengeId;
@@ -131,7 +132,7 @@ async function hardDeleteChallengeInput(req, res) {
 
   // 호출 결과 반환
   return res.status(HTTP_STATUS.OK).json(response);
-}
+});
 
 export default {
   createChallengeInput,
