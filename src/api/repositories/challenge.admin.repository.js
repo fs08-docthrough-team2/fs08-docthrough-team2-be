@@ -14,6 +14,7 @@ export async function findChallengesForAdmin({ where, skip, take, orderBy }) {
   return prisma.challenge.findMany({
     select: {
       challenge_no: true,
+      challenge_id: true,
       title: true,
       type: true,
       field: true,

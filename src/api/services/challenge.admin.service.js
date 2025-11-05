@@ -63,7 +63,8 @@ async function getChallengeList(searchKeyword, status, page, pageSize, sort) {
 
     // 응답 데이터 포맷팅
     const formattedChallenges = challenges.map((challenge) => ({
-      no: challenge.challenge_no,
+      challenge_no: challenge.challenge_no,
+      challenge_id: challenge.challenge_id,
       type: challenge.type,
       field: challenge.field,
       title: challenge.title,
