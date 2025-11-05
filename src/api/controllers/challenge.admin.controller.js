@@ -4,6 +4,8 @@ import isUUID from 'is-uuid';
 import HTTP_STATUS from '../../constants/http.constant.js';
 import { VALIDATION_MESSAGE } from '../../constants/message.constant.js';
 import { PAGINATION } from '../../constants/pagination.constant.js';
+import { errorResponse } from '../../utils/response.util.js';
+import { VALIDATION_ERROR_CODE } from '../../constants/error-code.constant.js';
 
 // 선택지에 대한 상수화
 const SORTLIST = ['신청시간빠름순', '신청시간느림순', '마감기한빠름순', '마감기한느림순', 'desc', 'asc'];
@@ -17,22 +19,28 @@ async function getChallengeListInput(req, res) {
 
   // 입력값 검증
   if (page <= 0 || pageSize <= 0) {
-    return res.status(HTTP_STATUS.BAD_REQUEST).json({
-      success: false,
-      message: VALIDATION_MESSAGE.INVALID_PAGE_MIN
-    });
+    return res.status(HTTP_STATUS.BAD_REQUEST).json(
+      errorResponse({
+        code: VALIDATION_ERROR_CODE.INVALID_PAGE_MIN,
+        message: VALIDATION_MESSAGE.INVALID_PAGE_MIN,
+      })
+    );
   }
   if (sort && !SORTLIST.includes(sort)) {
-    return res.status(HTTP_STATUS.BAD_REQUEST).json({
-      success: false,
-      message: VALIDATION_MESSAGE.INVALID_SORT
-    });
+    return res.status(HTTP_STATUS.BAD_REQUEST).json(
+      errorResponse({
+        code: VALIDATION_ERROR_CODE.INVALID_SORT,
+        message: VALIDATION_MESSAGE.INVALID_SORT,
+      })
+    );
   }
   if (status && !STATUSLIST.includes(status)) {
-    return res.status(HTTP_STATUS.BAD_REQUEST).json({
-      success: false,
-      message: VALIDATION_MESSAGE.INVALID_STATUS
-    });
+    return res.status(HTTP_STATUS.BAD_REQUEST).json(
+      errorResponse({
+        code: VALIDATION_ERROR_CODE.INVALID_STATUS,
+        message: VALIDATION_MESSAGE.INVALID_STATUS,
+      })
+    );
   }
 
   // 서비스 호출
@@ -50,10 +58,12 @@ async function getChallengeDetailInput(req, res) {
 
   // 입력값 검증
   if (!challengeID) {
-    return res.status(HTTP_STATUS.BAD_REQUEST).json({
-      success: false,
-      message: VALIDATION_MESSAGE.INVALID_CHALLENGE_ID
-    });
+    return res.status(HTTP_STATUS.BAD_REQUEST).json(
+      errorResponse({
+        code: VALIDATION_ERROR_CODE.INVALID_CHALLENGE_ID,
+        message: VALIDATION_MESSAGE.INVALID_CHALLENGE_ID,
+      })
+    );
   }
 
   // 서비스 호출
@@ -72,16 +82,20 @@ async function approveChallengeInput(req, res) {
 
   // 입력값 검증
   if (!userID) {
-    return res.status(HTTP_STATUS.BAD_REQUEST).json({
-      success: false,
-      message: VALIDATION_MESSAGE.INVALID_ID
-    });
+    return res.status(HTTP_STATUS.BAD_REQUEST).json(
+      errorResponse({
+        code: VALIDATION_ERROR_CODE.INVALID_FIELD,
+        message: VALIDATION_MESSAGE.INVALID_ID,
+      })
+    );
   }
   if (!challengeID) {
-    return res.status(HTTP_STATUS.BAD_REQUEST).json({
-      success: false,
-      message: VALIDATION_MESSAGE.INVALID_CHALLENGE_ID
-    });
+    return res.status(HTTP_STATUS.BAD_REQUEST).json(
+      errorResponse({
+        code: VALIDATION_ERROR_CODE.INVALID_CHALLENGE_ID,
+        message: VALIDATION_MESSAGE.INVALID_CHALLENGE_ID,
+      })
+    );
   }
 
   // 서비스 호출
@@ -101,22 +115,28 @@ async function rejectChallengeInput(req, res) {
 
   // 입력값 검증
   if (!userID) {
-    return res.status(HTTP_STATUS.BAD_REQUEST).json({
-      success: false,
-      message: VALIDATION_MESSAGE.INVALID_ID
-    });
+    return res.status(HTTP_STATUS.BAD_REQUEST).json(
+      errorResponse({
+        code: VALIDATION_ERROR_CODE.INVALID_FIELD,
+        message: VALIDATION_MESSAGE.INVALID_ID,
+      })
+    );
   }
   if (!challengeID) {
-    return res.status(HTTP_STATUS.BAD_REQUEST).json({
-      success: false,
-      message: VALIDATION_MESSAGE.INVALID_CHALLENGE_ID
-    });
+    return res.status(HTTP_STATUS.BAD_REQUEST).json(
+      errorResponse({
+        code: VALIDATION_ERROR_CODE.INVALID_CHALLENGE_ID,
+        message: VALIDATION_MESSAGE.INVALID_CHALLENGE_ID,
+      })
+    );
   }
   if (!reject_comment || reject_comment.trim() === '') {
-    return res.status(HTTP_STATUS.BAD_REQUEST).json({
-      success: false,
-      message: VALIDATION_MESSAGE.REQUIRED_REJECT_COMMENT
-    });
+    return res.status(HTTP_STATUS.BAD_REQUEST).json(
+      errorResponse({
+        code: VALIDATION_ERROR_CODE.REQUIRED_REJECT_COMMENT,
+        message: VALIDATION_MESSAGE.REQUIRED_REJECT_COMMENT,
+      })
+    );
   }
 
   // 서비스 호출

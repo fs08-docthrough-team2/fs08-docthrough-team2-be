@@ -6,6 +6,8 @@ import { ChallengeField, ChallengeStatus, ChallengeType } from '@prisma/client';
 import HTTP_STATUS from '../../constants/http.constant.js';
 import { VALIDATION_MESSAGE } from '../../constants/message.constant.js';
 import { PAGINATION, SORT_ORDER } from '../../constants/pagination.constant.js';
+import { errorResponse } from '../../utils/response.util.js';
+import { VALIDATION_ERROR_CODE } from '../../constants/error-code.constant.js';
 
 async function getChallengeListInput(req, res) {
   // 입력값 불러오기
@@ -18,25 +20,60 @@ async function getChallengeListInput(req, res) {
     title = undefined;
   }
   if (field && !Object.values(ChallengeField).includes(field)) {
-    return res.status(HTTP_STATUS.BAD_REQUEST).json({ message: VALIDATION_MESSAGE.INVALID_FIELD });
+    return res.status(HTTP_STATUS.BAD_REQUEST).json(
+      errorResponse({
+        code: VALIDATION_ERROR_CODE.INVALID_FIELD,
+        message: VALIDATION_MESSAGE.INVALID_FIELD,
+      })
+    );
   }
   if (type && !Object.values(ChallengeType).includes(type)) {
-    return res.status(HTTP_STATUS.BAD_REQUEST).json({ message: VALIDATION_MESSAGE.INVALID_TYPE });
+    return res.status(HTTP_STATUS.BAD_REQUEST).json(
+      errorResponse({
+        code: VALIDATION_ERROR_CODE.INVALID_TYPE,
+        message: VALIDATION_MESSAGE.INVALID_TYPE,
+      })
+    );
   }
   if (status && !Object.values(ChallengeStatus).includes(status)) {
-    return res.status(HTTP_STATUS.BAD_REQUEST).json({ message: VALIDATION_MESSAGE.INVALID_STATUS });
+    return res.status(HTTP_STATUS.BAD_REQUEST).json(
+      errorResponse({
+        code: VALIDATION_ERROR_CODE.INVALID_STATUS,
+        message: VALIDATION_MESSAGE.INVALID_STATUS,
+      })
+    );
   }
   if (!Number.isInteger(pageNum) || !Number.isInteger(pageSizeNum)) {
-    return res.status(HTTP_STATUS.BAD_REQUEST).json({ message: VALIDATION_MESSAGE.INVALID_PAGINATION });
+    return res.status(HTTP_STATUS.BAD_REQUEST).json(
+      errorResponse({
+        code: VALIDATION_ERROR_CODE.INVALID_PAGINATION,
+        message: VALIDATION_MESSAGE.INVALID_PAGINATION,
+      })
+    );
   }
   if (pageNum < PAGINATION.MIN_PAGE || pageSizeNum < PAGINATION.MIN_PAGE_SIZE) {
-    return res.status(HTTP_STATUS.BAD_REQUEST).json({ message: VALIDATION_MESSAGE.INVALID_PAGE_MIN });
+    return res.status(HTTP_STATUS.BAD_REQUEST).json(
+      errorResponse({
+        code: VALIDATION_ERROR_CODE.INVALID_PAGE_MIN,
+        message: VALIDATION_MESSAGE.INVALID_PAGE_MIN,
+      })
+    );
   }
   if (pageSizeNum > PAGINATION.MAX_PAGE_SIZE) {
-    return res.status(HTTP_STATUS.BAD_REQUEST).json({ message: VALIDATION_MESSAGE.INVALID_PAGE_SIZE_MAX });
+    return res.status(HTTP_STATUS.BAD_REQUEST).json(
+      errorResponse({
+        code: VALIDATION_ERROR_CODE.INVALID_PAGE_SIZE_MAX,
+        message: VALIDATION_MESSAGE.INVALID_PAGE_SIZE_MAX,
+      })
+    );
   }
   if (!Object.values(SORT_ORDER).includes(sort)) {
-    return res.status(HTTP_STATUS.BAD_REQUEST).json({ message: VALIDATION_MESSAGE.INVALID_SORT });
+    return res.status(HTTP_STATUS.BAD_REQUEST).json(
+      errorResponse({
+        code: VALIDATION_ERROR_CODE.INVALID_SORT,
+        message: VALIDATION_MESSAGE.INVALID_SORT,
+      })
+    );
   }
 
   // 서비스 호출
@@ -60,10 +97,12 @@ async function getChallengeDetailInput(req, res) {
 
   // 입력값 검증
   if (!challengeID) {
-    return res.status(HTTP_STATUS.BAD_REQUEST).json({
-      success: false,
-      message: VALIDATION_MESSAGE.INVALID_CHALLENGE_ID
-    });
+    return res.status(HTTP_STATUS.BAD_REQUEST).json(
+      errorResponse({
+        code: VALIDATION_ERROR_CODE.INVALID_CHALLENGE_ID,
+        message: VALIDATION_MESSAGE.INVALID_CHALLENGE_ID,
+      })
+    );
   }
 
   // 서비스 호출
@@ -82,20 +121,28 @@ async function getParticipateListInput(req, res) {
 
   // 입력값 검증
     if (!challengeID) {
-      return res.status(HTTP_STATUS.BAD_REQUEST).json({
-        success: false,
-        message: VALIDATION_MESSAGE.INVALID_CHALLENGE_ID
-      });
+      return res.status(HTTP_STATUS.BAD_REQUEST).json(
+        errorResponse({
+          code: VALIDATION_ERROR_CODE.INVALID_CHALLENGE_ID,
+          message: VALIDATION_MESSAGE.INVALID_CHALLENGE_ID,
+        })
+      );
     }
   if (!Number.isInteger(pageNum) || !Number.isInteger(pageSizeNum)) {
-    return res.status(HTTP_STATUS.BAD_REQUEST).json({
-      message: VALIDATION_MESSAGE.INVALID_PAGINATION,
-    });
+    return res.status(HTTP_STATUS.BAD_REQUEST).json(
+      errorResponse({
+        code: VALIDATION_ERROR_CODE.INVALID_PAGINATION,
+        message: VALIDATION_MESSAGE.INVALID_PAGINATION,
+      })
+    );
   }
   if (pageNum < PAGINATION.MIN_PAGE || pageSizeNum < PAGINATION.MIN_PAGE_SIZE) {
-    return res.status(HTTP_STATUS.BAD_REQUEST).json({
-      message: VALIDATION_MESSAGE.INVALID_PAGE_MIN,
-    });
+    return res.status(HTTP_STATUS.BAD_REQUEST).json(
+      errorResponse({
+        code: VALIDATION_ERROR_CODE.INVALID_PAGE_MIN,
+        message: VALIDATION_MESSAGE.INVALID_PAGE_MIN,
+      })
+    );
   }
 
   // 서비스 호출
@@ -118,31 +165,63 @@ async function getUserParticipateListInput(req, res) {
 
     // 입력값 검증
     if (!userID) {
-      return res.status(HTTP_STATUS.BAD_REQUEST).json({
-        success: false,
-        message: VALIDATION_MESSAGE.INVALID_ID
-      });
+      return res.status(HTTP_STATUS.BAD_REQUEST).json(
+        errorResponse({
+          code: VALIDATION_ERROR_CODE.INVALID_FIELD,
+          message: VALIDATION_MESSAGE.INVALID_ID,
+        })
+      );
     }
     if (title && title.trim() === '') {
       title = undefined;
     }
     if (field && !Object.values(ChallengeField).includes(field)) {
-      return res.status(HTTP_STATUS.BAD_REQUEST).json({ message: VALIDATION_MESSAGE.INVALID_FIELD });
+      return res.status(HTTP_STATUS.BAD_REQUEST).json(
+        errorResponse({
+          code: VALIDATION_ERROR_CODE.INVALID_FIELD,
+          message: VALIDATION_MESSAGE.INVALID_FIELD,
+        })
+      );
     }
     if (type && !Object.values(ChallengeType).includes(type)) {
-      return res.status(HTTP_STATUS.BAD_REQUEST).json({ message: VALIDATION_MESSAGE.INVALID_TYPE });
+      return res.status(HTTP_STATUS.BAD_REQUEST).json(
+        errorResponse({
+          code: VALIDATION_ERROR_CODE.INVALID_TYPE,
+          message: VALIDATION_MESSAGE.INVALID_TYPE,
+        })
+      );
     }
     if (status && !Object.values(ChallengeStatus).includes(status)) {
-      return res.status(HTTP_STATUS.BAD_REQUEST).json({ message: VALIDATION_MESSAGE.INVALID_STATUS });
+      return res.status(HTTP_STATUS.BAD_REQUEST).json(
+        errorResponse({
+          code: VALIDATION_ERROR_CODE.INVALID_STATUS,
+          message: VALIDATION_MESSAGE.INVALID_STATUS,
+        })
+      );
     }
     if (!Number.isInteger(pageNum) || !Number.isInteger(pageSizeNum)) {
-      return res.status(HTTP_STATUS.BAD_REQUEST).json({ message: VALIDATION_MESSAGE.INVALID_PAGINATION });
+      return res.status(HTTP_STATUS.BAD_REQUEST).json(
+        errorResponse({
+          code: VALIDATION_ERROR_CODE.INVALID_PAGINATION,
+          message: VALIDATION_MESSAGE.INVALID_PAGINATION,
+        })
+      );
     }
     if (pageNum < PAGINATION.MIN_PAGE || pageSizeNum < PAGINATION.MIN_PAGE_SIZE) {
-      return res.status(HTTP_STATUS.BAD_REQUEST).json({ message: VALIDATION_MESSAGE.INVALID_PAGE_MIN });
+      return res.status(HTTP_STATUS.BAD_REQUEST).json(
+        errorResponse({
+          code: VALIDATION_ERROR_CODE.INVALID_PAGE_MIN,
+          message: VALIDATION_MESSAGE.INVALID_PAGE_MIN,
+        })
+      );
     }
     if (pageSizeNum > PAGINATION.MAX_PAGE_SIZE) {
-      return res.status(HTTP_STATUS.BAD_REQUEST).json({ message: VALIDATION_MESSAGE.INVALID_PAGE_SIZE_MAX });
+      return res.status(HTTP_STATUS.BAD_REQUEST).json(
+        errorResponse({
+          code: VALIDATION_ERROR_CODE.INVALID_PAGE_SIZE_MAX,
+          message: VALIDATION_MESSAGE.INVALID_PAGE_SIZE_MAX,
+        })
+      );
     }
 
     // 서비스 호출
@@ -169,31 +248,63 @@ async function getUserCompleteListInput(req, res) {
 
   // 입력값 검증
   if (!userID) {
-    return res.status(HTTP_STATUS.BAD_REQUEST).json({
-      success: false,
-      message: VALIDATION_MESSAGE.INVALID_ID
-    });
+    return res.status(HTTP_STATUS.BAD_REQUEST).json(
+      errorResponse({
+        code: VALIDATION_ERROR_CODE.INVALID_FIELD,
+        message: VALIDATION_MESSAGE.INVALID_ID,
+      })
+    );
   }
   if (title && title.trim() === '') {
     title = undefined;
   }
   if (field && !Object.values(ChallengeField).includes(field)) {
-    return res.status(HTTP_STATUS.BAD_REQUEST).json({ message: VALIDATION_MESSAGE.INVALID_FIELD });
+    return res.status(HTTP_STATUS.BAD_REQUEST).json(
+      errorResponse({
+        code: VALIDATION_ERROR_CODE.INVALID_FIELD,
+        message: VALIDATION_MESSAGE.INVALID_FIELD,
+      })
+    );
   }
   if (type && !Object.values(ChallengeType).includes(type)) {
-    return res.status(HTTP_STATUS.BAD_REQUEST).json({ message: VALIDATION_MESSAGE.INVALID_TYPE });
+    return res.status(HTTP_STATUS.BAD_REQUEST).json(
+      errorResponse({
+        code: VALIDATION_ERROR_CODE.INVALID_TYPE,
+        message: VALIDATION_MESSAGE.INVALID_TYPE,
+      })
+    );
   }
   if (status && !Object.values(ChallengeStatus).includes(status)) {
-    return res.status(HTTP_STATUS.BAD_REQUEST).json({ message: VALIDATION_MESSAGE.INVALID_STATUS });
+    return res.status(HTTP_STATUS.BAD_REQUEST).json(
+      errorResponse({
+        code: VALIDATION_ERROR_CODE.INVALID_STATUS,
+        message: VALIDATION_MESSAGE.INVALID_STATUS,
+      })
+    );
   }
   if (!Number.isInteger(pageNum) || !Number.isInteger(pageSizeNum)) {
-    return res.status(HTTP_STATUS.BAD_REQUEST).json({ message: VALIDATION_MESSAGE.INVALID_PAGINATION });
+    return res.status(HTTP_STATUS.BAD_REQUEST).json(
+      errorResponse({
+        code: VALIDATION_ERROR_CODE.INVALID_PAGINATION,
+        message: VALIDATION_MESSAGE.INVALID_PAGINATION,
+      })
+    );
   }
   if (pageNum < PAGINATION.MIN_PAGE || pageSizeNum < PAGINATION.MIN_PAGE_SIZE) {
-    return res.status(HTTP_STATUS.BAD_REQUEST).json({ message: VALIDATION_MESSAGE.INVALID_PAGE_MIN });
+    return res.status(HTTP_STATUS.BAD_REQUEST).json(
+      errorResponse({
+        code: VALIDATION_ERROR_CODE.INVALID_PAGE_MIN,
+        message: VALIDATION_MESSAGE.INVALID_PAGE_MIN,
+      })
+    );
   }
   if (pageSizeNum > PAGINATION.MAX_PAGE_SIZE) {
-    return res.status(HTTP_STATUS.BAD_REQUEST).json({ message: VALIDATION_MESSAGE.INVALID_PAGE_SIZE_MAX });
+    return res.status(HTTP_STATUS.BAD_REQUEST).json(
+      errorResponse({
+        code: VALIDATION_ERROR_CODE.INVALID_PAGE_SIZE_MAX,
+        message: VALIDATION_MESSAGE.INVALID_PAGE_SIZE_MAX,
+      })
+    );
   }
 
   // 서비스 호출
@@ -220,31 +331,63 @@ async function getUserChallengeDetailInput(req, res) {
 
   // 입력 검증
   if (!userID) {
-    return res.status(HTTP_STATUS.BAD_REQUEST).json({
-      success: false,
-      message: VALIDATION_MESSAGE.INVALID_ID
-    });
+    return res.status(HTTP_STATUS.BAD_REQUEST).json(
+      errorResponse({
+        code: VALIDATION_ERROR_CODE.INVALID_FIELD,
+        message: VALIDATION_MESSAGE.INVALID_ID,
+      })
+    );
   }
   if (title && title.trim() === '') {
     title = undefined;
   }
   if (field && !Object.values(ChallengeField).includes(field)) {
-    return res.status(HTTP_STATUS.BAD_REQUEST).json({ message: VALIDATION_MESSAGE.INVALID_FIELD });
+    return res.status(HTTP_STATUS.BAD_REQUEST).json(
+      errorResponse({
+        code: VALIDATION_ERROR_CODE.INVALID_FIELD,
+        message: VALIDATION_MESSAGE.INVALID_FIELD,
+      })
+    );
   }
   if (type && !Object.values(ChallengeType).includes(type)) {
-    return res.status(HTTP_STATUS.BAD_REQUEST).json({ message: VALIDATION_MESSAGE.INVALID_TYPE });
+    return res.status(HTTP_STATUS.BAD_REQUEST).json(
+      errorResponse({
+        code: VALIDATION_ERROR_CODE.INVALID_TYPE,
+        message: VALIDATION_MESSAGE.INVALID_TYPE,
+      })
+    );
   }
   if (status && !Object.values(ChallengeStatus).includes(status)) {
-    return res.status(HTTP_STATUS.BAD_REQUEST).json({ message: VALIDATION_MESSAGE.INVALID_STATUS });
+    return res.status(HTTP_STATUS.BAD_REQUEST).json(
+      errorResponse({
+        code: VALIDATION_ERROR_CODE.INVALID_STATUS,
+        message: VALIDATION_MESSAGE.INVALID_STATUS,
+      })
+    );
   }
   if (!Number.isInteger(pageNum) || !Number.isInteger(pageSizeNum)) {
-    return res.status(HTTP_STATUS.BAD_REQUEST).json({ message: VALIDATION_MESSAGE.INVALID_PAGINATION });
+    return res.status(HTTP_STATUS.BAD_REQUEST).json(
+      errorResponse({
+        code: VALIDATION_ERROR_CODE.INVALID_PAGINATION,
+        message: VALIDATION_MESSAGE.INVALID_PAGINATION,
+      })
+    );
   }
   if (pageNum < PAGINATION.MIN_PAGE || pageSizeNum < PAGINATION.MIN_PAGE_SIZE) {
-    return res.status(HTTP_STATUS.BAD_REQUEST).json({ message: VALIDATION_MESSAGE.INVALID_PAGE_MIN });
+    return res.status(HTTP_STATUS.BAD_REQUEST).json(
+      errorResponse({
+        code: VALIDATION_ERROR_CODE.INVALID_PAGE_MIN,
+        message: VALIDATION_MESSAGE.INVALID_PAGE_MIN,
+      })
+    );
   }
   if (pageSizeNum > PAGINATION.MAX_PAGE_SIZE) {
-    return res.status(HTTP_STATUS.BAD_REQUEST).json({ message: VALIDATION_MESSAGE.INVALID_PAGE_SIZE_MAX });
+    return res.status(HTTP_STATUS.BAD_REQUEST).json(
+      errorResponse({
+        code: VALIDATION_ERROR_CODE.INVALID_PAGE_SIZE_MAX,
+        message: VALIDATION_MESSAGE.INVALID_PAGE_SIZE_MAX,
+      })
+    );
   }
 
   // 서비스 호출

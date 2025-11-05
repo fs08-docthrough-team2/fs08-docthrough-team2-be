@@ -14,6 +14,8 @@ from "../services/challenge.work.service.js";
 import HTTP_STATUS from "../../constants/http.constant.js";
 import { PAGINATION } from "../../constants/pagination.constant.js";
 import { VALIDATION_MESSAGE } from "../../constants/message.constant.js";
+import { successResponse, errorResponse } from "../../utils/response.util.js";
+import { VALIDATION_ERROR_CODE } from "../../constants/error-code.constant.js";
 
 // 작업물 리스트 조회
 export const getWorkListController = asyncHandler(async (req, res) =>{
@@ -23,7 +25,7 @@ export const getWorkListController = asyncHandler(async (req, res) =>{
     page: Number(page) || PAGINATION.DEFAULT_PAGE,
     size: Number(size) || PAGINATION.DEFAULT_PAGE_SIZE,
   });
-  res.status(HTTP_STATUS.OK).json({ success: true, data });
+  res.status(HTTP_STATUS.OK).json(successResponse({ data }));
 });
 
 
@@ -34,21 +36,21 @@ export const getSaveListController = asyncHandler(async (req, res) => {
     page: Number(page) || PAGINATION.DEFAULT_PAGE,
     size: Number(size) || PAGINATION.DEFAULT_PAGE_SIZE,
   });
-  res.status(HTTP_STATUS.OK).json({ success: true, data });
+  res.status(HTTP_STATUS.OK).json(successResponse({ data }));
 });
 
 // 작업물 상세 조회
 export const getWorkDetailController = asyncHandler(async (req, res) => {
   const { attend_id }  = req.params;
   const data = await getWorkDetail(attend_id);
-  res.status(HTTP_STATUS.OK).json( { success: true, data });
+  res.status(HTTP_STATUS.OK).json(successResponse({ data }));
 });
 
 // 임시 저장 상세 조회
 export const getSaveDetailController = asyncHandler(async (req, res) => {
   const { attend_id } = req.params;
   const data = await getSaveDetail(req, attend_id);
-  res.status(HTTP_STATUS.OK).json( { success: true, data });
+  res.status(HTTP_STATUS.OK).json(successResponse({ data }));
 });
 
 // 생성
@@ -56,8 +58,12 @@ export const createWorkController = asyncHandler(async (req, res) => {
   let { challengeId, title, workItem } = req.body;
 
   if (!challengeId) {
-    res.status(HTTP_STATUS.BAD_REQUEST);
-    throw new Error(VALIDATION_MESSAGE.REQUIRED_CHALLENGE_ID);
+    return res.status(HTTP_STATUS.BAD_REQUEST).json(
+      errorResponse({
+        code: VALIDATION_ERROR_CODE.REQUIRED_CHALLENGE_ID,
+        message: VALIDATION_MESSAGE.REQUIRED_CHALLENGE_ID,
+      })
+    );
   }
 
   if (!title) {
@@ -65,12 +71,16 @@ export const createWorkController = asyncHandler(async (req, res) => {
   }
 
   if (!workItem) {
-    res.status(HTTP_STATUS.BAD_REQUEST);
-    throw new Error(VALIDATION_MESSAGE.REQUIRED_WORK_ITEM);
+    return res.status(HTTP_STATUS.BAD_REQUEST).json(
+      errorResponse({
+        code: VALIDATION_ERROR_CODE.REQUIRED_WORK_ITEM,
+        message: VALIDATION_MESSAGE.REQUIRED_WORK_ITEM,
+      })
+    );
   }
 
   const data = await createWork(req, challengeId, title, workItem);
-  res.status(HTTP_STATUS.OK).json( { success: true, data });
+  res.status(HTTP_STATUS.OK).json(successResponse({ data }));
 });
 
 
@@ -79,8 +89,12 @@ export const createSaveWorkController = asyncHandler(async (req, res) => {
   let { challengeId, title, workItem } = req.body;
 
   if (!challengeId) {
-    res.status(HTTP_STATUS.BAD_REQUEST);
-    throw new Error(VALIDATION_MESSAGE.REQUIRED_CHALLENGE_ID);
+    return res.status(HTTP_STATUS.BAD_REQUEST).json(
+      errorResponse({
+        code: VALIDATION_ERROR_CODE.REQUIRED_CHALLENGE_ID,
+        message: VALIDATION_MESSAGE.REQUIRED_CHALLENGE_ID,
+      })
+    );
   }
 
   if (!title) {
@@ -88,12 +102,16 @@ export const createSaveWorkController = asyncHandler(async (req, res) => {
   }
 
   if (!workItem) {
-    res.status(HTTP_STATUS.BAD_REQUEST);
-    throw new Error(VALIDATION_MESSAGE.REQUIRED_WORK_ITEM);
+    return res.status(HTTP_STATUS.BAD_REQUEST).json(
+      errorResponse({
+        code: VALIDATION_ERROR_CODE.REQUIRED_WORK_ITEM,
+        message: VALIDATION_MESSAGE.REQUIRED_WORK_ITEM,
+      })
+    );
   }
 
   const data = await createSaveWork(req, challengeId, title, workItem);
-  res.status(HTTP_STATUS.OK).json( { success: true, data });
+  res.status(HTTP_STATUS.OK).json(successResponse({ data }));
 });
 
 
@@ -102,7 +120,7 @@ export const updateWorkController = asyncHandler(async (req, res) => {
   const { attend_id } = req.params;
   const { title, workItem } = req.body;
   const data = await updateWork(req, attend_id, { title, workItem });
-  res.status(HTTP_STATUS.OK).json({ success: true, data });
+  res.status(HTTP_STATUS.OK).json(successResponse({ data }));
 });
 
 
@@ -117,6 +135,6 @@ export const deleteWorkController = asyncHandler(async (req, res) => {
 export const toggleLikeController = asyncHandler(async (req, res) => {
   const { attend_id } = req.params;
   const data = await toggleLike(req, attend_id);
-  res.status(HTTP_STATUS.OK).json({ success: true, data });
+  res.status(HTTP_STATUS.OK).json(successResponse({ data }));
 });
 

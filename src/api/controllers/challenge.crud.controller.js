@@ -3,6 +3,8 @@ import challengeCRUDServices from '../services/challenge.crud.service.js';
 import isUUID from 'is-uuid';
 import HTTP_STATUS from '../../constants/http.constant.js';
 import { VALIDATION_MESSAGE, CHALLENGE_MESSAGE } from '../../constants/message.constant.js';
+import { errorResponse } from '../../utils/response.util.js';
+import { VALIDATION_ERROR_CODE, CHALLENGE_ERROR_CODE } from '../../constants/error-code.constant.js';
 
 async function createChallengeInput(req, res) {
   // 입력값 불러오기
@@ -11,16 +13,28 @@ async function createChallengeInput(req, res) {
 
   // 입력값 검증
   if (!userID) {
-    return res.status(HTTP_STATUS.BAD_REQUEST).json({
-      success: false,
-      message: VALIDATION_MESSAGE.INVALID_ID
-    });
+    return res.status(HTTP_STATUS.BAD_REQUEST).json(
+      errorResponse({
+        code: VALIDATION_ERROR_CODE.INVALID_FIELD,
+        message: VALIDATION_MESSAGE.INVALID_ID,
+      })
+    );
   }
   if (!title || !source || !field || !type || !deadline || !capacity || !content) {
-    return res.status(HTTP_STATUS.BAD_REQUEST).json({ error: CHALLENGE_MESSAGE.REQUIRED_FIELDS_MISSING });
+    return res.status(HTTP_STATUS.BAD_REQUEST).json(
+      errorResponse({
+        code: CHALLENGE_ERROR_CODE.REQUIRED_FIELDS_MISSING,
+        message: CHALLENGE_MESSAGE.REQUIRED_FIELDS_MISSING,
+      })
+    );
   }
   if (typeof capacity !== 'string' || capacity <= 0) {
-    return res.status(HTTP_STATUS.BAD_REQUEST).json({ error: CHALLENGE_MESSAGE.INVALID_CAPACITY });
+    return res.status(HTTP_STATUS.BAD_REQUEST).json(
+      errorResponse({
+        code: CHALLENGE_ERROR_CODE.INVALID_CAPACITY,
+        message: CHALLENGE_MESSAGE.INVALID_CAPACITY,
+      })
+    );
   }
 
   // 서비스 호출
@@ -38,10 +52,12 @@ async function updateChallengeInput(req, res) {
 
   // 입력값 검증
   if (!userID) {
-    return res.status(HTTP_STATUS.BAD_REQUEST).json({
-      success: false,
-      message: VALIDATION_MESSAGE.INVALID_ID
-    });
+    return res.status(HTTP_STATUS.BAD_REQUEST).json(
+      errorResponse({
+        code: VALIDATION_ERROR_CODE.INVALID_FIELD,
+        message: VALIDATION_MESSAGE.INVALID_ID,
+      })
+    );
   }
 
   // 서비스 호출
@@ -58,16 +74,20 @@ async function cancelChallengeInput(req, res) {
 
   // 입력값 검증
   if (!userID) {
-    return res.status(HTTP_STATUS.BAD_REQUEST).json({
-      success: false,
-      message: VALIDATION_MESSAGE.INVALID_ID
-    });
+    return res.status(HTTP_STATUS.BAD_REQUEST).json(
+      errorResponse({
+        code: VALIDATION_ERROR_CODE.INVALID_FIELD,
+        message: VALIDATION_MESSAGE.INVALID_ID,
+      })
+    );
   }
   if (!challengeID) {
-    return res.status(HTTP_STATUS.BAD_REQUEST).json({
-      success: false,
-      message: VALIDATION_MESSAGE.INVALID_CHALLENGE_ID
-    });
+    return res.status(HTTP_STATUS.BAD_REQUEST).json(
+      errorResponse({
+        code: VALIDATION_ERROR_CODE.INVALID_CHALLENGE_ID,
+        message: VALIDATION_MESSAGE.INVALID_CHALLENGE_ID,
+      })
+    );
   }
 
   // 서비스 호출
@@ -84,16 +104,20 @@ async function deleteChallengeInput(req, res) {
 
   // 입력값 검증
   if (!userID) {
-    return res.status(HTTP_STATUS.BAD_REQUEST).json({
-      success: false,
-      message: VALIDATION_MESSAGE.INVALID_ID
-    });
+    return res.status(HTTP_STATUS.BAD_REQUEST).json(
+      errorResponse({
+        code: VALIDATION_ERROR_CODE.INVALID_FIELD,
+        message: VALIDATION_MESSAGE.INVALID_ID,
+      })
+    );
   }
   if (!challengeID) {
-    return res.status(HTTP_STATUS.BAD_REQUEST).json({
-      success: false,
-      message: VALIDATION_MESSAGE.INVALID_CHALLENGE_ID
-    });
+    return res.status(HTTP_STATUS.BAD_REQUEST).json(
+      errorResponse({
+        code: VALIDATION_ERROR_CODE.INVALID_CHALLENGE_ID,
+        message: VALIDATION_MESSAGE.INVALID_CHALLENGE_ID,
+      })
+    );
   }
 
   // 서비스 호출
@@ -110,16 +134,20 @@ async function hardDeleteChallengeInput(req, res) {
 
   // 입력값 검증
   if (!userID) {
-    return res.status(HTTP_STATUS.BAD_REQUEST).json({
-      success: false,
-      message: VALIDATION_MESSAGE.INVALID_ID
-    });
+    return res.status(HTTP_STATUS.BAD_REQUEST).json(
+      errorResponse({
+        code: VALIDATION_ERROR_CODE.INVALID_FIELD,
+        message: VALIDATION_MESSAGE.INVALID_ID,
+      })
+    );
   }
   if (!challengeID) {
-    return res.status(HTTP_STATUS.BAD_REQUEST).json({
-      success: false,
-      message: VALIDATION_MESSAGE.INVALID_CHALLENGE_ID
-    });
+    return res.status(HTTP_STATUS.BAD_REQUEST).json(
+      errorResponse({
+        code: VALIDATION_ERROR_CODE.INVALID_CHALLENGE_ID,
+        message: VALIDATION_MESSAGE.INVALID_CHALLENGE_ID,
+      })
+    );
   }
 
   // 서비스 호출
