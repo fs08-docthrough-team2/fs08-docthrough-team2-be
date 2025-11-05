@@ -134,7 +134,7 @@
  *             type: object
  *             required: [challengeId, title, workItem]
  *             properties:
- *               challenge_id:
+ *               challengeId:
  *                 type: string
  *               title:
  *                 type: string
