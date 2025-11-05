@@ -61,6 +61,11 @@ async function getChallengeList(searchKeyword, status, page, pageSize, sort) {
       orderBy: orderBy,
     });
 
+    // challenges가 배열인지 확인
+    if (!Array.isArray(challenges)) {
+      throw new Error('챌린지 목록 조회에 실패했습니다.');
+    }
+
     // 응답 데이터 포맷팅
     const formattedChallenges = challenges.map((challenge) => ({
       challenge_no: challenge.challenge_no,
@@ -96,6 +101,11 @@ async function getChallengeDetail(challengeId) {
     // 챌린지 상세 내용 조회
     const challengeDetail = await challengeAdminRepository.findChallengeById(challengeId);
 
+    // 챌린지가 존재하지 않으면 에러
+    if (!challengeDetail) {
+      throw new Error('챌린지를 찾을 수 없습니다.');
+    }
+
     // 결과를 반환
     return {
       success: true,
@@ -119,6 +129,11 @@ async function approveChallenge(challengeId) {
   try {
     // 챌린지 승인 상태 변경
     const approvedChallenge = await challengeAdminRepository.approveChallengeById(challengeId);
+
+    // 챌린지가 존재하지 않으면 에러
+    if (!approvedChallenge) {
+      throw new Error('챌린지를 찾을 수 없습니다.');
+    }
 
     // 승인 알림 전송
     await noticeService.addChallengeStateNotice(
@@ -147,6 +162,11 @@ async function rejectChallenge(challengeId, reject_comment) {
       challengeId,
       reject_comment
     );
+
+    // 챌린지가 존재하지 않으면 에러
+    if (!rejectedChallenge) {
+      throw new Error('챌린지를 찾을 수 없습니다.');
+    }
 
     // 거절 알림 전송 (사유 포함)
     await noticeService.addAdminChallengeUpdateNotice(
