@@ -69,6 +69,7 @@ async function getChallengeList(searchKeyword, status, page, pageSize, sort) {
       field: challenge.field,
       title: challenge.title,
       participants: challenge._count.attends,
+      maxParticipants: challenge.capacity,
       appliedDate: challenge.created_at,
       deadline: challenge.deadline,
       status: challenge.status,
