@@ -80,17 +80,17 @@ async function cancelChallenge(challengeID, userID) {
 async function deleteChallenge(challengeID, userID) {
   try{
     // 챌린지를 DB에 업데이트하고, 내용을 반환 받음
-    const deleteChallenge = await challengeCrudRepository.deleteChallengeById(challengeID);
+    const deletedChallenge = await challengeCrudRepository.deleteChallengeById(challengeID);
 
     // 챌린지 삭제 알림 함수 호출
-    await noticeService.addModifyNotice("챌린지","삭제", userID, deleteChallenge.title);
+    await noticeService.addModifyNotice("챌린지","삭제", userID, deletedChallenge.title);
 
     // 결과를 반환
     return {
       success: true,
       message: '챌린지가 성공적으로 삭제되었습니다.',
       data: {
-        deleteChallenge: deleteChallenge,
+        deletedChallenge: deletedChallenge,
       }
     };
   } catch (error) {
@@ -104,7 +104,7 @@ async function hardDeleteChallenge(challengeID, userID) {
     const deletedChallenge = await challengeCrudRepository.hardDeleteChallengeById(challengeID);
 
     // 챌린지 완전 삭제 알림 함수 호출
-    await noticeService.addModifyNotice("챌린지","완전 삭제", userID, deleteChallenge.title);
+    await noticeService.addModifyNotice("챌린지","완전 삭제", userID, deletedChallenge.title);
 
     // 결과를 반환
     return {
