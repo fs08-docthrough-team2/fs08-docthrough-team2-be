@@ -74,11 +74,11 @@
  *         name: sort
  *         schema:
  *           type: string
- *           enum: [asc, desc]
- *           default: asc
+ *           enum: [신청시간빠름순, 신청시간느림순, 마감기한빠름순, 마감기한느림순]
+ *           default: 신청시간느림순
  *         required: false
- *         description: 마감일 기준 정렬 (asc=오름차순, desc=내림차순)
- *         example: "asc"
+ *         description: 정렬 기준 (신청시간빠름순=생성일 오름차순, 신청시간느림순=생성일 내림차순, 마감기한빠름순=마감일 오름차순, 마감기한느림순=마감일 내림차순)
+ *         example: "신청시간느림순"
  *     responses:
  *       200:
  *         description: 챌린지 목록 조회 성공

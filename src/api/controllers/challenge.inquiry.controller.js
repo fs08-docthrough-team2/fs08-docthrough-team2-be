@@ -14,12 +14,16 @@ import {
   validateSort,
   validateChallengeId,
   validateUserId,
-  sanitizeString,
+  sanitizeString, validateEnum,
 } from '../../utils/validation.util.js';
+import { VALIDATION_ERROR_CODE } from '../../constants/error-code.constant.js';
+import { VALIDATION_MESSAGE } from '../../constants/message.constant.js';
+
+const SORTLIST = ['신청시간빠름순', '신청시간느림순', '마감기한빠름순', '마감기한느림순'];
 
 const getChallengeListInput = asyncHandler(async (req, res) => {
   // 입력값 불러오기
-  let { title, field, type, status, page = PAGINATION.DEFAULT_PAGE, pageSize = PAGINATION.DEFAULT_PAGE_SIZE, sort = SORT_ORDER.ASC } = req.query;
+  let { title, field, type, status, page = PAGINATION.DEFAULT_PAGE, pageSize = PAGINATION.DEFAULT_PAGE_SIZE, sort = '신청시간느림순' } = req.query;
   const pageNum = Number(page);
   const pageSizeNum = Number(pageSize);
 
@@ -38,7 +42,7 @@ const getChallengeListInput = asyncHandler(async (req, res) => {
   valid = validatePagination(pageNum, pageSizeNum, res);
   if (valid !== true) return valid;
 
-  valid = validateSort(sort, res, SORT_ORDER);
+  valid = validateSort(sort, res, SORTLIST);
   if (valid !== true) return valid;
 
   // 서비스 호출

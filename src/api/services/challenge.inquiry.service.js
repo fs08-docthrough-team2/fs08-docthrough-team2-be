@@ -23,6 +23,25 @@ async function getChallengeList({ title, field, type, status, page, pageSize, so
       whereCondition.status = status;
     }
 
+    // 정렬 조건 설정
+    let orderBy;
+    switch (sort) {
+      case '신청시간빠름순':
+        orderBy = { created_at: 'asc' };
+        break;
+      case '신청시간느림순':
+        orderBy = { created_at: 'desc' };
+        break;
+      case '마감기한빠름순':
+        orderBy = { deadline: 'asc' };
+        break;
+      case '마감기한느림순':
+        orderBy = { deadline: 'desc' };
+        break;
+      default:
+        orderBy = { created_at: 'desc' };
+    }
+
     // 전체 개수 조회
     const totalCount = await challengeInquiryRepository.countChallenges(whereCondition);
 
@@ -31,9 +50,7 @@ async function getChallengeList({ title, field, type, status, page, pageSize, so
       where: whereCondition,
       skip: (page - 1) * pageSize,
       take: pageSize,
-      orderBy: {
-        deadline: sort,
-      },
+      orderBy: orderBy,
     });
 
     // challenges가 배열인지 확인
