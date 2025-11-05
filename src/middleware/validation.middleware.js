@@ -19,8 +19,25 @@ export const validate = (schema) => {
 
       // 검증된 데이터로 요청 객체 업데이트
       req.body = validated.body || req.body;
-      req.query = validated.query || req.query;
-      req.params = validated.params || req.params;
+
+      // req.query와 req.params는 읽기 전용이므로 defineProperty 사용
+      if (validated.query) {
+        Object.defineProperty(req, 'query', {
+          value: validated.query,
+          writable: false,
+          enumerable: true,
+          configurable: true,
+        });
+      }
+
+      if (validated.params) {
+        Object.defineProperty(req, 'params', {
+          value: validated.params,
+          writable: false,
+          enumerable: true,
+          configurable: true,
+        });
+      }
 
       next();
     } catch (error) {
@@ -82,7 +99,15 @@ export const validateQuery = (schema) => {
   return async (req, res, next) => {
     try {
       const validated = await schema.parseAsync(req.query);
-      req.query = validated;
+
+      // req.query는 읽기 전용이므로 defineProperty 사용
+      Object.defineProperty(req, 'query', {
+        value: validated,
+        writable: false,
+        enumerable: true,
+        configurable: true,
+      });
+
       next();
     } catch (error) {
       if (error instanceof ZodError) {
@@ -111,7 +136,15 @@ export const validateParams = (schema) => {
   return async (req, res, next) => {
     try {
       const validated = await schema.parseAsync(req.params);
-      req.params = validated;
+
+      // req.params는 읽기 전용이므로 defineProperty 사용
+      Object.defineProperty(req, 'params', {
+        value: validated,
+        writable: false,
+        enumerable: true,
+        configurable: true,
+      });
+
       next();
     } catch (error) {
       if (error instanceof ZodError) {
