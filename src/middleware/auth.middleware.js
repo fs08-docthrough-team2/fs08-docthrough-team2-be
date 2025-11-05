@@ -84,7 +84,6 @@ const verifyRefreshToken = [
 async function verifyAdmin(req, res, next) {
   try {
     const role = req.auth?.role || req.user?.role;
-    console.log("verifyAdmin - req.auth:", req.auth);
     if (role !== 'ADMIN') {
       const err = new Error('관리자 권한이 필요합니다!');
       err.status = 403;

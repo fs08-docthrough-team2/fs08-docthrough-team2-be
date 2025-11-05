@@ -1,26 +1,29 @@
 ### GET Feedback List
-GET {{baseUrl}}/api/challenge/translated-detail/feedback-list?attend_id=1
+GET {{baseUrl}}/api/challenge/feedback/translated-detail/feedback-list?attend_id=dda81aff-0289-4d6d-996b-b1c9863e86a3
 
 ### GET Feedback Detail
-GET {{baseUrl}}/api/challenge/translated-detail/feedback-detail?feedback_id=1
+GET {{baseUrl}}/api/challenge/feedback/translated-detail/feedback-detail?feedback_id=3a2df5fd-6177-4fc7-9806-967943a8938d
 
 ### POST Create Feedback
-POST {{baseUrl}}/api/challenge/translated-detail/feedback-detail
+POST {{baseUrl}}/api/challenge/feedback/translated-detail/feedback-detail
+Authorization: Bearer {{accessToken}}
 content-type: application/json
 
 {
-  "attend_id": 1,
+  "attend_id": "dda81aff-0289-4d6d-996b-b1c9863e86a3",
   "content": "피드백 내용"
 }
 
 ### PATCH Update Feedback
-PATCH {{baseUrl}}/api/challenge/translated-detail/feedback-detail
+PATCH {{baseUrl}}/api/challenge/feedback/translated-detail/feedback-detail
+Authorization: Bearer {{accessToken}}
 content-type: application/json
 
 {
-  "feedback_id": 1,
+  "feedback_id": "14f57bb4-4ac7-43d5-a48d-6d6c2f5c4176",
   "content": "수정된 피드백 내용"
 }
 
 ### DELETE Feedback
-DELETE {{baseUrl}}/api/challenge/translated-detail/feedback-detail?feedback_id=1
+DELETE {{baseUrl}}/api/challenge/feedback/translated-detail/feedback-detail?feedback_id=14f57bb4-4ac7-43d5-a48d-6d6c2f5c4176
+Authorization: Bearer {{accessToken}}
