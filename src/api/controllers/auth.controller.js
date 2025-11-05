@@ -15,10 +15,12 @@ export const signupController = asyncHandler(async (req, res) => {
   res.status(HTTP_STATUS.CREATED).json(
     successResponse({
       data: {
-        userId,
-        email: userEmail,
-        nickName: userNickName,
-        role,
+        user: {
+          userId,
+          email: userEmail,
+          nickName: userNickName,
+          role,
+        },
         accessToken,
         refreshToken
       },
@@ -37,10 +39,12 @@ export const loginController = asyncHandler(async (req, res) => {
   res.status(HTTP_STATUS.OK).json(
     successResponse({
       data: {
-        userId,
-        email: userEmail,
-        nickName,
-        role,
+        user: {
+          userId,
+          email: userEmail,
+          nickName,
+          role,
+        },
         accessToken,
         refreshToken
       },
