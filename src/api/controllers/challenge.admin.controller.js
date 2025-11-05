@@ -1,6 +1,11 @@
 // 설명: 요청 파싱(params/query/body) + 입력 검증 결과 처리하는 파일입니다.
 import challengeAdminServices from '../services/challenge.admin.service.js';
 import isUUID from 'is-uuid';
+import HTTP_STATUS from '../../constants/http.constant.js';
+import { VALIDATION_MESSAGE } from '../../constants/message.constant.js';
+import { PAGINATION } from '../../constants/pagination.constant.js';
+import { errorResponse } from '../../utils/response.util.js';
+import { VALIDATION_ERROR_CODE } from '../../constants/error-code.constant.js';
 
 // 선택지에 대한 상수화
 const SORTLIST = ['신청시간빠름순', '신청시간느림순', '마감기한빠름순', '마감기한느림순', 'desc', 'asc'];
@@ -9,27 +14,33 @@ const STATUSLIST = ['신청승인', '신청거절', '신청취소', '신청대�
 async function getChallengeListInput(req, res) {
   // 입력값 불러오기
   const { searchKeyword, status, sort = 'desc' } = req.query;
-  const page = parseInt(req.query.page) || 1;
-  const pageSize = parseInt(req.query.pageSize) || 10;
+  const page = parseInt(req.query.page) || PAGINATION.DEFAULT_PAGE;
+  const pageSize = parseInt(req.query.pageSize) || PAGINATION.DEFAULT_PAGE_SIZE;
 
   // 입력값 검증
   if (page <= 0 || pageSize <= 0) {
-    return res.status(400).json({
-      success: false,
-      message: "페이지 번호와 페이지 크기는 1 이상의 값이어야 합니다."
-    });
+    return res.status(HTTP_STATUS.BAD_REQUEST).json(
+      errorResponse({
+        code: VALIDATION_ERROR_CODE.INVALID_PAGE_MIN,
+        message: VALIDATION_MESSAGE.INVALID_PAGE_MIN,
+      })
+    );
   }
   if (sort && !SORTLIST.includes(sort)) {
-    return res.status(400).json({
-      success: false,
-      message: "유효하지 않은 정렬 기준입니다."
-    });
+    return res.status(HTTP_STATUS.BAD_REQUEST).json(
+      errorResponse({
+        code: VALIDATION_ERROR_CODE.INVALID_SORT,
+        message: VALIDATION_MESSAGE.INVALID_SORT,
+      })
+    );
   }
   if (status && !STATUSLIST.includes(status)) {
-    return res.status(400).json({
-      success: false,
-      message: "유효하지 않은 상태 필터입니다."
-    });
+    return res.status(HTTP_STATUS.BAD_REQUEST).json(
+      errorResponse({
+        code: VALIDATION_ERROR_CODE.INVALID_STATUS,
+        message: VALIDATION_MESSAGE.INVALID_STATUS,
+      })
+    );
   }
 
   // 서비스 호출
@@ -38,7 +49,7 @@ async function getChallengeListInput(req, res) {
   );
 
   // 호출 결과 반환
-  return res.status(200).json(response);
+  return res.status(HTTP_STATUS.OK).json(response);
 }
 
 async function getChallengeDetailInput(req, res) {
@@ -47,10 +58,12 @@ async function getChallengeDetailInput(req, res) {
 
   // 입력값 검증
   if (!challengeID) {
-    return res.status(400).json({
-      success: false,
-      message: "챌린지 ID가 없거나 올바르지 않습니다."
-    });
+    return res.status(HTTP_STATUS.BAD_REQUEST).json(
+      errorResponse({
+        code: VALIDATION_ERROR_CODE.INVALID_CHALLENGE_ID,
+        message: VALIDATION_MESSAGE.INVALID_CHALLENGE_ID,
+      })
+    );
   }
 
   // 서비스 호출
@@ -59,7 +72,7 @@ async function getChallengeDetailInput(req, res) {
   );
 
   // 호출 결과 반환
-  return res.status(200).json(response);
+  return res.status(HTTP_STATUS.OK).json(response);
 }
 
 async function approveChallengeInput(req, res) {
@@ -69,16 +82,20 @@ async function approveChallengeInput(req, res) {
 
   // 입력값 검증
   if (!userID) {
-    return res.status(400).json({
-      success: false,
-      message: "유저 ID가 없거나 올바르지 않습니다."
-    });
+    return res.status(HTTP_STATUS.BAD_REQUEST).json(
+      errorResponse({
+        code: VALIDATION_ERROR_CODE.INVALID_FIELD,
+        message: VALIDATION_MESSAGE.INVALID_ID,
+      })
+    );
   }
   if (!challengeID) {
-    return res.status(400).json({
-      success: false,
-      message: "챌린지 ID가 없거나 올바르지 않습니다."
-    });
+    return res.status(HTTP_STATUS.BAD_REQUEST).json(
+      errorResponse({
+        code: VALIDATION_ERROR_CODE.INVALID_CHALLENGE_ID,
+        message: VALIDATION_MESSAGE.INVALID_CHALLENGE_ID,
+      })
+    );
   }
 
   // 서비스 호출
@@ -87,7 +104,7 @@ async function approveChallengeInput(req, res) {
   );
 
   // 호출 결과 반환
-  return res.status(200).json(response);
+  return res.status(HTTP_STATUS.OK).json(response);
 }
 
 async function rejectChallengeInput(req, res) {
@@ -98,22 +115,28 @@ async function rejectChallengeInput(req, res) {
 
   // 입력값 검증
   if (!userID) {
-    return res.status(400).json({
-      success: false,
-      message: "유저 ID가 없거나 올바르지 않습니다."
-    });
+    return res.status(HTTP_STATUS.BAD_REQUEST).json(
+      errorResponse({
+        code: VALIDATION_ERROR_CODE.INVALID_FIELD,
+        message: VALIDATION_MESSAGE.INVALID_ID,
+      })
+    );
   }
   if (!challengeID) {
-    return res.status(400).json({
-      success: false,
-      message: "챌린지 ID가 없거나 올바르지 않습니다."
-    });
+    return res.status(HTTP_STATUS.BAD_REQUEST).json(
+      errorResponse({
+        code: VALIDATION_ERROR_CODE.INVALID_CHALLENGE_ID,
+        message: VALIDATION_MESSAGE.INVALID_CHALLENGE_ID,
+      })
+    );
   }
   if (!reject_comment || reject_comment.trim() === '') {
-    return res.status(400).json({
-      success: false,
-      message: "거절 사유를 입력해주세요."
-    });
+    return res.status(HTTP_STATUS.BAD_REQUEST).json(
+      errorResponse({
+        code: VALIDATION_ERROR_CODE.REQUIRED_REJECT_COMMENT,
+        message: VALIDATION_MESSAGE.REQUIRED_REJECT_COMMENT,
+      })
+    );
   }
 
   // 서비스 호출
@@ -122,7 +145,7 @@ async function rejectChallengeInput(req, res) {
   );
 
   // 호출 결과 반환
-  return res.status(200).json(response);
+  return res.status(HTTP_STATUS.OK).json(response);
 }
 
 export default {
