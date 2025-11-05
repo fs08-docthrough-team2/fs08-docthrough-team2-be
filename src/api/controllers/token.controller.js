@@ -4,47 +4,49 @@ import {
   refreshAccessToken
 } from "../services/token.service.js";
 import { cookiesOption } from "../../middleware/auth.middleware.js";
+import HTTP_STATUS from "../../constants/http.constant.js";
+import { AUTH_MESSAGE } from "../../constants/message.constant.js";
+import { successResponse, errorResponse } from "../../utils/response.util.js";
+import { AUTH_ERROR_CODE } from "../../constants/error-code.constant.js";
 
 export const verifyAccessTokenController = asyncHandler(async (req, res) => {
-  const refreshToken = req.cookies?.refreshToken; 
+  const refreshToken = req.cookies?.refreshToken;
   if (!refreshToken) {
-    return res.status(401).json({
-      success: false,
-      error: {
-        code: "UNAUTHORIZED",
-        message: "Refresh Token이 없습니다.",
-      },
-    });
+    return res.status(HTTP_STATUS.UNAUTHORIZED).json(
+      errorResponse({
+        code: AUTH_ERROR_CODE.NO_REFRESH_TOKEN,
+        message: AUTH_MESSAGE.NO_REFRESH_TOKEN,
+      })
+    );
   }
 
   try {
     const result = await verifyAccessToken(refreshToken);
 
     if (!result?.user) {
-      return res.status(401).json({
-        success: false,
-        error: {
-          code: "INVALID_USER",
-          message: "유효하지 않은 사용자입니다.",
-        },
-      });
+      return res.status(HTTP_STATUS.UNAUTHORIZED).json(
+        errorResponse({
+          code: AUTH_ERROR_CODE.INVALID_USER,
+          message: AUTH_MESSAGE.INVALID_USER,
+        })
+      );
     }
 
-    return res.status(200).json({
-      success: true,
-      message: "Refresh Token 유효함",
-      user: result.user,
-    });
-  } 
+    return res.status(HTTP_STATUS.OK).json(
+      successResponse({
+        data: result.user,
+        message: AUTH_MESSAGE.REFRESH_TOKEN_VALID,
+      })
+    );
+  }
   catch (error) {
     console.error("verifyAccessTokenController Error:", error);
-    return res.status(401).json({
-      success: false,
-      error: {
-        code: "TOKEN_VERIFICATION_FAILED",
-        message: error.message || "토큰 검증 중 오류가 발생했습니다.",
-      },
-    });
+    return res.status(HTTP_STATUS.UNAUTHORIZED).json(
+      errorResponse({
+        code: AUTH_ERROR_CODE.TOKEN_VERIFICATION_FAILED,
+        message: error.message || AUTH_MESSAGE.TOKEN_VERIFICATION_FAILED,
+      })
+    );
   }
 });
 
@@ -55,9 +57,10 @@ export const refreshTokenController = asyncHandler(async (req, res) => {
 
   res.cookie("refreshToken", refreshToken, cookiesOption)
 
-  res.status(200).json({
-    message: "Access Token 재발급 성공",
-    accessToken,
-    user,
-  });
+  res.status(HTTP_STATUS.OK).json(
+    successResponse({
+      data: { accessToken, user },
+      message: AUTH_MESSAGE.ACCESS_TOKEN_REFRESH_SUCCESS,
+    })
+  );
 });

@@ -1,24 +1,28 @@
 // 설명: 요청 파싱(params/query/body) + 입력 검증 결과 처리하는 파일입니다.
 import challengeCRUDServices from '../services/challenge.crud.service.js';
 import isUUID from 'is-uuid';
+import HTTP_STATUS from '../../constants/http.constant.js';
+import { VALIDATION_MESSAGE } from '../../constants/message.constant.js';
+import { errorResponse } from '../../utils/response.util.js';
+import { VALIDATION_ERROR_CODE } from '../../constants/error-code.constant.js';
 
+/**
+ * 챌린지 생성 (Zod 검증 완료 후 호출)
+ * SQL 인젝션, XSS 방지 완료
+ */
 async function createChallengeInput(req, res) {
-  // 입력값 불러오기
+  // Zod 미들웨어에서 이미 검증 완료
   const { title, source, field, type, deadline, capacity, content } = req.body;
-  const userID = !isUUID.v4(req.auth?.userId) ? undefined : req.auth?.userId;
+  const userID = req.auth?.userId;
 
-  // 입력값 검증
-  if (!userID) {
-    return res.status(400).json({
-      success: false,
-      message: "유저 ID가 없거나 올바르지 않습니다."
-    });
-  }
-  if (!title || !source || !field || !type || !deadline || !capacity || !content) {
-    return res.status(400).json({ error: '챌린지 추가에 필요한 값이 입력되지 않았습니다.' });
-  }
-  if (typeof capacity !== 'string' || capacity <= 0) {
-    return res.status(400).json({ error: '챌린지 인원은 2명 이상의 문자여야 합니다.' });
+  // 사용자 ID 검증 (인증 미들웨어에서 제공)
+  if (!userID || !isUUID.v4(userID)) {
+    return res.status(HTTP_STATUS.BAD_REQUEST).json(
+      errorResponse({
+        code: VALIDATION_ERROR_CODE.INVALID_FIELD,
+        message: VALIDATION_MESSAGE.INVALID_ID,
+      })
+    );
   }
 
   // 서비스 호출
@@ -27,104 +31,106 @@ async function createChallengeInput(req, res) {
   );
 
   // 호출 결과 반환
-  return res.status(201).json(response);
+  return res.status(HTTP_STATUS.CREATED).json(response);
 }
 
+/**
+ * 챌린지 수정 (Zod 검증 완료 후 호출)
+ */
 async function updateChallengeInput(req, res) {
-  // 입력값 불러오기 및 데이터 검증
-  const userID = !isUUID.v4(req.auth?.userId) ? undefined : req.auth?.userId;
+  // Zod 미들웨어에서 params 검증 완료
+  const userID = req.auth?.userId;
 
-  // 입력값 검증
-  if (!userID) {
-    return res.status(400).json({
-      success: false,
-      message: "유저 ID가 없거나 올바르지 않습니다."
-    });
+  // 사용자 ID 검증
+  if (!userID || !isUUID.v4(userID)) {
+    return res.status(HTTP_STATUS.BAD_REQUEST).json(
+      errorResponse({
+        code: VALIDATION_ERROR_CODE.INVALID_FIELD,
+        message: VALIDATION_MESSAGE.INVALID_ID,
+      })
+    );
   }
 
   // 서비스 호출
   const response = await challengeCRUDServices.updateChallenge(req, userID);
 
   // 호출 결과 반환
-  return res.status(200).json(response);
+  return res.status(HTTP_STATUS.OK).json(response);
 }
 
+/**
+ * 챌린지 취소 (Zod 검증 완료 후 호출)
+ */
 async function cancelChallengeInput(req, res) {
-  // 입력값 불러오기 및 데이터 검증
-  const userID = !isUUID.v4(req.auth?.userId) ? undefined : req.auth?.userId;
-  const challengeID = !isUUID.v4(req.params.challengeId) ? undefined : req.params.challengeId;
+  // Zod 미들웨어에서 challengeId 검증 완료
+  const userID = req.auth?.userId;
+  const challengeID = req.params.challengeId;
 
-  // 입력값 검증
-  if (!userID) {
-    return res.status(400).json({
-      success: false,
-      message: "유저 ID가 없거나 올바르지 않습니다."
-    });
-  }
-  if (!challengeID) {
-    return res.status(400).json({
-      success: false,
-      message: "챌린지 ID가 없거나 올바르지 않습니다."
-    });
+  // 사용자 ID 검증
+  if (!userID || !isUUID.v4(userID)) {
+    return res.status(HTTP_STATUS.BAD_REQUEST).json(
+      errorResponse({
+        code: VALIDATION_ERROR_CODE.INVALID_FIELD,
+        message: VALIDATION_MESSAGE.INVALID_ID,
+      })
+    );
   }
 
   // 서비스 호출
   const response = await challengeCRUDServices.cancelChallenge(challengeID, userID);
 
   // 호출 결과 반환
-  return res.status(200).json(response);
+  return res.status(HTTP_STATUS.OK).json(response);
 }
 
+/**
+ * 챌린지 삭제 (Zod 검증 완료 후 호출)
+ */
 async function deleteChallengeInput(req, res) {
-  // 입력값 불러오기 및 데이터 검증
-  const userID = !isUUID.v4(req.auth?.userId) ? undefined : req.auth?.userId;
-  const challengeID = !isUUID.v4(req.params.challengeId) ? undefined : req.params.challengeId;
+  // Zod 미들웨어에서 challengeId 검증 완료
+  const userID = req.auth?.userId;
+  const challengeID = req.params.challengeId;
 
-  // 입력값 검증
-  if (!userID) {
-    return res.status(400).json({
-      success: false,
-      message: "유저 ID가 없거나 올바르지 않습니다."
-    });
-  }
-  if (!challengeID) {
-    return res.status(400).json({
-      success: false,
-      message: "챌린지 ID가 없거나 올바르지 않습니다."
-    });
+  // 사용자 ID 검증
+  if (!userID || !isUUID.v4(userID)) {
+    return res.status(HTTP_STATUS.BAD_REQUEST).json(
+      errorResponse({
+        code: VALIDATION_ERROR_CODE.INVALID_FIELD,
+        message: VALIDATION_MESSAGE.INVALID_ID,
+      })
+    );
   }
 
   // 서비스 호출
   const response = await challengeCRUDServices.deleteChallenge(challengeID, userID);
 
   // 호출 결과 반환
-  return res.status(200).json(response);
+  return res.status(HTTP_STATUS.OK).json(response);
 }
 
+/**
+ * 챌린지 완전 삭제 (Zod 검증 완료 후 호출)
+ */
 async function hardDeleteChallengeInput(req, res) {
-  // 입력값 불러오기 및 데이터 검증
-  const userID = !isUUID.v4(req.auth?.userId) ? undefined : req.auth?.userId;
-  const challengeID = !isUUID.v4(req.params.challengeId) ? undefined : req.params.challengeId;
+  // Zod 미들웨어에서 challengeId 검증 완료
+  const userID = req.auth?.userId;
+  const challengeID = req.params.challengeId;
 
-  // 입력값 검증
-  if (!userID) {
-    return res.status(400).json({
-      success: false,
-      message: "유저 ID가 없거나 올바르지 않습니다."
-    });
-  }
-  if (!challengeID) {
-    return res.status(400).json({
-      success: false,
-      message: "챌린지 ID가 없거나 올바르지 않습니다."
-    });
+  // 사용자 ID 검증
+  if (!userID || !isUUID.v4(userID)) {
+    return res.status(HTTP_STATUS.BAD_REQUEST).json(
+      errorResponse({
+        code: VALIDATION_ERROR_CODE.INVALID_FIELD,
+        message: VALIDATION_MESSAGE.INVALID_ID,
+      })
+    );
   }
 
   // 서비스 호출
   const response = await challengeCRUDServices.hardDeleteChallenge(challengeID, userID);
 
   // 호출 결과 반환
-  return res.status(200).json(response);
+  return res.status(HTTP_STATUS.OK).json(response);
 }
 
 export default {
