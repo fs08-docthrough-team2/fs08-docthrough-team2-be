@@ -1,24 +1,22 @@
-import prisma from '../../config/prisma.config.js';
+import * as challengeCrudRepository from '../repositories/challenge.crud.repository.js';
 import noticeService from '../../api/services/notice.service.js';
 
 async function createChallenge(title, source, field, type, deadline, capacity, content, userID) {
   try {
     // 새로운 챌린지를 DB에 추가하고, 내용을 반환 받음
-    const createChallenge = await prisma.challenge.create({
-      data: {
-        user_id: userID,
-        title,
-        source,
-        field,
-        type,
-        deadline,
-        capacity,
-        content,
-        status: 'INPROGRESS',
-        isDelete: false,
-        isClose: false,
-        isReject: false,
-      }
+    const createChallenge = await challengeCrudRepository.createChallenge({
+      user_id: userID,
+      title,
+      source,
+      field,
+      type,
+      deadline,
+      capacity,
+      content,
+      status: 'INPROGRESS',
+      isDelete: false,
+      isClose: false,
+      isReject: false,
     });
 
     // 결과를 반환
@@ -37,10 +35,10 @@ async function createChallenge(title, source, field, type, deadline, capacity, c
 async function updateChallenge(req, userID) {
   try{
     // 챌린지를 DB에 업데이트하고, 내용을 반환 받음
-    const updateChallenge = await prisma.challenge.update({
-      where: { challenge_id: req.params.challengeId },
-      data: req.body
-    });
+    const updateChallenge = await challengeCrudRepository.updateChallengeById(
+      req.params.challengeId,
+      req.body
+    );
 
     // 챌린지 수정 알림 함수 호출
     await noticeService.addModifyNotice("챌린지","수정", userID, updateChallenge.title);
@@ -61,10 +59,7 @@ async function updateChallenge(req, userID) {
 async function cancelChallenge(challengeID, userID) {
   try{
     // 챌린지를 DB에 업데이트하고, 내용을 반환 받음
-    const cancelChallenge = await prisma.challenge.update({
-      where: { challenge_id: challengeID },
-      data: { isClose: true, status: 'CANCELLED' }
-    });
+    const cancelChallenge = await challengeCrudRepository.cancelChallengeById(challengeID);
 
     // 챌린지 취소 알림 함수 호출
     await noticeService.addModifyNotice("챌린지","취소", userID, cancelChallenge.title);
@@ -85,10 +80,7 @@ async function cancelChallenge(challengeID, userID) {
 async function deleteChallenge(challengeID, userID) {
   try{
     // 챌린지를 DB에 업데이트하고, 내용을 반환 받음
-    const deleteChallenge = await prisma.challenge.update({
-      where: { challenge_id: challengeID },
-      data: { isDelete: true, status: 'DEADLINE' }
-    });
+    const deleteChallenge = await challengeCrudRepository.deleteChallengeById(challengeID);
 
     // 챌린지 삭제 알림 함수 호출
     await noticeService.addModifyNotice("챌린지","삭제", userID, deleteChallenge.title);
@@ -109,9 +101,7 @@ async function deleteChallenge(challengeID, userID) {
 async function hardDeleteChallenge(challengeID, userID) {
   try {
     // 챌린지를 DB에서 삭제하고, 내용을 반환 받음
-    const deletedChallenge = await prisma.challenge.delete({
-      where: { challenge_id: challengeID }
-    });
+    const deletedChallenge = await challengeCrudRepository.hardDeleteChallengeById(challengeID);
 
     // 챌린지 완전 삭제 알림 함수 호출
     await noticeService.addModifyNotice("챌린지","완전 삭제", userID, deleteChallenge.title);
