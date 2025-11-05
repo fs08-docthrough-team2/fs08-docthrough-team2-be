@@ -94,11 +94,9 @@ export async function login(email, password) {
   return { 
     accessToken, 
     refreshToken,
-    user:{
-      email: user.email,
-      nickName: user.nick_name,
-      role: user.role,
-    } 
+    email: user.email,
+    nickName: user.nick_name,
+    role: user.role,
   };
 }
 
