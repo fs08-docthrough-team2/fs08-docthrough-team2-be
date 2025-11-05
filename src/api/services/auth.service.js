@@ -37,14 +37,15 @@ export async function signup(email, password, nickName) {
   const { accessToken, refreshToken } = await generateTokens(user);
   await updateRefreshToken(user.user_id, refreshToken);
 
-  return { 
+  return {
+    // 수정된 부분
+    // https://github.com/fs08-docthrough-team2/fs08-docthrough-team2-be/commit/daffca0dfbf4316d0a58db8745e6f9b80e7a1c9a
+    userId: user.user_id,
+    email: user.email,
+    nickName: user.nick_name,
+    role: user.role,
     accessToken, 
     refreshToken,
-    user:{
-      email: user.email,
-      nickName: user.nick_name,
-      role: user.role,
-    } 
   };
 }
 
@@ -90,14 +91,13 @@ export async function login(email, password) {
 
   await updateRefreshToken( user.user_id, refreshToken );
 
-  return { 
-    accessToken, 
+  return {
+    userId: user.user_id,
+    email: user.email,
+    nickName: user.nick_name,
+    role: user.role,
+    accessToken,
     refreshToken,
-    user:{
-      email: user.email,
-      nickName: user.nick_name,
-      role: user.role,
-    } 
   };
 }
 

@@ -24,7 +24,7 @@ export const validate = (schema) => {
       if (validated.query) {
         Object.defineProperty(req, 'query', {
           value: validated.query,
-          writable: false,
+          writable: true,
           enumerable: true,
           configurable: true,
         });
@@ -33,7 +33,7 @@ export const validate = (schema) => {
       if (validated.params) {
         Object.defineProperty(req, 'params', {
           value: validated.params,
-          writable: false,
+          writable: true,
           enumerable: true,
           configurable: true,
         });
@@ -43,7 +43,7 @@ export const validate = (schema) => {
     } catch (error) {
       if (error instanceof ZodError) {
         // Zod 검증 에러를 사용자 친화적인 형태로 변환
-        const errors = error.errors.map((err) => ({
+        const errors = (error.errors || []).map((err) => ({
           field: err.path.join('.'),
           message: err.message,
         }));
@@ -51,7 +51,7 @@ export const validate = (schema) => {
         return res.status(HTTP_STATUS.BAD_REQUEST).json(
           errorResponse({
             code: 'VALIDATION_ERROR',
-            message: errors[0].message, // 첫 번째 에러 메시지 표시
+            message: errors[0]?.message || 'Validation failed', // 첫 번째 에러 메시지 표시
             details: errors, // 모든 에러 정보
           })
         );
@@ -74,7 +74,7 @@ export const validateBody = (schema) => {
       next();
     } catch (error) {
       if (error instanceof ZodError) {
-        const errors = error.errors.map((err) => ({
+        const errors = (error.errors || []).map((err) => ({
           field: err.path.join('.'),
           message: err.message,
         }));
@@ -82,7 +82,7 @@ export const validateBody = (schema) => {
         return res.status(HTTP_STATUS.BAD_REQUEST).json(
           errorResponse({
             code: 'VALIDATION_ERROR',
-            message: errors[0].message,
+            message: errors[0]?.message || 'Validation failed',
             details: errors,
           })
         );
@@ -103,7 +103,7 @@ export const validateQuery = (schema) => {
       // req.query는 읽기 전용이므로 defineProperty 사용
       Object.defineProperty(req, 'query', {
         value: validated,
-        writable: false,
+        writable: true,
         enumerable: true,
         configurable: true,
       });
@@ -111,7 +111,7 @@ export const validateQuery = (schema) => {
       next();
     } catch (error) {
       if (error instanceof ZodError) {
-        const errors = error.errors.map((err) => ({
+        const errors = (error.errors || []).map((err) => ({
           field: err.path.join('.'),
           message: err.message,
         }));
@@ -119,7 +119,7 @@ export const validateQuery = (schema) => {
         return res.status(HTTP_STATUS.BAD_REQUEST).json(
           errorResponse({
             code: 'VALIDATION_ERROR',
-            message: errors[0].message,
+            message: errors[0]?.message || 'Validation failed',
             details: errors,
           })
         );
@@ -140,7 +140,7 @@ export const validateParams = (schema) => {
       // req.params는 읽기 전용이므로 defineProperty 사용
       Object.defineProperty(req, 'params', {
         value: validated,
-        writable: false,
+        writable: true,
         enumerable: true,
         configurable: true,
       });
@@ -148,7 +148,7 @@ export const validateParams = (schema) => {
       next();
     } catch (error) {
       if (error instanceof ZodError) {
-        const errors = error.errors.map((err) => ({
+        const errors = (error.errors || []).map((err) => ({
           field: err.path.join('.'),
           message: err.message,
         }));
@@ -156,7 +156,7 @@ export const validateParams = (schema) => {
         return res.status(HTTP_STATUS.BAD_REQUEST).json(
           errorResponse({
             code: 'VALIDATION_ERROR',
-            message: errors[0].message,
+            message: errors[0]?.message || 'Validation failed',
             details: errors,
           })
         );
