@@ -106,9 +106,9 @@
  *         application/json:
  *           schema:
  *             type: object
- *             required: [challenge_id, title, workItem]
+ *             required: [challengeId, title, workItem]
  *             properties:
- *               challenge_id:
+ *               challengeId:
  *                 type: string
  *               title:
  *                 type: string
@@ -132,9 +132,9 @@
  *         application/json:
  *           schema:
  *             type: object
- *             required: [challenge_id, title, workItem]
+ *             required: [challengeId, title, workItem]
  *             properties:
- *               challenge_id:
+ *               challengeId:
  *                 type: string
  *               title:
  *                 type: string
