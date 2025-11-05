@@ -1,6 +1,8 @@
 // 설명: 요청 파싱(params/query/body) + 입력 검증 결과 처리하는 파일입니다.
 import challengeCRUDServices from '../services/challenge.crud.service.js';
 import isUUID from 'is-uuid';
+import HTTP_STATUS from '../../constants/http.constant.js';
+import { VALIDATION_MESSAGE, CHALLENGE_MESSAGE } from '../../constants/message.constant.js';
 
 async function createChallengeInput(req, res) {
   // 입력값 불러오기
@@ -9,16 +11,16 @@ async function createChallengeInput(req, res) {
 
   // 입력값 검증
   if (!userID) {
-    return res.status(400).json({
+    return res.status(HTTP_STATUS.BAD_REQUEST).json({
       success: false,
-      message: "유저 ID가 없거나 올바르지 않습니다."
+      message: VALIDATION_MESSAGE.INVALID_ID
     });
   }
   if (!title || !source || !field || !type || !deadline || !capacity || !content) {
-    return res.status(400).json({ error: '챌린지 추가에 필요한 값이 입력되지 않았습니다.' });
+    return res.status(HTTP_STATUS.BAD_REQUEST).json({ error: CHALLENGE_MESSAGE.REQUIRED_FIELDS_MISSING });
   }
   if (typeof capacity !== 'string' || capacity <= 0) {
-    return res.status(400).json({ error: '챌린지 인원은 2명 이상의 문자여야 합니다.' });
+    return res.status(HTTP_STATUS.BAD_REQUEST).json({ error: CHALLENGE_MESSAGE.INVALID_CAPACITY });
   }
 
   // 서비스 호출
@@ -27,7 +29,7 @@ async function createChallengeInput(req, res) {
   );
 
   // 호출 결과 반환
-  return res.status(201).json(response);
+  return res.status(HTTP_STATUS.CREATED).json(response);
 }
 
 async function updateChallengeInput(req, res) {
@@ -36,9 +38,9 @@ async function updateChallengeInput(req, res) {
 
   // 입력값 검증
   if (!userID) {
-    return res.status(400).json({
+    return res.status(HTTP_STATUS.BAD_REQUEST).json({
       success: false,
-      message: "유저 ID가 없거나 올바르지 않습니다."
+      message: VALIDATION_MESSAGE.INVALID_ID
     });
   }
 
@@ -46,7 +48,7 @@ async function updateChallengeInput(req, res) {
   const response = await challengeCRUDServices.updateChallenge(req, userID);
 
   // 호출 결과 반환
-  return res.status(200).json(response);
+  return res.status(HTTP_STATUS.OK).json(response);
 }
 
 async function cancelChallengeInput(req, res) {
@@ -56,15 +58,15 @@ async function cancelChallengeInput(req, res) {
 
   // 입력값 검증
   if (!userID) {
-    return res.status(400).json({
+    return res.status(HTTP_STATUS.BAD_REQUEST).json({
       success: false,
-      message: "유저 ID가 없거나 올바르지 않습니다."
+      message: VALIDATION_MESSAGE.INVALID_ID
     });
   }
   if (!challengeID) {
-    return res.status(400).json({
+    return res.status(HTTP_STATUS.BAD_REQUEST).json({
       success: false,
-      message: "챌린지 ID가 없거나 올바르지 않습니다."
+      message: VALIDATION_MESSAGE.INVALID_CHALLENGE_ID
     });
   }
 
@@ -72,7 +74,7 @@ async function cancelChallengeInput(req, res) {
   const response = await challengeCRUDServices.cancelChallenge(challengeID, userID);
 
   // 호출 결과 반환
-  return res.status(200).json(response);
+  return res.status(HTTP_STATUS.OK).json(response);
 }
 
 async function deleteChallengeInput(req, res) {
@@ -82,15 +84,15 @@ async function deleteChallengeInput(req, res) {
 
   // 입력값 검증
   if (!userID) {
-    return res.status(400).json({
+    return res.status(HTTP_STATUS.BAD_REQUEST).json({
       success: false,
-      message: "유저 ID가 없거나 올바르지 않습니다."
+      message: VALIDATION_MESSAGE.INVALID_ID
     });
   }
   if (!challengeID) {
-    return res.status(400).json({
+    return res.status(HTTP_STATUS.BAD_REQUEST).json({
       success: false,
-      message: "챌린지 ID가 없거나 올바르지 않습니다."
+      message: VALIDATION_MESSAGE.INVALID_CHALLENGE_ID
     });
   }
 
@@ -98,7 +100,7 @@ async function deleteChallengeInput(req, res) {
   const response = await challengeCRUDServices.deleteChallenge(challengeID, userID);
 
   // 호출 결과 반환
-  return res.status(200).json(response);
+  return res.status(HTTP_STATUS.OK).json(response);
 }
 
 async function hardDeleteChallengeInput(req, res) {
@@ -108,15 +110,15 @@ async function hardDeleteChallengeInput(req, res) {
 
   // 입력값 검증
   if (!userID) {
-    return res.status(400).json({
+    return res.status(HTTP_STATUS.BAD_REQUEST).json({
       success: false,
-      message: "유저 ID가 없거나 올바르지 않습니다."
+      message: VALIDATION_MESSAGE.INVALID_ID
     });
   }
   if (!challengeID) {
-    return res.status(400).json({
+    return res.status(HTTP_STATUS.BAD_REQUEST).json({
       success: false,
-      message: "챌린지 ID가 없거나 올바르지 않습니다."
+      message: VALIDATION_MESSAGE.INVALID_CHALLENGE_ID
     });
   }
 
@@ -124,7 +126,7 @@ async function hardDeleteChallengeInput(req, res) {
   const response = await challengeCRUDServices.hardDeleteChallenge(challengeID, userID);
 
   // 호출 결과 반환
-  return res.status(200).json(response);
+  return res.status(HTTP_STATUS.OK).json(response);
 }
 
 export default {
