@@ -25,8 +25,20 @@ export async function getFeedbackList({ attend_id, page=1, size=10}) {
     skip,
     take: size,
   });
+
+  const setFeedback = items.map((item) => ({
+    feedbackId: item.feedback_id,
+    content: item.content,
+    createdAt: item.created_at,
+    updatedAt: item.updated_at,
+    user:{
+      nickName: item.user?.nick_name,
+      role: item.user?.role,
+    }
+  }));
+
   return {
-    items,
+    items: setFeedback,
     pagination: {
       page,
       size,
@@ -61,7 +73,22 @@ export async function getFeedbackDetail({ feedback_id }){
   
   if(!feedback) 
     throw new Error("피드백을 찾을 수 없습니다.");
-  return { item: feedback }
+  
+  return { 
+  item: {
+    feedbackId: feedback.feedback_id,
+    content: feedback.content,
+    createdAt: feedback.created_at,
+    updatedAt: feedback.updated_at,
+    user:{
+      nickName: feedback.user?.nick_name,
+      role: feedback.user?.role,
+    },
+    attend:{
+      attendId: feedback.attend?.attend_id,
+    }
+  }
+}
 }
 
 //생성
@@ -79,7 +106,7 @@ export async function createFeedback(req, { attend_id, content}) {
       content,
     },
   });
-  return { message: "피드백이 등록되었습니다.", feedbakc_id:feedback.feedback_id};
+  return { message: "피드백이 등록되었습니다.", feedbackId:feedback.feedback_id};
 }
 
 //수정

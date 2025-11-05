@@ -7,23 +7,22 @@ import express from 'express';
 import morgan from 'morgan';
 
 // 라우트 임포트
-import authRoutes  from "./api/routes/auth.route.js"
-import tokenRoutes from "./api/routes/token.route.js"
-import adminRoutes from "./api/routes/admin.route.js"
-import userRoutes from "./api/routes/user.route.js"
+import authRoutes  from "../../../routes/auth.route.js"
+import tokenRoutes from "../../../routes/token.route.js"
+import adminRoutes from "../../../routes/admin.route.js"
+import userRoutes from "../../../routes/user.route.js"
 
-import challengeAdminRoute from './api/routes/challenge.admin.route.js';
-import challengeInquiryRoute from './api/routes/challenge.inquiry.route.js';
-import challengeCRUDRoute from './api/routes/challenge.crud.route.js'
+import challengeAdminRoute from '../../../routes/challenge.admin.route.js';
+import challengeInquiryRoute from '../../../routes/challenge.inquiry.route.js';
+import challengeCRUDRoute from '../../../routes/challenge.crud.route.js'
 
-import noticeRoute from './api/routes/notice.route.js';
-import challengeworkRoute from "./api/routes/challenge.work.route.js"; 
+import noticeRoute from '../../../routes/notice.route.js';
+import challengeworkRoute from "../../../routes/challenge.work.route.js"; 
 
-import challengeFeedbackRoute from "./api/routes/challenge.feedback.route.js"
+import challengeFeedbackRoute from "../../../routes/challenge.feedback.route.js"
 
 // 공통 미들웨어 임포트
 import { errorHandler } from './middleware/error.middleware.js';
-import swaggerUi from "swagger-ui-express";
 import { swaggerDocs } from './config/swagger.config.js';
 import cors from './config/cors.config.js';
 import prisma from './config/prisma.config.js';

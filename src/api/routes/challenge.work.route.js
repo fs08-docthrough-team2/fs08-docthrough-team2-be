@@ -14,13 +14,13 @@ import {
 const router = express.Router();
 
 router.get('/translated-list', getWorkListController);
-router.get('/translated-detail/:attend_id', getWorkDetailController);
+router.get('/translated-detail/:attendId', getWorkDetailController);
 router.get('/translated-list/save', getSaveListController);
-router.get('/translated-detail/save/:attend_id', getSaveDetailController);
+router.get('/translated-detail/save/:attendId', getSaveDetailController);
 router.post('/translated-detail', createWorkController);
 router.post('/translated-detail/save', createSaveWorkController);
-router.patch('/translated-detail/:attend_id', updateWorkController);
-router.delete('/translated-detail/:attend_id', deleteWorkController);
-router.post('/translated-detail/like/:attend_id', toggleLikeController);
+router.patch('/translated-detail/:attendId', updateWorkController);
+router.delete('/translated-detail/:attendId', deleteWorkController);
+router.post('/translated-detail/like/:attendId', toggleLikeController);
 
 export default router;

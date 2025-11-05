@@ -1,5 +1,5 @@
 import express from 'express';
-import auth from '../../middleware/auth.middleware.js';
+import auth from '../test_doc/fs08-docthrough-team2-be/src/middleware/auth.middleware.js';
 import { 
   getMyInfoController,
   updateUserProfileController,
