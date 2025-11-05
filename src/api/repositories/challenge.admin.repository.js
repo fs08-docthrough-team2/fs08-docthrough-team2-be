@@ -21,6 +21,7 @@ export async function findChallengesForAdmin({ where, skip, take, orderBy }) {
       status: true,
       deadline: true,
       created_at: true,
+      capacity: true,
       _count: {
         select: {
           attends: true,
