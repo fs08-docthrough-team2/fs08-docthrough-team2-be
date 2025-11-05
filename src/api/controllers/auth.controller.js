@@ -8,13 +8,20 @@ import { AUTH_ERROR_CODE } from "../../constants/error-code.constant.js";
 
 export const signupController = asyncHandler(async (req, res) => {
   const { email, password, nickName } = req.body;
-  const { user, accessToken, refreshToken } = await signup(email, password, nickName);
+  const { userId, email: userEmail, nickName: userNickName, role, accessToken, refreshToken } = await signup(email, password, nickName);
 
   res.cookie("refreshToken", refreshToken, cookiesOption);
 
   res.status(HTTP_STATUS.CREATED).json(
     successResponse({
-      data: { user, accessToken },
+      data: {
+        userId,
+        email: userEmail,
+        nickName: userNickName,
+        role,
+        accessToken,
+        refreshToken
+      },
       message: AUTH_MESSAGE.SIGNUP_SUCCESS,
     })
   );
@@ -23,13 +30,20 @@ export const signupController = asyncHandler(async (req, res) => {
 export const loginController = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
-  const { user, accessToken, refreshToken } = await login(email, password);
+  const { userId, email: userEmail, nickName, role, accessToken, refreshToken } = await login(email, password);
 
   res.cookie("refreshToken", refreshToken, cookiesOption);
 
   res.status(HTTP_STATUS.OK).json(
     successResponse({
-      data: { user, accessToken },
+      data: {
+        userId,
+        email: userEmail,
+        nickName,
+        role,
+        accessToken,
+        refreshToken
+      },
       message: AUTH_MESSAGE.LOGIN_SUCCESS,
     })
   );

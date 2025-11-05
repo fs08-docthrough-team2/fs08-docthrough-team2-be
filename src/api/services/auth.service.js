@@ -91,12 +91,13 @@ export async function login(email, password) {
 
   await updateRefreshToken( user.user_id, refreshToken );
 
-  return { 
-    accessToken, 
-    refreshToken,
+  return {
+    userId: user.user_id,
     email: user.email,
     nickName: user.nick_name,
     role: user.role,
+    accessToken,
+    refreshToken,
   };
 }
 
