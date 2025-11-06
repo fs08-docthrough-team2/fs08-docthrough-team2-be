@@ -145,11 +145,14 @@ export async function createWork(req, challenge_id, title, workItem){
   const existinWork = await workRepository.findExistingWork(challenge_id, userId);
 
   if(existinWork){
-    const err = new Error("이미 제출된 작업물이 존재합니다.");
+    throw new Error("이미 제출된 작업물이 존재합니다.");
   }
+
+  const setTitle = title && title.trim() != "" ? title: `${userId}입니다.`
 
   const attend = await workRepository.createWork({
     challenge_id,
+    title: setTitle,
     user_id: userId,
     work_item: workItem,
     isSave: false,
@@ -173,10 +176,12 @@ export async function createSaveWork(req, challenge_id, title, workItem){
   if(challenge?.isClose){
     throw new Error("이미 종료된 첼린지 입니다.");
   }
+  const setTitle = title && title.trim() != "" ? title: `${userId}입니다.`
 
   const attend = await workRepository.createWork({
     challenge_id,
     user_id: userId,
+    title: setTitle,
     work_item: workItem,
     isSave: true,
   });
@@ -258,5 +263,4 @@ export async function toggleLike(req, attend_id) {
     });
     return{ message: "좋아요 추가" }
   }
-
 }
