@@ -45,7 +45,8 @@ export async function getWorkList({ challenge_id, page = 1, size = 10 }){
 
 
 //상세
-export async function getWorkDetail(attend_id){
+export async function getWorkDetail(req,attend_id){
+  const { userId } = await getUserFromToken(req);
   const attend = await workRepository.findWorkById(attend_id);
 
   if(!attend){
@@ -53,15 +54,20 @@ export async function getWorkDetail(attend_id){
   }
   const likeCount = attend.likes.filter((l) => l.liker).length;
 
+  const checkLike = await workRepository.findExistingLike(userId, attend_id)
+  const likeByMe = !!checkLike
+
   return {
     item:{
       attendId: attend.attend_id,
+      userId: attend.user_id,
       title: attend.title,
       workItem: attend.work_item,
       createdAt: attend.created_at,
       nickName: attend.user.nick_name,
       role: attend.user.role,
       likeCount, 
+      likeByMe,
       isClose: attend.challenge.isClose,
     },
   };
@@ -150,8 +156,11 @@ export async function createWork(req, challenge_id, title, workItem){
     throw err;
   }
 
+  const setTitle = title && title.trim() != "" ? title: `${userId}입니다.`
+
   const attend = await workRepository.createWork({
     challenge_id,
+    title: setTitle,
     user_id: userId,
     work_item: workItem,
     isSave: false,
@@ -175,10 +184,12 @@ export async function createSaveWork(req, challenge_id, title, workItem){
   if(challenge?.isClose){
     throw new Error("이미 종료된 챌린지 입니다.");
   }
+  const setTitle = title && title.trim() != "" ? title: `${userId}입니다.`
 
   const attend = await workRepository.createWork({
     challenge_id,
     user_id: userId,
+    title: setTitle,
     work_item: workItem,
     isSave: true,
   });
@@ -260,5 +271,4 @@ export async function toggleLike(req, attend_id) {
     });
     return{ message: "좋아요 추가" }
   }
-
 }

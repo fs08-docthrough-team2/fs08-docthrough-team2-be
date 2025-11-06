@@ -30,20 +30,25 @@ export async function findAllUsers({ page, limit, search }) {
     }),
     prisma.user.count({ where }),
   ]);
+  const SetUser = users.map((u) =>({
+    userId: u.user_id,
+    email: u.email,
+    nickName: u.nick_name,
+    role: u.role,
+    isDelete: u.isDelete,
+    createdAt: u.created_at,
+  }));
 
   return {
-    users,
+    users: SetUser,
     totalCount,
     currentPage: page,
     totalPage: Math.ceil(totalCount / limit),
   };
 }
 
-
-
-
 export async function findUserByEmailAdmin(email) {
-  return prisma.user.findUnique({
+  const user = await prisma.user.findUnique({
     where: { email },
     select: {
       email: true,
@@ -53,10 +58,17 @@ export async function findUserByEmailAdmin(email) {
       created_at: true,
     },
   });
+  return{
+    email: user.email,
+    nickName: user.nick_name,
+    role: user.role,
+    isDelete: user.isDelete,
+    createdAt: user.created_at,
+  } 
 }
 
 export async function changeUserRoleByEmail(email, role){
-  return prisma.user.update({
+  const user = await prisma.user.update({
     where: { email },
     data: { role },
     select: {
@@ -66,4 +78,10 @@ export async function changeUserRoleByEmail(email, role){
       role: true,
     },
   });
+  return{
+    userId: user.user_id,
+    email: user.email,
+    nickName: user.nick_name,
+    role: user.role,
+  } 
 }

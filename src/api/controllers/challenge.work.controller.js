@@ -19,9 +19,10 @@ import { VALIDATION_ERROR_CODE } from "../../constants/error-code.constant.js";
 
 // 작업물 리스트 조회
 export const getWorkListController = asyncHandler(async (req, res) =>{
-  const { challenge_id, page, size } = req.query;
+  const { challengeId, page, size } = req.query;
   const data = await getWorkList({
-    challenge_id,
+    challengeId,
+    page: Number(page) || 1,
     page: Number(page) || PAGINATION.DEFAULT_PAGE,
     size: Number(size) || PAGINATION.DEFAULT_PAGE_SIZE,
   });
@@ -41,15 +42,15 @@ export const getSaveListController = asyncHandler(async (req, res) => {
 
 // 작업물 상세 조회
 export const getWorkDetailController = asyncHandler(async (req, res) => {
-  const { attend_id }  = req.params;
-  const data = await getWorkDetail(attend_id);
+  const { attendId }  = req.params;
+  const data = await getWorkDetail(req, attendId);
   res.status(HTTP_STATUS.OK).json(successResponse({ data }));
 });
 
 // 임시 저장 상세 조회
 export const getSaveDetailController = asyncHandler(async (req, res) => {
-  const { attend_id } = req.params;
-  const data = await getSaveDetail(req, attend_id);
+  const { attendId } = req.params;
+  const data = await getSaveDetail(req, attendId);
   res.status(HTTP_STATUS.OK).json(successResponse({ data }));
 });
 
@@ -117,24 +118,24 @@ export const createSaveWorkController = asyncHandler(async (req, res) => {
 
 // 수정
 export const updateWorkController = asyncHandler(async (req, res) => {
-  const { attend_id } = req.params;
+  const { attendId } = req.params;
   const { title, workItem } = req.body;
-  const data = await updateWork(req, attend_id, { title, workItem });
+  const data = await updateWork(req, attendId, { title, workItem });
   res.status(HTTP_STATUS.OK).json(successResponse({ data }));
 });
 
 
 // 삭제
 export const deleteWorkController = asyncHandler(async (req, res) => {
-  const { attend_id } = req.params;
-  const data = await deleteWork(req, attend_id);
+  const { attendId } = req.params;
+  const data = await deleteWork(req, attendId);
   res.status(HTTP_STATUS.OK).json({ success: true, data});
 });
 
 //종아요 토글
 export const toggleLikeController = asyncHandler(async (req, res) => {
-  const { attend_id } = req.params;
-  const data = await toggleLike(req, attend_id);
+  const { attendId } = req.params;
+  const data = await toggleLike(req, attendId);
   res.status(HTTP_STATUS.OK).json(successResponse({ data }));
 });
 
