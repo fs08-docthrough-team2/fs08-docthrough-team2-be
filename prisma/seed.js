@@ -51,21 +51,21 @@ async function seedUsers() {
     data: {
       email: 'test@master.com',
       nick_name: '테스트마스터',
-      password: await hashPassword('test'),
+      password: await hashPassword(extractEmailPrefix('test')),
       role: 'USER',
       refresh_token: await generateRefreshToken(),
       isDelete: false,
     },
   });
   users.push(testMaster);
-  console.log('  ✓ Test Master: test@master.com (password: test)');
+  console.log('  ✓ Test Master: test@master.com (password: test1234)');
 
   // 2. 관리자 계정
   const admin = await prisma.user.create({
     data: {
       email: 'admin@example.com',
       nick_name: '관리자',
-      password: await hashPassword('admin'),
+      password: await hashPassword(extractEmailPrefix('admin')),
       role: 'ADMIN',
       refresh_token: await generateRefreshToken(),
       isDelete: false,

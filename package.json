@@ -12,7 +12,10 @@
     "reset": "node prisma/reset.js",
     "migrate": "npx prisma migrate dev",
     "build": "npx prisma generate",
-    "deploy": "prisma migrate deploy && npm run build"
+    "deploy": "prisma migrate deploy && npm run build",
+    "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest",
+    "test:watch": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --watch",
+    "test:coverage": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --coverage"
   },
   "prisma": {
     "seed": "node prisma/seed.js"
@@ -47,8 +50,11 @@
     "zod": "^4.1.12"
   },
   "devDependencies": {
+    "@jest/globals": "^30.2.0",
+    "cross-env": "^10.1.0",
     "dotenv": "^17.2.3",
     "husky": "^9.1.7",
+    "jest": "^30.2.0",
     "nodemon": "^3.1.10",
     "prettier": "^3.6.2",
     "prisma": "^6.18.0"
