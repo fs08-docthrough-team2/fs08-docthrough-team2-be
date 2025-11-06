@@ -45,13 +45,17 @@ export async function getWorkList({ challenge_id, page = 1, size = 10 }){
 
 
 //상세
-export async function getWorkDetail(attend_id){
+export async function getWorkDetail(req,attend_id){
+  const { userId } = await getUserFromToken(req);
   const attend = await workRepository.findWorkById(attend_id);
 
   if(!attend){
     throw new Error("작업물을 찾을 수 없습니다.");
   }
   const likeCount = attend.likes.filter((l) => l.liker).length;
+
+  const checkLike = await workRepository.findExistingLike(userId, attend_id)
+  const likeByMe = !!checkLike
 
   return {
     item:{
@@ -63,6 +67,7 @@ export async function getWorkDetail(attend_id){
       nickName: attend.user.nick_name,
       role: attend.user.role,
       likeCount, 
+      likeByMe,
       isClose: attend.challenge.isClose,
     },
   };
