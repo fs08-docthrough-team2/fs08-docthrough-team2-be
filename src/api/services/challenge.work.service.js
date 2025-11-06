@@ -137,7 +137,7 @@ export async function createWork(req, challenge_id, title, workItem){
   const challenge = await workRepository.findChallengeIsClose(challenge_id);
 
   if(challenge?.isClose){
-    const err = new Error("이미 종료된 첼린지 입니다.");
+    const err = new Error("이미 종료된 챌린지 입니다.");
     err.status = 403;
     throw err;
   }
@@ -173,7 +173,7 @@ export async function createSaveWork(req, challenge_id, title, workItem){
   const challenge = await workRepository.findChallengeIsClose(challenge_id);
 
   if(challenge?.isClose){
-    throw new Error("이미 종료된 첼린지 입니다.");
+    throw new Error("이미 종료된 챌린지 입니다.");
   }
 
   const attend = await workRepository.createWork({
@@ -204,7 +204,7 @@ export async function updateWork(req, attend_id, { title, workItem }){
     throw new Error("본인만 수정할 수 있습니다.");
 
   if(attend.challenge?.isClose)
-    throw new Error("이미 종료된 첼린지");
+    throw new Error("이미 종료된 챌린지");
 
   const updated = await workRepository.updateWorkById(attend_id, {
     title,
@@ -228,7 +228,7 @@ export async function deleteWork(req, attend_id){
     throw new Error("본인만 삭제할 수 있습니다.");
 
   if(attend.challenge?.isClose){
-    throw new Error("이미 종료된 첼린지입니다.");
+    throw new Error("이미 종료된 챌린지입니다.");
   }
 
   await workRepository.deleteLikesByAttendId(attend_id);
