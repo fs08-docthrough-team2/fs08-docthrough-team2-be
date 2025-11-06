@@ -102,7 +102,7 @@ const getParticipateListInput = asyncHandler(async (req, res) => {
 const getUserParticipateListInput = asyncHandler(async (req, res) => {
     // 입력값 불러오기
     const userID = req.auth?.userId;
-    let { page = PAGINATION.DEFAULT_PAGE, pageSize = PAGINATION.DEFAULT_PAGE_SIZE, title, field, type, status } = req.query;
+    let { page = PAGINATION.DEFAULT_PAGE, pageSize = PAGINATION.DEFAULT_PAGE_SIZE, title, field, type, status, sort = '신청시간느림순' } = req.query;
     const pageNum = Number(page);
     const pageSizeNum = Number(pageSize);
 
@@ -124,6 +124,9 @@ const getUserParticipateListInput = asyncHandler(async (req, res) => {
     valid = validatePagination(pageNum, pageSizeNum, res);
     if (valid !== true) return valid;
 
+    valid = validateSort(sort, res, SORTLIST);
+    if (valid !== true) return valid;
+
     // 서비스 호출
     const userParticipateData = await challengeService.getUserParticipateList(
       userID,
@@ -133,6 +136,7 @@ const getUserParticipateListInput = asyncHandler(async (req, res) => {
       status,
       pageNum,
       pageSizeNum,
+      sort
     );
 
     // 호출 결과 반환
@@ -142,7 +146,7 @@ const getUserParticipateListInput = asyncHandler(async (req, res) => {
 const getUserCompleteListInput = asyncHandler(async (req, res) => {
   // 입력값 불러오기
   const userID = req.auth?.userId;
-  let { page = PAGINATION.DEFAULT_PAGE, pageSize = PAGINATION.DEFAULT_PAGE_SIZE, title, field, type, status } = req.query;
+  let { page = PAGINATION.DEFAULT_PAGE, pageSize = PAGINATION.DEFAULT_PAGE_SIZE, title, field, type, status, sort = '신청시간느림순' } = req.query;
   const pageNum = Number(page);
   const pageSizeNum = Number(pageSize);
 
@@ -164,6 +168,9 @@ const getUserCompleteListInput = asyncHandler(async (req, res) => {
   valid = validatePagination(pageNum, pageSizeNum, res);
   if (valid !== true) return valid;
 
+  valid = validateSort(sort, res, SORTLIST);
+  if (valid !== true) return valid;
+
   // 서비스 호출
   const userCompleteData = await challengeService.getUserCompleteList(
     userID,
@@ -173,6 +180,7 @@ const getUserCompleteListInput = asyncHandler(async (req, res) => {
     status,
     pageNum,
     pageSizeNum,
+    sort
   );
 
   // 호출 결과 반환
@@ -182,7 +190,7 @@ const getUserCompleteListInput = asyncHandler(async (req, res) => {
 const getUserChallengeDetailInput = asyncHandler(async (req, res) => {
   // 입력값 불러오기
   const userID = req.auth?.userId;
-  let { page = PAGINATION.DEFAULT_PAGE, pageSize = PAGINATION.DEFAULT_PAGE_SIZE, title, field, type, status } = req.query;
+  let { page = PAGINATION.DEFAULT_PAGE, pageSize = PAGINATION.DEFAULT_PAGE_SIZE, title, field, type, status, sort = '신청시간느림순' } = req.query;
   const pageNum = Number(page);
   const pageSizeNum = Number(pageSize);
 
@@ -204,6 +212,9 @@ const getUserChallengeDetailInput = asyncHandler(async (req, res) => {
   valid = validatePagination(pageNum, pageSizeNum, res);
   if (valid !== true) return valid;
 
+  valid = validateSort(sort, res, SORTLIST);
+  if (valid !== true) return valid;
+
   // 서비스 호출
   const userChallengeDetailData = await challengeService.getUserChallengeDetail(
     userID,
@@ -213,6 +224,7 @@ const getUserChallengeDetailInput = asyncHandler(async (req, res) => {
     status,
     pageNum,
     pageSizeNum,
+    sort
   );
 
   // 응답 반환

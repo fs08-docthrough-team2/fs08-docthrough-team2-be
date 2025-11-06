@@ -100,7 +100,7 @@ export async function findParticipatesByChallenge({ challengeId, skip, take }) {
 /**
  * 사용자 참여 챌린지 목록 조회
  */
-export async function findUserChallenges({ where, skip, take }) {
+export async function findUserChallenges({ where, skip, take, orderBy }) {
   return prisma.challenge.findMany({
     where,
     select: {
@@ -121,13 +121,14 @@ export async function findUserChallenges({ where, skip, take }) {
     },
     skip,
     take,
+    orderBy,
   });
 }
 
 /**
  * 사용자 신청 챌린지 상세 목록 조회 (거절 정보 포함)
  */
-export async function findUserChallengeDetails({ where, skip, take }) {
+export async function findUserChallengeDetails({ where, skip, take, orderBy }) {
   return prisma.challenge.findMany({
     where,
     select: {
@@ -150,6 +151,7 @@ export async function findUserChallengeDetails({ where, skip, take }) {
     },
     skip,
     take,
+    orderBy
   });
 }
 
