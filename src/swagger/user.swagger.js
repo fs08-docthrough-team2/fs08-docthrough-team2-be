@@ -33,6 +33,9 @@
  *             schema:
  *               type: object
  *               properties:
+ *                 userId:
+ *                   type: uuid()
+ *                   example: "abc123"
  *                 nickName:
  *                   type: string
  *                   example: "유저2"

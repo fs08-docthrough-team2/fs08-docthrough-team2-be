@@ -14,11 +14,13 @@ export async function getUserProfileFromToken(tokenPayload){
   if(!user)
     throw new Error("사용자를 찾을 수 없습니다.");
 
-  return{
-    nickName: user.nick_name,
+  const data ={
+    userId,
     email: user.email,
+    nickName: user.nick_name,
     role: user.role,
   }
+  return{ user: data }
 }
 
 
