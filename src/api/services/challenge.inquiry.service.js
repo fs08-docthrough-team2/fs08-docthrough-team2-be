@@ -401,6 +401,12 @@ async function getUserChallengeDetail(userID, title, field, type, status, page, 
       default:
         orderBy = { created_at: 'desc' };
     }
+    if (title) {
+      whereCondition.title = {
+        contains: title.trim(),
+        mode: 'insensitive',
+      };
+    }
 
     // 챌린지 목록 조회
     const participates = await challengeInquiryRepository.findUserChallengeDetails({
