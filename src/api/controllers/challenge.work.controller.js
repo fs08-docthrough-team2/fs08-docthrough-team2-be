@@ -43,7 +43,7 @@ export const getSaveListController = asyncHandler(async (req, res) => {
 // 작업물 상세 조회
 export const getWorkDetailController = asyncHandler(async (req, res) => {
   const { attendId }  = req.params;
-  const data = await getWorkDetail(attendId);
+  const data = await getWorkDetail(req, attendId);
   res.status(HTTP_STATUS.OK).json(successResponse({ data }));
 });
 
