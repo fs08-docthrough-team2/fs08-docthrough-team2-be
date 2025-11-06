@@ -492,7 +492,7 @@
  *           type: string
  *           enum: [신청시간빠름순, 신청시간느림순, 마감기한빠름순, 마감기한느림순]
  *           default: 신청시간느림순
- *         required: true
+ *         required: false
  *         description: 정렬 기준 (신청시간빠름순=생성일 오름차순, 신청시간느림순=생성일 내림차순, 마감기한빠름순=마감일 오름차순, 마감기한느림순=마감일 내림차순)
  *         example: "신청시간느림순"
  *     responses:
@@ -664,7 +664,7 @@
  *           type: string
  *           enum: [신청시간빠름순, 신청시간느림순, 마감기한빠름순, 마감기한느림순]
  *           default: 신청시간느림순
- *         required: true
+ *         required: false
  *         description: 정렬 기준 (신청시간빠름순=생성일 오름차순, 신청시간느림순=생성일 내림차순, 마감기한빠름순=마감일 오름차순, 마감기한느림순=마감일 내림차순)
  *         example: "신청시간빠름순"
  *     responses:
@@ -836,7 +836,7 @@
  *           type: string
  *           enum: [신청시간빠름순, 신청시간느림순, 마감기한빠름순, 마감기한느림순]
  *           default: 신청시간느림순
- *         required: true
+ *         required: false
  *         description: 정렬 기준 (신청시간빠름순=생성일 오름차순, 신청시간느림순=생성일 내림차순, 마감기한빠름순=마감일 오름차순, 마감기한느림순=마감일 내림차순)
  *         example: "신청시간느림순"
  *     responses:

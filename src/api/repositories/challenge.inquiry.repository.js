@@ -70,7 +70,7 @@ export async function findParticipatesByChallenge({ challengeId, skip, take }) {
   return prisma.attend.findMany({
     where: {
       challenge_id: challengeId,
-      isSave: true,
+      isSave: false,
     },
     select: {
       attend_id: true,
