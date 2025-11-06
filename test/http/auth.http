@@ -4,7 +4,7 @@ content-type: application/json
 
 {
   "email": "newuser@example.com",
-  "password": "password123",
+  "password": "newuser1234",
   "nickName": "New User"
 }
 
@@ -14,7 +14,7 @@ content-type: application/json
 
 {
   "email": "admin@example.com",
-  "password": "pw1000"
+  "password": "admin1234"
 }
 
 ### POST Login (User)
@@ -23,7 +23,7 @@ content-type: application/json
 
 {
   "email": "user2@example.com",
-  "password": "pw1001"
+  "password": "user21234"
 }
 
 ### POST Logout
