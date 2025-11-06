@@ -24,7 +24,7 @@
  *                 example: "newuser@example.com"
  *               password:
  *                 type: string
- *                 example: "pw1020"
+ *                 example: "newuser1234"
  *               nickName:
  *                 type: string
  *                 example: "새유저21"
@@ -54,7 +54,7 @@
  *                 example: "admin@example.com"
  *               password:
  *                 type: string
- *                 example: "pw1000"
+ *                 example: "admin1234"
  *     responses:
  *       200:
  *         description: 로그인 성공 시 Access/Refresh 토큰 반환
