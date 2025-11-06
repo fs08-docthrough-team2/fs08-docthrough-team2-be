@@ -156,7 +156,8 @@ export async function findUserChallengeDetails({ where, skip, take, orderBy }) {
         select: {
           attends: true,
         }
-      }
+      },
+      created_at: true,
     },
     skip,
     take,
