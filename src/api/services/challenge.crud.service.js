@@ -13,7 +13,7 @@ async function createChallenge(title, source, field, type, deadline, capacity, c
       deadline,
       capacity,
       content,
-      status: 'INPROGRESS',
+      status: 'PENDING',
       isDelete: false,
       isClose: false,
       isReject: false,

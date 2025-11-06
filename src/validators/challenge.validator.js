@@ -232,9 +232,9 @@ export const getChallengeListQuerySchema = z.object({
       .default('10'),
 
     sort: z
-      .enum(['asc', 'desc', '신청시간빠름순', '신청시간느림순', '마감기한빠름순', '마감기한느림순'])
+      .enum(['신청시간빠름순', '신청시간느림순', '마감기한빠름순', '마감기한느림순'])
       .optional()
-      .default('desc'),
+      .default('신청시간느림순'),
 
     searchKeyword: z
       .string()
