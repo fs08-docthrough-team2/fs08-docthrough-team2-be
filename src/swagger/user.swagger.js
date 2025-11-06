@@ -64,7 +64,7 @@
  *                 example: "새닉네임"
  *               password:
  *                 type: string
- *                 example: "newPassword123!"
+ *                 example: "newpassword"
  *     responses:
  *       200:
  *         description: 수정 완료

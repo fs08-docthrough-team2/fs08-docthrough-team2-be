@@ -107,7 +107,7 @@
  *                           example: "OFFICIAL"
  *                         status:
  *                           type: string
- *                           example: "INPROGRESS"
+ *                           example: "PENDING"
  *                         field:
  *                           type: string
  *                           example: "API"
@@ -487,7 +487,7 @@
  *                 data:
  *                   type: object
  *                   properties:
- *                     deleteChallenge:
+ *                     deletedChallenge:
  *                       type: object
  *                       properties:
  *                         challenge_id:
