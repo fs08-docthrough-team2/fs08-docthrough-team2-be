@@ -145,7 +145,9 @@ export async function createWork(req, challenge_id, title, workItem){
   const existinWork = await workRepository.findExistingWork(challenge_id, userId);
 
   if(existinWork){
-    throw new Error("이미 제출된 작업물이 존재합니다.");
+    const err = new Error("이미 제출된 작업물이 존재합니다.");
+    err.status = 400;
+    throw err;
   }
 
   const setTitle = title && title.trim() != "" ? title: `${userId}입니다.`
