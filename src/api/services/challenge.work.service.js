@@ -56,6 +56,7 @@ export async function getWorkDetail(attend_id){
   return {
     item:{
       attendId: attend.attend_id,
+      userId: attend.user_id,
       title: attend.title,
       workItem: attend.work_item,
       createdAt: attend.created_at,

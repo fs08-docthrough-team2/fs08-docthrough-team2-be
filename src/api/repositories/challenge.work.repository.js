@@ -47,6 +47,7 @@ export async function findWorkById(attendId) {
     },
     select: {
       attend_id: true,
+      user_id: true,
       title: true,
       work_item: true,
       created_at: true,
@@ -203,7 +204,7 @@ export async function updateWorkById(attendId, data) {
       ...data,
       updated_at: new Date(),
     },
-  });
+  }); 
 }
 
 /**
