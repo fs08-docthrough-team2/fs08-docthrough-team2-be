@@ -5,6 +5,7 @@ export async function findUserProfileByToken(user_id){
     where: { user_id },
     select: {
       user_id: true,
+      email: true,
       nick_name: true,
       role: true,
     },
