@@ -483,9 +483,9 @@
  *         required: false
  *         schema:
  *           type: string
- *           enum: [INPROGRESS, DEADLINE]
+ *           enum: [신청승인, 신청거절, 신청취소, 신청대기]
  *         description: 챌린지 상태 필터
- *         example: "INPROGRESS"
+ *         example: "신청승인"
  *       - in: query
  *         name: sort
  *         schema:
@@ -529,9 +529,9 @@
  *                             example: "OFFICIAL"
  *                           status:
  *                             type: string
- *                             enum: [INPROGRESS, DEADLINE]
+ *                             enum: [APPROVED, REJECTED, CANCELLED, PENDING]
  *                             description: 챌린지 상태
- *                             example: "INPROGRESS"
+ *                             example: "APPROVED"
  *                           field:
  *                             type: string
  *                             enum: [NEXT, MODERN, API, WEB, CAREER]
@@ -655,9 +655,9 @@
  *         required: false
  *         schema:
  *           type: string
- *           enum: [INPROGRESS, DEADLINE]
+ *           enum: [신청승인, 신청거절, 신청취소, 신청대기]
  *         description: 챌린지 상태 필터
- *         example: "DEADLINE"
+ *         example: "신청승인"
  *       - in: query
  *         name: sort
  *         schema:
@@ -701,9 +701,9 @@
  *                             example: "OFFICIAL"
  *                           status:
  *                             type: string
- *                             enum: [INPROGRESS, DEADLINE]
+ *                             enum: [APPROVED, REJECTED, CANCELLED, PENDING]
  *                             description: 챌린지 상태
- *                             example: "DEADLINE"
+ *                             example: "APPROVED"
  *                           field:
  *                             type: string
  *                             enum: [NEXT, MODERN, API, WEB, CAREER]
@@ -827,9 +827,9 @@
  *         required: false
  *         schema:
  *           type: string
- *           enum: [INPROGRESS, DEADLINE]
+ *           enum: [신청승인, 신청거절, 신청취소, 신청대기]
  *         description: 챌린지 상태 필터
- *         example: "INPROGRESS"
+ *         example: "신청승인"
  *       - in: query
  *         name: sort
  *         schema:
@@ -873,9 +873,9 @@
  *                             example: "OFFICIAL"
  *                           status:
  *                             type: string
- *                             enum: [INPROGRESS, DEADLINE]
+ *                             enum: [APPROVED, REJECTED, CANCELLED, PENDING]
  *                             description: 챌린지 상태
- *                             example: "INPROGRESS"
+ *                             example: "APPROVED"
  *                           field:
  *                             type: string
  *                             enum: [NEXT, MODERN, API, WEB, CAREER]
@@ -924,7 +924,7 @@
  *                       - title: "React 마스터 챌린지"
  *                         content: "React의 기초부터 고급까지 학습하는 챌린지입니다."
  *                         type: "OFFICIAL"
- *                         status: "INPROGRESS"
+ *                         status: "APPROVED"
  *                         field: "WEB"
  *                         source: "https://example.com/challenge"
  *                         deadline: "2025-11-30T23:59:59.000Z"
@@ -943,7 +943,7 @@
  *                       - title: "Vue.js 심화 챌린지"
  *                         content: "Vue.js 고급 기능을 학습합니다."
  *                         type: "BLOG"
- *                         status: "INPROGRESS"
+ *                         status: "REJECTED"
  *                         field: "WEB"
  *                         source: "https://example.com/vue-challenge"
  *                         deadline: "2025-12-15T23:59:59.000Z"
