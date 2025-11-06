@@ -7,7 +7,7 @@ export const createWorkSchema = z.object({
   body: z.object({
     challengeId: z
       .string({
-        required_error: 'challenge_id는 필수입니다.',
+        required_error: 'challengeId는 필수입니다.',
       })
       .uuid('유효하지 않은 챌린지 ID 형식입니다.'),
 
@@ -41,11 +41,11 @@ export const createWorkSchema = z.object({
  */
 export const updateWorkSchema = z.object({
   params: z.object({
-    attend_id: z
+    attendId: z
       .string({
-        required_error: 'attend_id는 필수입니다.',
+        required_error: 'attendId는 필수입니다.',
       })
-      .uuid('유효하지 않은 attend_id 형식입니다.'),
+      .uuid('유효하지 않은 attendId 형식입니다.'),
   }),
   body: z.object({
     title: z
@@ -67,7 +67,7 @@ export const updateWorkSchema = z.object({
  */
 export const getWorkListQuerySchema = z.object({
   query: z.object({
-    challenge_id: z
+    challengeId: z
       .string()
       .uuid('유효하지 않은 챌린지 ID 형식입니다.')
       .optional(),

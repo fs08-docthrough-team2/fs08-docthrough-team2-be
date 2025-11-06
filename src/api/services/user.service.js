@@ -16,6 +16,7 @@ export async function getUserProfileFromToken(tokenPayload){
 
   return{
     nickName: user.nick_name,
+    email: user.email,
     role: user.role,
   }
 }

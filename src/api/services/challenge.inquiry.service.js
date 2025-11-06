@@ -160,7 +160,7 @@ async function getParticipateList(challengeId, page, pageSize) {
   }
 }
 
-async function getUserParticipateList(userID, title, field, type, status, page, pageSize) {
+async function getUserParticipateList(userID, title, field, type, status, page, pageSize, sort) {
   try {
     // Where 조건 설정 - 사용자가 참여한 챌린지 찾기
     const whereCondition = {
@@ -186,11 +186,31 @@ async function getUserParticipateList(userID, title, field, type, status, page, 
       };
     }
 
+    // 정렬 조건 설정
+    let orderBy;
+    switch (sort) {
+      case '신청시간빠름순':
+        orderBy = { created_at: 'asc' };
+        break;
+      case '신청시간느림순':
+        orderBy = { created_at: 'desc' };
+        break;
+      case '마감기한빠름순':
+        orderBy = { deadline: 'asc' };
+        break;
+      case '마감기한느림순':
+        orderBy = { deadline: 'desc' };
+        break;
+      default:
+        orderBy = { created_at: 'desc' };
+    }
+
     // 챌린지 목록 조회
     const participates = await challengeInquiryRepository.findUserChallenges({
       where: whereCondition,
       skip: (page - 1) * pageSize,
       take: pageSize,
+      orderBy: orderBy,
     });
 
     // 응답 데이터 포맷팅
@@ -223,7 +243,7 @@ async function getUserParticipateList(userID, title, field, type, status, page, 
   }
 }
 
-async function getUserCompleteList(userID, title, field, type, status, page, pageSize) {
+async function getUserCompleteList(userID, title, field, type, status, page, pageSize, sort) {
   try {
     // where 조건 설정 - 사용자가 참여한 완료된 챌린지
     const whereCondition = {
@@ -249,11 +269,31 @@ async function getUserCompleteList(userID, title, field, type, status, page, pag
       };
     }
 
+    // 정렬 조건 설정
+    let orderBy;
+    switch (sort) {
+      case '신청시간빠름순':
+        orderBy = { created_at: 'asc' };
+        break;
+      case '신청시간느림순':
+        orderBy = { created_at: 'desc' };
+        break;
+      case '마감기한빠름순':
+        orderBy = { deadline: 'asc' };
+        break;
+      case '마감기한느림순':
+        orderBy = { deadline: 'desc' };
+        break;
+      default:
+        orderBy = { created_at: 'desc' };
+    }
+
     // 챌린지 목록 조회
     const participates = await challengeInquiryRepository.findUserChallenges({
       where: whereCondition,
       skip: (page - 1) * pageSize,
       take: pageSize,
+      orderBy: orderBy,
     });
 
     // 응답 데이터 포맷팅
@@ -286,7 +326,7 @@ async function getUserCompleteList(userID, title, field, type, status, page, pag
   }
 }
 
-async function getUserChallengeDetail(userID, title, field, type, status, page, pageSize) {
+async function getUserChallengeDetail(userID, title, field, type, status, page, pageSize, sort) {
   try {
     // where 조건 설정
     const whereCondition = {
@@ -307,11 +347,31 @@ async function getUserChallengeDetail(userID, title, field, type, status, page, 
       whereCondition.user_id = userID;
     }
 
+    // 정렬 조건 설정
+    let orderBy;
+    switch (sort) {
+      case '신청시간빠름순':
+        orderBy = { created_at: 'asc' };
+        break;
+      case '신청시간느림순':
+        orderBy = { created_at: 'desc' };
+        break;
+      case '마감기한빠름순':
+        orderBy = { deadline: 'asc' };
+        break;
+      case '마감기한느림순':
+        orderBy = { deadline: 'desc' };
+        break;
+      default:
+        orderBy = { created_at: 'desc' };
+    }
+
     // 챌린지 목록 조회
     const participates = await challengeInquiryRepository.findUserChallengeDetails({
       where: whereCondition,
       skip: (page - 1) * pageSize,
       take: pageSize,
+      orderBy: orderBy,
     });
 
     // 응답 데이터 포맷팅

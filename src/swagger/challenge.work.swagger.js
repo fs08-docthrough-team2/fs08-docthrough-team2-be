@@ -14,7 +14,7 @@
  *     tags: [ChallengeWork]
  *     parameters:
  *       - in: query
- *         name: challenge_id
+ *         name: challengeId
  *         schema:
  *           type: string
  *         required: true
@@ -36,14 +36,14 @@
 
 /**
  * @swagger
- * /api/challenge/work/translated-detail/{attend_id}:
+ * /api/challenge/work/translated-detail/{attendId}:
  *   get:
  *     summary: 제출된 작업물 상세 조회
  *     description: 특정 참가자의 제출된 작업물 상세 정보를 조회합니다.
  *     tags: [ChallengeWork]
  *     parameters:
  *       - in: path
- *         name: attend_id
+ *         name: attendId
  *         required: true
  *         schema:
  *           type: string
@@ -77,14 +77,14 @@
 
 /**
  * @swagger
- * /api/challenge/work/translated-detail/save/{attend_id}:
+ * /api/challenge/work/translated-detail/save/{attendId}:
  *   get:
  *     summary: 임시 저장 상세 조회
  *     description: 특정 임시 저장 작업물의 상세 내용을 조회합니다.
  *     tags: [ChallengeWork]
  *     parameters:
  *       - in: path
- *         name: attend_id
+ *         name: attendId
  *         required: true
  *         schema:
  *           type: string
@@ -147,14 +147,14 @@
 
 /**
  * @swagger
- * /api/challenge/work/translated-detail/{attend_id}:
+ * /api/challenge/work/translated-detail/{attendId}:
  *   patch:
  *     summary: 작업물 수정
  *     description: 제출된 작업물의 제목 및 내용을 수정합니다.
  *     tags: [ChallengeWork]
  *     parameters:
  *       - in: path
- *         name: attend_id
+ *         name: attendId
  *         required: true
  *         schema:
  *           type: string
@@ -177,14 +177,14 @@
 
 /**
  * @swagger
- * /api/challenge/work/translated-detail/{attend_id}:
+ * /api/challenge/work/translated-detail/{attendId}:
  *   delete:
  *     summary: 작업물 삭제
  *     description: 제출된 작업물을 삭제합니다.
  *     tags: [ChallengeWork]
  *     parameters:
  *       - in: path
- *         name: attend_id
+ *         name: attendId
  *         required: true
  *         schema:
  *           type: string
@@ -195,14 +195,14 @@
 
 /**
  * @swagger
- * /api/challenge/work/translated-detail/like/{attend_id}:
+ * /api/challenge/work/translated-detail/like/{attendId}:
  *   post:
  *     summary: 좋아요 토글
  *     description: 특정 작업물의 좋아요 상태를 토글합니다.
  *     tags: [ChallengeWork]
  *     parameters:
  *       - in: path
- *         name: attend_id
+ *         name: attendId
  *         required: true
  *         schema:
  *           type: string

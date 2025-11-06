@@ -9,7 +9,7 @@ Content-Type: application/json
     "source": "https://docs.python.org/3/tutorial/index.html",
     "field": "API",
     "type": "OFFICIAL",
-    "deadline": "2025-06-05T23:59:59+09:00",
+    "deadline": "2025-12-05T23:59:59+09:00",
     "capacity": "2",
     "content": "파이썬은 고급 범용 프로그래밍 언어입니다."
 }
