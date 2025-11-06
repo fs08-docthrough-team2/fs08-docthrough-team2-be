@@ -5,19 +5,19 @@ import crypto from 'crypto';
 /**
  * 포괄적인 테스트 데이터 시드 (2배 증가 버전)
  *
- * 메인 테스트 계정: test@master.com (비밀번호: test)
+ * 메인 테스트 계정: test@master.com (비밀번호: test1234)
  * - 실제 활성 유저처럼 다양한 활동 내역 보유
  * - 여러 작업물 참여, 좋아요, 댓글, 알림 등
  * - 프론트엔드에서 모든 기능 테스트 가능
  *
- * 비밀번호 규칙: 이메일 @ 앞부분과 동일 (예: test@master.com → test)
+ * 비밀번호 규칙: 이메일 @ 앞부분 + 1234 (예: test@master.com → test1234)
  */
 
 // ─────────────────────────────────────────────────────────────
 // 유틸리티 함수
 // ─────────────────────────────────────────────────────────────
 function extractEmailPrefix(email) {
-  return email.split('@')[0];
+  return email.split('@')[0] + '1234';
 }
 
 async function hashPassword(password) {
@@ -867,9 +867,9 @@ async function main() {
     console.log('✅ Seed completed successfully!\n');
     console.log('📋 Test Account Credentials:');
     console.log('   Email: test@master.com');
-    console.log('   Password: test');
+    console.log('   Password: test1234');
     console.log('   Role: USER\n');
-    console.log('💡 Password Rule: 이메일 @ 앞부분 (예: admin@example.com → admin)\n');
+    console.log('💡 Password Rule: 이메일 @ 앞부분 + 1234 (예: admin@example.com → admin1234)\n');
     console.log('📊 Summary:');
     console.log(`   Users: ${users.length} (2x increase)`);
     console.log(`   Challenges: ${challenges.length} (2x increase)`);
