@@ -5,11 +5,11 @@ import { z } from 'zod';
  */
 export const createFeedbackSchema = z.object({
   body: z.object({
-    attend_id: z
+    attendId: z
       .string({
-        required_error: 'attend_id는 필수입니다.',
+        required_error: 'attendId는 필수입니다.',
       })
-      .uuid('유효하지 않은 attend_id 형식입니다.'),
+      .uuid('유효하지 않은 attendId 형식입니다.'),
 
     content: z
       .string({
@@ -30,11 +30,11 @@ export const createFeedbackSchema = z.object({
  */
 export const updateFeedbackSchema = z.object({
   body: z.object({
-    feedback_id: z
+    feedbackId: z
       .string({
-        required_error: 'feedback_id는 필수입니다.',
+        required_error: 'feedbackId는 필수입니다.',
       })
-      .uuid('유효하지 않은 feedback_id 형식입니다.'),
+      .uuid('유효하지 않은 feedbackId 형식입니다.'),
 
     content: z
       .string({
@@ -51,9 +51,9 @@ export const updateFeedbackSchema = z.object({
  */
 export const getFeedbackListQuerySchema = z.object({
   query: z.object({
-    attend_id: z
+    attendId: z
       .string()
-      .uuid('유효하지 않은 attend_id 형식입니다.')
+      .uuid('유효하지 않은 attendId 형식입니다.')
       .optional(),
 
     page: z

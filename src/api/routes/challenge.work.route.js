@@ -21,23 +21,23 @@ const router = express.Router();
 
 // 작업물 조회 - Zod 검증 적용
 router.get('/translated-list', validate(getWorkListQuerySchema), getWorkListController);
-router.get('/translated-detail/:attend_id', getWorkDetailController);
+router.get('/translated-detail/:attendId', getWorkDetailController);
 
 // 임시 저장 조회 - Zod 검증 적용
 router.get('/translated-list/save', validate(getWorkListQuerySchema), getSaveListController);
-router.get('/translated-detail/save/:attend_id', getSaveDetailController);
+router.get('/translated-detail/save/:attendId', getSaveDetailController);
 
 // 작업물 생성 - Zod 검증 적용 (SQL 인젝션, XSS 방지)
 router.post('/translated-detail', validate(createWorkSchema), createWorkController);
 router.post('/translated-detail/save', validate(createWorkSchema), createSaveWorkController);
 
 // 작업물 수정 - Zod 검증 적용
-router.patch('/translated-detail/:attend_id', validate(updateWorkSchema), updateWorkController);
+router.patch('/translated-detail/:attendId', validate(updateWorkSchema), updateWorkController);
 
 // 작업물 삭제
-router.delete('/translated-detail/:attend_id', deleteWorkController);
+router.delete('/translated-detail/:attendId', deleteWorkController);
 
 // 좋아요 토글
-router.post('/translated-detail/like/:attend_id', toggleLikeController);
+router.post('/translated-detail/like/:attendId', toggleLikeController);
 
 export default router;
