@@ -15,7 +15,7 @@ export const createFeedbackSchema = z.object({
       .string({
         required_error: '피드백 내용은 필수입니다.',
       })
-      .min(10, '피드백은 최소 10자 이상 작성해주세요.')
+      .min(1, '피드백은 최소 1자 이상 작성해주세요.')
       .max(1000, '피드백은 최대 1000자까지 입력 가능합니다.')
       .trim()
       .refine(
@@ -40,7 +40,7 @@ export const updateFeedbackSchema = z.object({
       .string({
         required_error: '피드백 내용은 필수입니다.',
       })
-      .min(10, '피드백은 최소 10자 이상 작성해주세요.')
+      .min(1, '피드백은 최소 1자 이상 작성해주세요.')
       .max(1000, '피드백은 최대 1000자까지 입력 가능합니다.')
       .trim(),
   }),

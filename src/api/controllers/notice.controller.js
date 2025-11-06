@@ -9,7 +9,27 @@ import { VALIDATION_ERROR_CODE } from '../../constants/error-code.constant.js';
 
 const addMarkNoticeAsReadInput = asyncHandler(async (req, res) => {
   const noticeID = req.params.noticeId;
-  await noticeService.addMarkNoticeAsRead(noticeID, res);
+
+  // 입력값 검증
+  if (!noticeID || !isUUID.v4(noticeID)) {
+    return res.status(HTTP_STATUS.BAD_REQUEST).json(
+      errorResponse({
+        code: VALIDATION_ERROR_CODE.INVALID_FIELD,
+        message: VALIDATION_MESSAGE.INVALID_ID,
+      })
+    );
+  }
+
+  // 서비스 호출
+  await noticeService.addMarkNoticeAsRead(noticeID);
+
+  // 성공 응답
+  res.status(HTTP_STATUS.OK).json(
+    successResponse({
+      data: null,
+      message: '알림이 읽음 상태로 업데이트되었습니다.',
+    })
+  );
 });
 
 const getUserNoticeInput = asyncHandler(async (req, res) => {
