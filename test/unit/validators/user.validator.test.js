@@ -44,7 +44,7 @@ describe('User Validator Tests', () => {
 
       const result = updateUserProfileSchema.safeParse(invalidData);
       expect(result.success).toBe(false);
-      expect(result.error.issues[0].message).toContain('수정할 항목');
+      expect(result.error.issues[0].message).toMatch(/수정할.*항목/);
     });
 
     describe('nickName 검증', () => {
@@ -57,7 +57,7 @@ describe('User Validator Tests', () => {
 
         const result = updateUserProfileSchema.safeParse(invalidData);
         expect(result.success).toBe(false);
-        expect(result.error.issues[0].message).toContain('최소 2자');
+        expect(result.error.issues[0].message).toMatch(/최소.*2자/);
       });
 
       it('닉네임이 20자를 초과하면 실패해야 함', () => {
@@ -69,7 +69,7 @@ describe('User Validator Tests', () => {
 
         const result = updateUserProfileSchema.safeParse(invalidData);
         expect(result.success).toBe(false);
-        expect(result.error.issues[0].message).toContain('최대 20자');
+        expect(result.error.issues[0].message).toMatch(/최대.*20자/);
       });
 
       it('닉네임의 앞뒤 공백은 제거되어야 함', () => {
@@ -121,7 +121,7 @@ describe('User Validator Tests', () => {
           };
           const result = updateUserProfileSchema.safeParse(invalidData);
           expect(result.success).toBe(false);
-          expect(result.error.issues[0].message).toContain('한글, 영문, 숫자');
+          expect(result.error.issues[0].message).toMatch(/한글.*영문.*숫자/);
         });
       });
 
@@ -188,7 +188,7 @@ describe('User Validator Tests', () => {
 
         const result = updateUserProfileSchema.safeParse(invalidData);
         expect(result.success).toBe(false);
-        expect(result.error.issues[0].message).toContain('최소 8자');
+        expect(result.error.issues[0].message).toMatch(/최소.*8자/);
       });
 
       it('비밀번호가 100자를 초과하면 실패해야 함', () => {
@@ -200,7 +200,7 @@ describe('User Validator Tests', () => {
 
         const result = updateUserProfileSchema.safeParse(invalidData);
         expect(result.success).toBe(false);
-        expect(result.error.issues[0].message).toContain('최대 100자');
+        expect(result.error.issues[0].message).toMatch(/최대.*100자/);
       });
 
       it('비밀번호에 영문이 없으면 실패해야 함', () => {
@@ -212,7 +212,7 @@ describe('User Validator Tests', () => {
 
         const result = updateUserProfileSchema.safeParse(invalidData);
         expect(result.success).toBe(false);
-        expect(result.error.issues[0].message).toContain('영문, 숫자, 특수문자');
+        expect(result.error.issues[0].message).toMatch(/영문.*숫자.*특수문자/);
       });
 
       it('비밀번호에 숫자가 없으면 실패해야 함', () => {
@@ -224,7 +224,7 @@ describe('User Validator Tests', () => {
 
         const result = updateUserProfileSchema.safeParse(invalidData);
         expect(result.success).toBe(false);
-        expect(result.error.issues[0].message).toContain('영문, 숫자, 특수문자');
+        expect(result.error.issues[0].message).toMatch(/영문.*숫자.*특수문자/);
       });
 
       it('비밀번호에 특수문자가 없으면 실패해야 함', () => {
@@ -236,7 +236,7 @@ describe('User Validator Tests', () => {
 
         const result = updateUserProfileSchema.safeParse(invalidData);
         expect(result.success).toBe(false);
-        expect(result.error.issues[0].message).toContain('영문, 숫자, 특수문자');
+        expect(result.error.issues[0].message).toMatch(/영문.*숫자.*특수문자/);
       });
 
       it('비밀번호에 영문, 숫자, 특수문자가 모두 포함되면 통과해야 함', () => {

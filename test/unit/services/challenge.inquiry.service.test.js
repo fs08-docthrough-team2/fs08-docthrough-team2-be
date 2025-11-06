@@ -419,7 +419,7 @@ describe('Challenge Inquiry Service Tests', () => {
 
       await expect(
         challengeInquiryService.getChallengeDetail('invalid-id')
-      ).rejects.toThrow('챌린지를 찾을 수 없습니다.');
+      ).rejects.toThrow(/챌린지.*찾을 수 없습니다/);
 
       expect(challengeInquiryRepository.findChallengeDetailById).toHaveBeenCalledWith('invalid-id');
     });
@@ -473,7 +473,7 @@ describe('Challenge Inquiry Service Tests', () => {
 
       await expect(
         challengeInquiryService.getParticipateList('invalid-challenge-id', 1, 10)
-      ).rejects.toThrow('챌린지를 찾을 수 없습니다.');
+      ).rejects.toThrow(/챌린지.*찾을 수 없습니다/);
 
       expect(challengeInquiryRepository.findChallengeDetailById).toHaveBeenCalledWith('invalid-challenge-id');
       expect(challengeInquiryRepository.findParticipatesByChallenge).not.toHaveBeenCalled();

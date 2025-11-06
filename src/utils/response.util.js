@@ -37,20 +37,30 @@ export function successResponse({ data, message }) {
  * @param {Object} options - 응답 옵션
  * @param {string} options.code - 에러 코드
  * @param {string} options.message - 에러 메시지
+ * @param {*} [options.details] - 추가 에러 정보 (선택)
  * @returns {Object} 표준화된 에러 응답
  *
  * @example
  * errorResponse({ code: "USER_NOT_FOUND", message: "사용자를 찾을 수 없습니다." })
  * // { success: false, error: { code: "USER_NOT_FOUND", message: "사용자를 찾을 수 없습니다." } }
+ *
+ * errorResponse({ code: "VALIDATION_ERROR", message: "입력 오류", details: [...] })
+ * // { success: false, error: { code: "VALIDATION_ERROR", message: "입력 오류", details: [...] } }
  */
-export function errorResponse({ code, message }) {
-  return {
+export function errorResponse({ code, message, details }) {
+  const response = {
     success: false,
     error: {
       code,
       message,
     },
   };
+
+  if (details !== undefined) {
+    response.error.details = details;
+  }
+
+  return response;
 }
 
 /**

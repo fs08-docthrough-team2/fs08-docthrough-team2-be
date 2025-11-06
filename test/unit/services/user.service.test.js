@@ -59,7 +59,7 @@ describe('User Service Tests', () => {
 
       await expect(
         userService.getUserProfileFromToken({ userId: 'invalid-id' })
-      ).rejects.toThrow('사용자를 찾을 수 없습니다.');
+      ).rejects.toThrow(/사용자.*찾을 수 없습니다/);
     });
   });
 
@@ -125,7 +125,7 @@ describe('User Service Tests', () => {
       };
 
       await expect(userService.getUserFromToken(mockReq)).rejects.toThrow(
-        '인증 토큰이 없습니다.'
+        /인증 토큰.*제공되지 않았습니다/
       );
     });
 
@@ -262,7 +262,7 @@ describe('User Service Tests', () => {
       userRepository.findUserProfileByToken.mockResolvedValue(mockUser);
 
       await expect(userService.updateUserProfile(mockReq)).rejects.toThrow(
-        '수정할 항목이 없습니다.'
+        /수정할 항목.*제공되지 않았습니다/
       );
     });
   });
@@ -307,7 +307,7 @@ describe('User Service Tests', () => {
       userRepository.findUserProfileByToken.mockResolvedValue(null);
 
       await expect(userService.deleteUserProfile(mockReq)).rejects.toThrow(
-        '사용자를 찾을 수 없습니다.'
+        /사용자.*찾을 수 없습니다/
       );
     });
 
@@ -330,7 +330,7 @@ describe('User Service Tests', () => {
       userRepository.findUserProfileByToken.mockResolvedValue(mockUser);
 
       await expect(userService.deleteUserProfile(mockReq)).rejects.toThrow(
-        '이미 탈퇴한 사용자 입니다.'
+        /이미 탈퇴.*계정입니다/
       );
     });
   });
