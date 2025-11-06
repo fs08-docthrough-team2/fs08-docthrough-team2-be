@@ -14,7 +14,7 @@ content-type: application/json
 
 {
   "email": "test@master.com",
-  "password": "test"
+  "password": "test1234"
 }
 
 ### POST Login (User)
