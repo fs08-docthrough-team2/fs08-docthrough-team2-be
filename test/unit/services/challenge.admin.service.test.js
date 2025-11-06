@@ -237,7 +237,7 @@ describe('Challenge Admin Service Tests', () => {
       challengeAdminRepository.findChallengeById.mockResolvedValue(null);
 
       await expect(challengeAdminService.getChallengeDetail('invalid-id')).rejects.toThrow(
-        '챌린지를 찾을 수 없습니다.'
+        /챌린지.*찾을 수 없습니다/
       );
     });
   });

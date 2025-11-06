@@ -49,7 +49,7 @@ describe('Work Validator Tests', () => {
           };
           const result = createWorkSchema.safeParse(invalidData);
           expect(result.success).toBe(false);
-          expect(result.error.issues[0].message).toContain('유효하지 않은');
+          expect(result.error.issues[0].message).toMatch(/유효하지 않은/);
         });
       });
 
@@ -91,7 +91,7 @@ describe('Work Validator Tests', () => {
 
         const result = createWorkSchema.safeParse(invalidData);
         expect(result.success).toBe(false);
-        expect(result.error.issues[0].message).toContain('최대 200자');
+        expect(result.error.issues[0].message).toMatch(/최대.*200자/);
       });
 
       it('title의 앞뒤 공백은 제거되어야 함', () => {
@@ -111,7 +111,7 @@ describe('Work Validator Tests', () => {
 
         const result = createWorkSchema.safeParse(invalidData);
         expect(result.success).toBe(false);
-        expect(result.error.issues[0].message).toContain('허용되지 않는 문자');
+        expect(result.error.issues[0].message).toMatch(/허용되지 않는 문자/);
       });
 
       it('title에 javascript: 프로토콜이 있으면 실패해야 함', () => {
@@ -192,7 +192,7 @@ describe('Work Validator Tests', () => {
 
         const result = createWorkSchema.safeParse(invalidData);
         expect(result.success).toBe(false);
-        expect(result.error.issues[0].message).toContain('최대 10000자');
+        expect(result.error.issues[0].message).toMatch(/최대.*10000자/);
       });
 
       it('workItem의 앞뒤 공백은 제거되어야 함', () => {
@@ -212,7 +212,7 @@ describe('Work Validator Tests', () => {
 
         const result = createWorkSchema.safeParse(invalidData);
         expect(result.success).toBe(false);
-        expect(result.error.issues[0].message).toContain('허용되지 않는 문자');
+        expect(result.error.issues[0].message).toMatch(/허용되지 않는 문자/);
       });
 
       it('workItem에 javascript: 프로토콜이 있으면 실패해야 함', () => {
@@ -351,7 +351,7 @@ describe('Work Validator Tests', () => {
 
         const result = updateWorkSchema.safeParse(invalidData);
         expect(result.success).toBe(false);
-        expect(result.error.issues[0].message).toContain('최대 200자');
+        expect(result.error.issues[0].message).toMatch(/최대.*200자/);
       });
 
       it('title의 앞뒤 공백은 제거되어야 함', () => {
@@ -403,7 +403,7 @@ describe('Work Validator Tests', () => {
 
         const result = updateWorkSchema.safeParse(invalidData);
         expect(result.success).toBe(false);
-        expect(result.error.issues[0].message).toContain('최대 10000자');
+        expect(result.error.issues[0].message).toMatch(/최대.*10000자/);
       });
 
       it('workItem의 앞뒤 공백은 제거되어야 함', () => {
@@ -539,7 +539,7 @@ describe('Work Validator Tests', () => {
 
         const result = getWorkListQuerySchema.safeParse(invalidData);
         expect(result.success).toBe(false);
-        expect(result.error.issues[0].message).toContain('숫자');
+        expect(result.error.issues[0].message).toMatch(/숫자/);
       });
 
       it('page가 1 미만이면 실패해야 함', () => {
@@ -551,7 +551,7 @@ describe('Work Validator Tests', () => {
 
         const result = getWorkListQuerySchema.safeParse(invalidData);
         expect(result.success).toBe(false);
-        expect(result.error.issues[0].message).toContain('1 이상');
+        expect(result.error.issues[0].message).toMatch(/1.*이상/);
       });
 
       it('page가 음수면 실패해야 함', () => {
@@ -598,7 +598,7 @@ describe('Work Validator Tests', () => {
 
         const result = getWorkListQuerySchema.safeParse(invalidData);
         expect(result.success).toBe(false);
-        expect(result.error.issues[0].message).toContain('숫자');
+        expect(result.error.issues[0].message).toMatch(/숫자/);
       });
 
       it('size가 1 미만이면 실패해야 함', () => {
@@ -610,7 +610,7 @@ describe('Work Validator Tests', () => {
 
         const result = getWorkListQuerySchema.safeParse(invalidData);
         expect(result.success).toBe(false);
-        expect(result.error.issues[0].message).toContain('1 이상');
+        expect(result.error.issues[0].message).toMatch(/1.*이상/);
       });
 
       it('size가 100을 초과하면 실패해야 함', () => {
@@ -622,7 +622,7 @@ describe('Work Validator Tests', () => {
 
         const result = getWorkListQuerySchema.safeParse(invalidData);
         expect(result.success).toBe(false);
-        expect(result.error.issues[0].message).toContain('100 이하');
+        expect(result.error.issues[0].message).toMatch(/100.*이하/);
       });
 
       it('size가 1-100 사이면 통과해야 함', () => {

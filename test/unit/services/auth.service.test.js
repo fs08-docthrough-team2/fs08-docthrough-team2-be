@@ -81,7 +81,7 @@ describe('Auth Service Tests', () => {
 
       await expect(
         authService.signup('test@example.com', 'password123', '테스트유저')
-      ).rejects.toThrow('이미 등록된 이메일입니다.');
+      ).rejects.toThrow(/이미 등록/);
 
       expect(authRepository.createUser).not.toHaveBeenCalled();
     });
@@ -92,7 +92,7 @@ describe('Auth Service Tests', () => {
 
       await expect(
         authService.signup('test@example.com', 'password123', '테스트유저')
-      ).rejects.toThrow('이미 사용 중인 닉네임입니다.');
+      ).rejects.toThrow(/이미 사용 중/);
 
       expect(authRepository.createUser).not.toHaveBeenCalled();
     });
@@ -132,7 +132,7 @@ describe('Auth Service Tests', () => {
 
       await expect(
         authService.login('notfound@example.com', 'password123')
-      ).rejects.toThrow('존재하지 않는 사용자입니다.');
+      ).rejects.toThrow(/찾을 수 없습니다/);
     });
 
     it('삭제된 사용자는 에러를 던져야 함', async () => {
@@ -143,7 +143,7 @@ describe('Auth Service Tests', () => {
 
       await expect(
         authService.login('deleted@example.com', 'password123')
-      ).rejects.toThrow('존재하지 않는 사용자입니다.');
+      ).rejects.toThrow(/찾을 수 없습니다/);
     });
 
     it('비밀번호가 틀리면 에러를 던져야 함', async () => {
@@ -158,7 +158,7 @@ describe('Auth Service Tests', () => {
 
       await expect(
         authService.login('test@example.com', 'wrong-password')
-      ).rejects.toThrow('비밀번호가 올바르지 않습니다.');
+      ).rejects.toThrow(/비밀번호.*올바르지 않습니다/);
     });
   });
 

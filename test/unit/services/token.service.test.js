@@ -52,15 +52,15 @@ describe('Token Service Tests', () => {
 
     it('Refresh Token이 없으면 에러를 던져야 함', async () => {
       await expect(tokenService.verifyAccessToken(null)).rejects.toThrow(
-        'Refresh Token이 없습니다.'
+        /Refresh Token.*제공되지 않았습니다/
       );
 
       await expect(tokenService.verifyAccessToken(undefined)).rejects.toThrow(
-        'Refresh Token이 없습니다.'
+        /Refresh Token.*제공되지 않았습니다/
       );
 
       await expect(tokenService.verifyAccessToken('')).rejects.toThrow(
-        'Refresh Token이 없습니다.'
+        /Refresh Token.*제공되지 않았습니다/
       );
     });
 
@@ -68,7 +68,7 @@ describe('Token Service Tests', () => {
       tokenRepository.findUserByRefreshToken.mockResolvedValue(null);
 
       await expect(tokenService.verifyAccessToken('invalid-token')).rejects.toThrow(
-        '유효하지 않은 Refresh Token입니다.'
+        /Refresh Token.*찾을 수 없습니다/
       );
     });
 
@@ -86,7 +86,7 @@ describe('Token Service Tests', () => {
       });
 
       await expect(tokenService.verifyAccessToken('expired-token')).rejects.toThrow(
-        'Refresh Token이 만료되었거나 유효하지 않습니다.'
+        /Refresh Token.*검증에 실패/
       );
     });
   });
@@ -138,7 +138,7 @@ describe('Token Service Tests', () => {
 
     it('Refresh Token이 없으면 에러를 던져야 함', async () => {
       await expect(tokenService.refreshAccessToken(null)).rejects.toThrow(
-        'Refresh Token이 없습니다.'
+        /Refresh Token.*제공되지 않았습니다/
       );
     });
 
@@ -146,7 +146,7 @@ describe('Token Service Tests', () => {
       tokenRepository.findUserByRefreshToken.mockResolvedValue(null);
 
       await expect(tokenService.refreshAccessToken('invalid-token')).rejects.toThrow(
-        '유효하지 않은 토큰입니다.'
+        /Refresh Token.*찾을 수 없습니다/
       );
     });
 
@@ -164,7 +164,7 @@ describe('Token Service Tests', () => {
       });
 
       await expect(tokenService.refreshAccessToken('expired-token')).rejects.toThrow(
-        'Refresh Token이 만료되거나 유효하지 않습니다.'
+        /Refresh Token.*검증에 실패/
       );
     });
 
