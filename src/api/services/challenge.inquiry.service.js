@@ -91,12 +91,9 @@ async function getChallengeDetail(challengeId) {
   try {
     // 챌린지 상세 내용 조회
     const challenge = await challengeInquiryRepository.findChallengeDetailById(challengeId);
-    // 결과를 찾을 수 없는 경우, 에러 메시지 반환
+    // 결과를 찾을 수 없는 경우, 에러 던지기
     if (!challenge) {
-      return {
-        success: false,
-        message: '챌린지를 찾을 수 없습니다.',
-      };
+      throw new Error('챌린지를 찾을 수 없습니다.');
     }
 
     // 결과를 반환
@@ -122,6 +119,12 @@ async function getChallengeDetail(challengeId) {
 
 async function getParticipateList(challengeId, page, pageSize) {
   try {
+    // 챌린지가 존재하는지 먼저 확인
+    const challenge = await challengeInquiryRepository.findChallengeDetailById(challengeId);
+    if (!challenge) {
+      throw new Error('챌린지를 찾을 수 없습니다.');
+    }
+
     // 참여자 목록 조회
     const participates = await challengeInquiryRepository.findParticipatesByChallenge({
       challengeId,
