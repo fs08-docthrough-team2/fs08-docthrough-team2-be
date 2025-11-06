@@ -1,4 +1,5 @@
 import * as feedbackRepository from "../repositories/challenge.feedback.repository.js";
+import { NotFoundError, UnauthorizedError, BadRequestError, ConflictError } from '../../utils/error.util.js';
 import { getUserFromToken } from "./user.service.js";
 import noticeServices from './notice.service.js';
 
@@ -40,8 +41,11 @@ export async function getFeedbackList({ attendId, page=1, size=10}) {
 export async function getFeedbackDetail({ feedbackId  }){
   const feedback = await feedbackRepository.findFeedbackById(feedbackId );
   
-  if(!feedback) 
-    throw new Error("피드백을 찾을 수 없습니다.");
+  if(!feedback)
+    throw new NotFoundError(
+      `피드백 ID '${feedbackId}'를 찾을 수 없습니다. 피드백이 존재하지 않거나 이미 삭제되었을 수 있습니다. 피드백 ID를 확인해주세요.`,
+      'FEEDBACK_NOT_FOUND'
+    );
   
   return { 
   item: {
@@ -67,7 +71,10 @@ export async function createFeedback(req, { attendId, content }) {
   const attend = await feedbackRepository.findAttendWithChallengeById(attendId);
 
   if(!attend)
-    throw new Error("작업물을 찾을 수 없습니다.")
+    throw new NotFoundError(
+      `작업물 ID '${attendId}'를 찾을 수 없습니다. 작업물이 존재하지 않거나 이미 삭제되었을 수 있습니다. 피드백을 작성하기 전에 작업물 ID를 확인해주세요.`,
+      'WORK_NOT_FOUND'
+    );
 
   const feedback = await feedbackRepository.createFeedback({
     attend_id: attendId,
@@ -97,10 +104,16 @@ export async function updateFeedback(req, { feedbackId, content}){
   const feedback = await feedbackRepository.findFeedbackWithChallengeById(feedbackId);
 
   if(!feedback)
-    throw new Error("피드백을 찾을 수 없습니다.");
+    throw new NotFoundError(
+      `피드백 ID '${feedbackId}'를 찾을 수 없습니다. 피드백이 존재하지 않거나 이미 삭제되었을 수 있습니다. 피드백 ID를 확인해주세요.`,
+      'FEEDBACK_NOT_FOUND'
+    );
 
   if(feedback.user_id !== userId && role !== "ADMIN"){
-    throw new Error("수정 권한이 없습니다.");
+    throw new UnauthorizedError(
+      `피드백 ID '${feedbackId}'에 대한 수정 권한이 없습니다. 본인이 작성한 피드백만 수정할 수 있습니다. 현재 사용자 ID: '${userId}', 작성자 ID: '${feedback.user_id}'`,
+      'FEEDBACK_UPDATE_DENIED'
+    );
   }
 
   const items = await feedbackRepository.updateFeedbackById(feedbackId, content);
@@ -126,10 +139,16 @@ export async function deleteFeedback(req, { feedbackId }){
   const feedback = await feedbackRepository.findFeedbackWithChallengeById(feedbackId);
 
   if(!feedback)
-    throw new Error("피드백을 찾을 수 없습니다.");
+    throw new NotFoundError(
+      `피드백 ID '${feedbackId}'를 찾을 수 없습니다. 피드백이 존재하지 않거나 이미 삭제되었을 수 있습니다. 피드백 ID를 확인해주세요.`,
+      'FEEDBACK_NOT_FOUND'
+    );
 
   if(feedback.user_id !== userId && role !== "ADMIN"){
-    throw new Error("삭제 권한이 없습니다.");
+    throw new UnauthorizedError(
+      `피드백 ID '${feedbackId}'에 대한 삭제 권한이 없습니다. 본인이 작성한 피드백만 삭제할 수 있습니다. 현재 사용자 ID: '${userId}', 작성자 ID: '${feedback.user_id}'`,
+      'FEEDBACK_DELETE_DENIED'
+    );
   }
 
   // 챌린지 제목 저장 (삭제 전에)

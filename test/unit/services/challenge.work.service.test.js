@@ -113,7 +113,7 @@ describe('Challenge Work Service Tests', () => {
 
       await expect(
         workService.getWorkList({ challenge_id: 'challenge-123' })
-      ).rejects.toThrow('작업물 목록 조회에 실패했습니다.');
+      ).rejects.toThrow(/작업물.*목록.*조회.*실패/);
     });
   });
 
@@ -150,7 +150,7 @@ describe('Challenge Work Service Tests', () => {
       workRepository.findWorkById.mockResolvedValue(null);
 
       await expect(workService.getWorkDetail('invalid-id')).rejects.toThrow(
-        '작업물을 찾을 수 없습니다.'
+        /작업물.*찾을 수 없습니다/
       );
     });
   });
@@ -214,7 +214,7 @@ describe('Challenge Work Service Tests', () => {
       workRepository.findSavesByUserId.mockResolvedValue(null);
 
       await expect(workService.getSaveList(mockReq, {})).rejects.toThrow(
-        '임시 저장 목록 조회에 실패했습니다.'
+        /임시.*저장.*목록.*조회.*실패/
       );
     });
   });
@@ -256,7 +256,7 @@ describe('Challenge Work Service Tests', () => {
       workRepository.findSaveById.mockResolvedValue(null);
 
       await expect(workService.getSaveDetail(mockReq, 'invalid-id')).rejects.toThrow(
-        '임시 저장된 작업물을 찾을 수 없습니다.'
+        /임시 저장.*찾을 수 없습니다/
       );
     });
 
@@ -277,7 +277,7 @@ describe('Challenge Work Service Tests', () => {
       workRepository.findSaveById.mockResolvedValue(mockSave);
 
       await expect(workService.getSaveDetail(mockReq, 'save-123')).rejects.toThrow(
-        '본인의 임시 저장만 조회 가능합니다.'
+        /조회 권한이 없습니다.*본인이 작성한 임시 저장만 조회할 수 있습니다/
       );
     });
   });
@@ -348,7 +348,7 @@ describe('Challenge Work Service Tests', () => {
       try {
         await workService.createWork(mockReq, 'challenge-123', '작업물 제목', '작업물 내용');
       } catch (error) {
-        expect(error.message).toBe('이미 종료된 챌린지 입니다.');
+        expect(error.message).toMatch(/이미.*종료.*챌린지/);
         expect(error.status).toBe(403);
       }
     });
@@ -372,7 +372,7 @@ describe('Challenge Work Service Tests', () => {
       try {
         await workService.createWork(mockReq, 'challenge-123', '작업물 제목', '작업물 내용');
       } catch (error) {
-        expect(error.message).toBe('이미 제출된 작업물이 존재합니다.');
+        expect(error.message).toMatch(/이미.*제출.*작업물.*존재/);
         expect(error.status).toBe(400);
       }
     });
@@ -444,7 +444,7 @@ describe('Challenge Work Service Tests', () => {
 
       await expect(
         workService.createSaveWork(mockReq, 'challenge-123', '임시 저장 제목', '임시 저장 내용')
-      ).rejects.toThrow('이미 종료된 챌린지 입니다.');
+      ).rejects.toThrow(/이미.*종료.*챌린지/);
     });
   });
 
@@ -524,7 +524,7 @@ describe('Challenge Work Service Tests', () => {
           title: '수정된 제목',
           workItem: '수정된 내용',
         })
-      ).rejects.toThrow('작업물을 찾을 수 없습니다.');
+      ).rejects.toThrow(/작업물.*찾을 수 없습니다/);
     });
 
     it('본인만 수정할 수 있어야 함', async () => {
@@ -547,7 +547,7 @@ describe('Challenge Work Service Tests', () => {
           title: '수정된 제목',
           workItem: '수정된 내용',
         })
-      ).rejects.toThrow('본인만 수정할 수 있습니다.');
+      ).rejects.toThrow(/본인.*수정.*할 수 있습니다/);
     });
 
     it('이미 종료된 챌린지면 에러를 던져야 함', async () => {
@@ -570,7 +570,7 @@ describe('Challenge Work Service Tests', () => {
           title: '수정된 제목',
           workItem: '수정된 내용',
         })
-      ).rejects.toThrow('이미 종료된 챌린지');
+      ).rejects.toThrow(/이미.*종료.*챌린지/);
     });
   });
 
@@ -644,7 +644,7 @@ describe('Challenge Work Service Tests', () => {
       workRepository.findWorkWithChallengeById.mockResolvedValue(null);
 
       await expect(workService.deleteWork(mockReq, 'invalid-id')).rejects.toThrow(
-        '작업물을 찾을 수 없습니다.'
+        /작업물.*찾을 수 없습니다/
       );
     });
 
@@ -664,7 +664,7 @@ describe('Challenge Work Service Tests', () => {
       workRepository.findWorkWithChallengeById.mockResolvedValue(mockWork);
 
       await expect(workService.deleteWork(mockReq, 'attend-123')).rejects.toThrow(
-        '본인만 삭제할 수 있습니다.'
+        /본인.*삭제.*할 수 있습니다/
       );
     });
 
@@ -684,7 +684,7 @@ describe('Challenge Work Service Tests', () => {
       workRepository.findWorkWithChallengeById.mockResolvedValue(mockWork);
 
       await expect(workService.deleteWork(mockReq, 'attend-123')).rejects.toThrow(
-        '이미 종료된 챌린지입니다.'
+        /이미.*종료.*챌린지/
       );
     });
   });

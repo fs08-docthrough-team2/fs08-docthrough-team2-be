@@ -1,4 +1,5 @@
 import * as challengeInquiryRepository from '../repositories/challenge.inquiry.repository.js';
+import { NotFoundError, UnauthorizedError, BadRequestError, ConflictError } from '../../utils/error.util.js';
 
 async function getChallengeList({ title, field, type, status, page, pageSize, sort }) {
   try {
@@ -55,7 +56,10 @@ async function getChallengeList({ title, field, type, status, page, pageSize, so
 
     // challenges가 배열인지 확인
     if (!Array.isArray(challenges)) {
-      throw new Error('챌린지 목록 조회에 실패했습니다.');
+      throw new BadRequestError(
+        '챌린지 목록 조회에 실패했습니다. 데이터베이스에서 올바른 형식의 데이터를 반환받지 못했습니다. 잠시 후 다시 시도하거나 관리자에게 문의해주세요.',
+        'CHALLENGE_LIST_FETCH_FAILED'
+      );
     }
 
     // 응답 데이터 포맷팅
@@ -93,7 +97,10 @@ async function getChallengeDetail(challengeId) {
     const challenge = await challengeInquiryRepository.findChallengeDetailById(challengeId);
     // 결과를 찾을 수 없는 경우, 에러 던지기
     if (!challenge) {
-      throw new Error('챌린지를 찾을 수 없습니다.');
+      throw new NotFoundError(
+        `챌린지 ID '${challengeId}'를 찾을 수 없습니다. 챌린지가 존재하지 않거나 삭제되었을 수 있습니다. 챌린지 ID를 확인해주세요.`,
+        'CHALLENGE_NOT_FOUND'
+      );
     }
 
     // 결과를 반환
@@ -122,7 +129,10 @@ async function getParticipateList(challengeId, page, pageSize) {
     // 챌린지가 존재하는지 먼저 확인
     const challenge = await challengeInquiryRepository.findChallengeDetailById(challengeId);
     if (!challenge) {
-      throw new Error('챌린지를 찾을 수 없습니다.');
+      throw new NotFoundError(
+        `챌린지 ID '${challengeId}'를 찾을 수 없습니다. 챌린지가 존재하지 않거나 삭제되었을 수 있습니다. 참여자 목록을 조회하기 전에 챌린지 ID를 확인해주세요.`,
+        'CHALLENGE_NOT_FOUND'
+      );
     }
 
     // 참여자 목록 조회
@@ -134,7 +144,10 @@ async function getParticipateList(challengeId, page, pageSize) {
 
     // participates가 배열인지 확인
     if (!Array.isArray(participates)) {
-      throw new Error('참여자 목록 조회에 실패했습니다.');
+      throw new BadRequestError(
+        `챌린지 ID '${challengeId}'의 참여자 목록 조회에 실패했습니다. 데이터베이스에서 올바른 형식의 데이터를 반환받지 못했습니다. 잠시 후 다시 시도하거나 관리자에게 문의해주세요.`,
+        'PARTICIPATE_LIST_FETCH_FAILED'
+      );
     }
 
     // 순위 추가

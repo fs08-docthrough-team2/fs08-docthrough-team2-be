@@ -42,7 +42,7 @@ describe('Feedback Validator Tests', () => {
 
       const result = createFeedbackSchema.safeParse(invalidData);
       expect(result.success).toBe(false);
-      expect(result.error.issues[0].message).toContain('유효하지 않은');
+      expect(result.error.issues[0].message).toMatch(/유효하지 않은/);
     });
 
     it('content가 없으면 실패해야 함', () => {
@@ -68,7 +68,7 @@ describe('Feedback Validator Tests', () => {
 
       const result = createFeedbackSchema.safeParse(invalidData);
       expect(result.success).toBe(false);
-      expect(result.error.issues[0].message).toContain('최소 1자');
+      expect(result.error.issues[0].message).toMatch(/최소.*1자/);
     });
 
     it('content가 1000자를 초과하면 실패해야 함', () => {
@@ -81,7 +81,7 @@ describe('Feedback Validator Tests', () => {
 
       const result = createFeedbackSchema.safeParse(invalidData);
       expect(result.success).toBe(false);
-      expect(result.error.issues[0].message).toContain('최대 1000자');
+      expect(result.error.issues[0].message).toMatch(/최대.*1000자/);
     });
 
     it('content에 script 태그가 있으면 실패해야 함 (XSS 방지)', () => {
@@ -94,7 +94,7 @@ describe('Feedback Validator Tests', () => {
 
       const result = createFeedbackSchema.safeParse(invalidData);
       expect(result.success).toBe(false);
-      expect(result.error.issues[0].message).toContain('허용되지 않는 문자');
+      expect(result.error.issues[0].message).toMatch(/허용되지 않는 문자/);
     });
 
     it('content에 javascript: 프로토콜이 있으면 실패해야 함 (XSS 방지)', () => {
@@ -107,7 +107,7 @@ describe('Feedback Validator Tests', () => {
 
       const result = createFeedbackSchema.safeParse(invalidData);
       expect(result.success).toBe(false);
-      expect(result.error.issues[0].message).toContain('허용되지 않는 문자');
+      expect(result.error.issues[0].message).toMatch(/허용되지 않는 문자/);
     });
 
     it('content의 앞뒤 공백은 제거되어야 함', () => {
@@ -160,7 +160,7 @@ describe('Feedback Validator Tests', () => {
 
       const result = updateFeedbackSchema.safeParse(invalidData);
       expect(result.success).toBe(false);
-      expect(result.error.issues[0].message).toContain('유효하지 않은');
+      expect(result.error.issues[0].message).toMatch(/유효하지 않은/);
     });
 
     it('content가 1000자를 초과하면 실패해야 함', () => {
@@ -173,7 +173,7 @@ describe('Feedback Validator Tests', () => {
 
       const result = updateFeedbackSchema.safeParse(invalidData);
       expect(result.success).toBe(false);
-      expect(result.error.issues[0].message).toContain('최대 1000자');
+      expect(result.error.issues[0].message).toMatch(/최대.*1000자/);
     });
   });
 
@@ -222,7 +222,7 @@ describe('Feedback Validator Tests', () => {
 
       const result = getFeedbackListQuerySchema.safeParse(invalidData);
       expect(result.success).toBe(false);
-      expect(result.error.issues[0].message).toContain('숫자');
+      expect(result.error.issues[0].message).toMatch(/숫자/);
     });
 
     it('size가 숫자가 아니면 실패해야 함', () => {
@@ -234,7 +234,7 @@ describe('Feedback Validator Tests', () => {
 
       const result = getFeedbackListQuerySchema.safeParse(invalidData);
       expect(result.success).toBe(false);
-      expect(result.error.issues[0].message).toContain('숫자');
+      expect(result.error.issues[0].message).toMatch(/숫자/);
     });
 
     it('문자열 숫자는 숫자로 변환되어야 함', () => {

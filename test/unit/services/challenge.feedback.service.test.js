@@ -122,7 +122,7 @@ describe('Challenge Feedback Service Tests', () => {
 
       await expect(
         feedbackService.getFeedbackDetail({ feedback_id: 'invalid-id' })
-      ).rejects.toThrow('피드백을 찾을 수 없습니다.');
+      ).rejects.toThrow(/피드백.*찾을 수 없습니다/);
     });
   });
 
@@ -188,7 +188,7 @@ describe('Challenge Feedback Service Tests', () => {
           attend_id: 'invalid-id',
           content: '좋은 작업입니다',
         })
-      ).rejects.toThrow('작업물을 찾을 수 없습니다.');
+      ).rejects.toThrow(/작업물.*찾을 수 없습니다/);
     });
   });
 
@@ -277,7 +277,7 @@ describe('Challenge Feedback Service Tests', () => {
           feedback_id: 'invalid-id',
           content: '수정된 피드백',
         })
-      ).rejects.toThrow('피드백을 찾을 수 없습니다.');
+      ).rejects.toThrow(/피드백.*찾을 수 없습니다/);
     });
 
     it('수정 권한이 없으면 에러를 던져야 함', async () => {
@@ -305,7 +305,7 @@ describe('Challenge Feedback Service Tests', () => {
           feedback_id: 'feedback-123',
           content: '수정된 피드백',
         })
-      ).rejects.toThrow('수정 권한이 없습니다.');
+      ).rejects.toThrow(/수정.*권한.*없습니다/);
     });
   });
 
@@ -388,7 +388,7 @@ describe('Challenge Feedback Service Tests', () => {
         feedbackService.deleteFeedback(mockReq, {
           feedback_id: 'invalid-id',
         })
-      ).rejects.toThrow('피드백을 찾을 수 없습니다.');
+      ).rejects.toThrow(/피드백.*찾을 수 없습니다/);
     });
 
     it('삭제 권한이 없으면 에러를 던져야 함', async () => {
@@ -415,7 +415,7 @@ describe('Challenge Feedback Service Tests', () => {
         feedbackService.deleteFeedback(mockReq, {
           feedback_id: 'feedback-123',
         })
-      ).rejects.toThrow('삭제 권한이 없습니다.');
+      ).rejects.toThrow(/삭제.*권한.*없습니다/);
     });
   });
 });

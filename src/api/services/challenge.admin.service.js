@@ -1,4 +1,5 @@
 import * as challengeAdminRepository from '../repositories/challenge.admin.repository.js';
+import { NotFoundError, UnauthorizedError, BadRequestError, ConflictError } from '../../utils/error.util.js';
 import noticeService from './notice.service.js';
 
 async function getChallengeList(searchKeyword, status, page, pageSize, sort) {
@@ -63,7 +64,10 @@ async function getChallengeList(searchKeyword, status, page, pageSize, sort) {
 
     // challenges가 배열인지 확인
     if (!Array.isArray(challenges)) {
-      throw new Error('챌린지 목록 조회에 실패했습니다.');
+      throw new BadRequestError(
+        '관리자 챌린지 목록 조회에 실패했습니다. 데이터베이스에서 올바른 형식의 데이터를 반환받지 못했습니다. 잠시 후 다시 시도하거나 시스템 관리자에게 문의해주세요.',
+        'ADMIN_CHALLENGE_LIST_FETCH_FAILED'
+      );
     }
 
     // 응답 데이터 포맷팅
@@ -103,7 +107,10 @@ async function getChallengeDetail(challengeId) {
 
     // 챌린지가 존재하지 않으면 에러
     if (!challengeDetail) {
-      throw new Error('챌린지를 찾을 수 없습니다.');
+      throw new NotFoundError(
+        `챌린지 ID '${challengeId}'를 찾을 수 없습니다. 챌린지가 존재하지 않거나 삭제되었을 수 있습니다. 챌린지 ID를 확인해주세요.`,
+        'CHALLENGE_NOT_FOUND'
+      );
     }
 
     // 결과를 반환
@@ -132,7 +139,10 @@ async function approveChallenge(challengeId) {
 
     // 챌린지가 존재하지 않으면 에러
     if (!approvedChallenge) {
-      throw new Error('챌린지를 찾을 수 없습니다.');
+      throw new NotFoundError(
+        `승인할 챌린지 ID '${challengeId}'를 찾을 수 없습니다. 챌린지가 존재하지 않거나 이미 삭제되었을 수 있습니다. 챌린지 ID를 확인해주세요.`,
+        'CHALLENGE_NOT_FOUND'
+      );
     }
 
     // 승인 알림 전송
@@ -165,7 +175,10 @@ async function rejectChallenge(challengeId, reject_comment) {
 
     // 챌린지가 존재하지 않으면 에러
     if (!rejectedChallenge) {
-      throw new Error('챌린지를 찾을 수 없습니다.');
+      throw new NotFoundError(
+        `거절할 챌린지 ID '${challengeId}'를 찾을 수 없습니다. 챌린지가 존재하지 않거나 이미 삭제되었을 수 있습니다. 챌린지 ID를 확인해주세요.`,
+        'CHALLENGE_NOT_FOUND'
+      );
     }
 
     // 거절 알림 전송 (사유 포함)

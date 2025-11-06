@@ -44,7 +44,7 @@ describe('Notice Validator Tests', () => {
         };
         const result = noticeIdParamSchema.safeParse(invalidData);
         expect(result.success).toBe(false);
-        expect(result.error.issues[0].message).toContain('유효하지 않은');
+        expect(result.error.issues[0].message).toMatch(/유효하지 않은/);
       });
     });
 
