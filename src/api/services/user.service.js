@@ -15,8 +15,8 @@ export async function getUserProfileFromToken(tokenPayload){
     throw new Error("사용자를 찾을 수 없습니다.");
 
   return{
+    userId,
     nickName: user.nick_name,
-    email: user.email,
     role: user.role,
   }
 }
