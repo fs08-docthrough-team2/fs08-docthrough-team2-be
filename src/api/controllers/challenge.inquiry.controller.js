@@ -16,8 +16,6 @@ import {
   validateUserId,
   sanitizeString, validateEnum,
 } from '../../utils/validation.util.js';
-import { VALIDATION_ERROR_CODE } from '../../constants/error-code.constant.js';
-import { VALIDATION_MESSAGE } from '../../constants/message.constant.js';
 
 const SORTLIST = ['신청시간빠름순', '신청시간느림순', '마감기한빠름순', '마감기한느림순'];
 
@@ -118,9 +116,6 @@ const getUserParticipateListInput = asyncHandler(async (req, res) => {
     valid = validateChallengeType(type, res, ChallengeType);
     if (valid !== true) return valid;
 
-    valid = validateChallengeStatus(status, res, ChallengeStatus);
-    if (valid !== true) return valid;
-
     valid = validatePagination(pageNum, pageSizeNum, res);
     if (valid !== true) return valid;
 
@@ -162,9 +157,6 @@ const getUserCompleteListInput = asyncHandler(async (req, res) => {
   valid = validateChallengeType(type, res, ChallengeType);
   if (valid !== true) return valid;
 
-  valid = validateChallengeStatus(status, res, ChallengeStatus);
-  if (valid !== true) return valid;
-
   valid = validatePagination(pageNum, pageSizeNum, res);
   if (valid !== true) return valid;
 
@@ -204,9 +196,6 @@ const getUserChallengeDetailInput = asyncHandler(async (req, res) => {
   if (valid !== true) return valid;
 
   valid = validateChallengeType(type, res, ChallengeType);
-  if (valid !== true) return valid;
-
-  valid = validateChallengeStatus(status, res, ChallengeStatus);
   if (valid !== true) return valid;
 
   valid = validatePagination(pageNum, pageSizeNum, res);

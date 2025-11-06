@@ -174,10 +174,20 @@ async function getUserParticipateList(userID, title, field, type, status, page, 
       whereCondition.type = type;
     }
     if (status) {
-      whereCondition.status = status;
-    }
-    if (userID) {
-      whereCondition.user_id = userID;
+      switch (status) {
+        case '신청승인':
+          whereCondition.status = 'APPROVED';
+          break;
+        case '신청거절':
+          whereCondition.status = 'REJECTED';
+          break;
+        case '신청취소':
+          whereCondition.status = 'CANCELLED';
+          break;
+        case '신청대기':
+          whereCondition.status = 'PENDING';
+          break;
+      }
     }
     if (title) {
       whereCondition.title = {
@@ -205,8 +215,9 @@ async function getUserParticipateList(userID, title, field, type, status, page, 
         orderBy = { created_at: 'desc' };
     }
 
-    // 챌린지 목록 조회
+    // 챌린지 목록 조회 - userId를 별도 파라미터로 전달
     const participates = await challengeInquiryRepository.findUserChallenges({
+      userId: userID,
       where: whereCondition,
       skip: (page - 1) * pageSize,
       take: pageSize,
@@ -223,6 +234,7 @@ async function getUserParticipateList(userID, title, field, type, status, page, 
       field: participate.field,
       source: participate.source,
       deadline: participate.deadline,
+      appliedDate: participate.created_at,
       currentParticipants: participate._count.attends,
       maxParticipants: parseInt(participate.capacity),
     }));
@@ -257,10 +269,20 @@ async function getUserCompleteList(userID, title, field, type, status, page, pag
       whereCondition.type = type;
     }
     if (status) {
-      whereCondition.status = status;
-    }
-    if (userID) {
-      whereCondition.user_id = userID;
+      switch (status) {
+        case '신청승인':
+          whereCondition.status = 'APPROVED';
+          break;
+        case '신청거절':
+          whereCondition.status = 'REJECTED';
+          break;
+        case '신청취소':
+          whereCondition.status = 'CANCELLED';
+          break;
+        case '신청대기':
+          whereCondition.status = 'PENDING';
+          break;
+      }
     }
     if (title) {
       whereCondition.title = {
@@ -288,8 +310,9 @@ async function getUserCompleteList(userID, title, field, type, status, page, pag
         orderBy = { created_at: 'desc' };
     }
 
-    // 챌린지 목록 조회
+    // 챌린지 목록 조회 - userId를 별도 파라미터로 전달
     const participates = await challengeInquiryRepository.findUserChallenges({
+      userId: userID,
       where: whereCondition,
       skip: (page - 1) * pageSize,
       take: pageSize,
@@ -341,7 +364,20 @@ async function getUserChallengeDetail(userID, title, field, type, status, page, 
       whereCondition.type = type;
     }
     if (status) {
-      whereCondition.status = status;
+      switch (status) {
+        case '신청승인':
+          whereCondition.status = 'APPROVED';
+          break;
+        case '신청거절':
+          whereCondition.status = 'REJECTED';
+          break;
+        case '신청취소':
+          whereCondition.status = 'CANCELLED';
+          break;
+        case '신청대기':
+          whereCondition.status = 'PENDING';
+          break;
+      }
     }
     if (userID) {
       whereCondition.user_id = userID;
