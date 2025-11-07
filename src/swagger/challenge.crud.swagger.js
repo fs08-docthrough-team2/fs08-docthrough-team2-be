@@ -627,7 +627,13 @@
  *         application/json:
  *           schema:
  *             type: object
- *             example: {}
+ *             required:
+ *               - delete_reason
+ *             properties:
+ *               delete_reason:
+ *                 type: string
+ *                 description: 챌린지 삭제 사유 (1자 이상 500자 이하)
+ *                 example: "참여자가 없어서 챌린지를 삭제합니다."
  *     responses:
  *       200:
  *         description: 챌린지 삭제 성공
@@ -700,6 +706,10 @@
  *                           type: string
  *                           nullable: true
  *                           example: null
+ *                         delete_reason:
+ *                           type: string
+ *                           nullable: true
+ *                           example: "참여자가 없어서 챌린지를 삭제합니다."
  *                         created_at:
  *                           type: string
  *                           format: date-time
@@ -873,6 +883,10 @@
  *                           type: string
  *                           nullable: true
  *                           example: null
+ *                         delete_reason:
+ *                           type: string
+ *                           nullable: true
+ *                           example: "참여자가 없어서 챌린지를 삭제합니다."
  *                         created_at:
  *                           type: string
  *                           format: date-time
