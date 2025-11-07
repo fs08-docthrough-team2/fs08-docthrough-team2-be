@@ -30,10 +30,14 @@ export async function cancelChallengeById(challengeId) {
 /**
  * 챌린지 삭제 (Soft Delete)
  */
-export async function deleteChallengeById(challengeId) {
+export async function deleteChallengeById(challengeId, delete_reason) {
   return prisma.challenge.update({
     where: { challenge_id: challengeId },
-    data: { isDelete: true, status: 'DEADLINE' },
+    data: {
+      isDelete: true,
+      status: 'DEADLINE',
+      delete_reason: delete_reason
+    },
   });
 }
 

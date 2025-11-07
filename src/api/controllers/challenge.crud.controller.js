@@ -88,9 +88,10 @@ const cancelChallengeInput = asyncHandler(async (req, res) => {
  * 챌린지 삭제 (Zod 검증 완료 후 호출)
  */
 const deleteChallengeInput = asyncHandler(async (req, res) => {
-  // Zod 미들웨어에서 challengeId 검증 완료
+  // Zod 미들웨어에서 challengeId와 delete_reason 검증 완료
   const userID = req.auth?.userId;
   const challengeID = req.params.challengeId;
+  const { delete_reason } = req.body;
 
   // 사용자 ID 검증
   if (!userID || !isUUID.v4(userID)) {
@@ -103,7 +104,7 @@ const deleteChallengeInput = asyncHandler(async (req, res) => {
   }
 
   // 서비스 호출
-  const response = await challengeCRUDServices.deleteChallenge(challengeID, userID);
+  const response = await challengeCRUDServices.deleteChallenge(challengeID, userID, delete_reason);
 
   // 호출 결과 반환
   return res.status(HTTP_STATUS.OK).json(response);

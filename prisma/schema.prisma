@@ -58,10 +58,11 @@ model Challenge {
   deadline       DateTime
   capacity       String
   isDelete       Boolean         @default(false)
+  delete_reason  String?
   isClose        Boolean         @default(false)
   isReject       Boolean         @default(false)
-  isApprove      Boolean         @default(false)
   reject_content String?
+  isApprove      Boolean         @default(false)
   created_at     DateTime        @default(now())
   updated_at     DateTime        @updatedAt
 

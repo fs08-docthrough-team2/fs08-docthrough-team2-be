@@ -4,7 +4,7 @@ GET {{baseUrl}}/api/challenge/inquiry/challenge-list?pageSize=1&page=3
 Authorization: Bearer {{accessToken}}
 
 ### 번역 챌린지 상세 조회
-GET {{baseUrl}}/api/challenge/inquiry/challenge-detail/07cb7de9-74b0-4220-a6b3-b06d540d6ae7
+GET {{baseUrl}}/api/challenge/inquiry/challenge-detail/53e966b3-76ac-4a14-91e1-259733f76e97
 Authorization: Bearer {{accessToken}}
 
 ### 번역 챌린지 참여 현황 조회
@@ -21,4 +21,8 @@ Authorization: Bearer {{accessToken}}
 
 ### 각 회원별 신청한 챌린지 목록 조회 및 거절 사유 목록 조회 (신청만 하고 참여 전인 챌린지 조회)
 GET {{baseUrl}}/api/challenge/inquiry/individual-challenge-detail?page=1&pageSize=10&title=TypeScript
+Authorization: Bearer {{accessToken}}
+
+### 챌린지에 대한 상태여부 확인 조회
+GET {{baseUrl}}/api/challenge/inquiry/challenge-status/49cf88a4-1288-4928-be28-92abb8735bdc
 Authorization: Bearer {{accessToken}}
