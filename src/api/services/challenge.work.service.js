@@ -39,8 +39,8 @@ export async function getWorkList({ challenge_id, page = 1, size = 10 }){
     items: rows.slice(skip, skip + size),
     pagination: {
       page,
-      size,
-      total,
+      size: size,
+      totalCount: total,
       totalPages: Math.ceil(total / size),
     },
   };
@@ -112,8 +112,8 @@ export async function getSaveList(req, { page = 1, size = 5 }){
     items: rows.slice(skip, skip + size),
     pagination:{
       page,
-      size,
-      total,
+      size: size,
+      totalCount: total,
       totalPages: Math.ceil(total / size),
     },
   };
@@ -262,12 +262,12 @@ export async function updateWork(req, attend_id, { title, workItem }){
     work_item: workItem,
   });
 
-  // 작업물 업데이트 알림 추가
+  // 작업물 업데이트 알림 추가 (attend_id 포함)
   const userId = attend.user.user_id;
-  await noticeServices.addModifyNotice("작업물", "업데이트", userId, attend.challenge.title);
+  await noticeServices.addAdminWorkUpdateNotice("업데이트", userId, attend.challenge.title, "", attend_id);
 }
 
-export async function deleteWork(req, attend_id){
+export async function deleteWork(req, attend_id, deleteReason){
   const user = await getUserFromToken(req);
 
   const attend = await workRepository.findWorkWithChallengeById(attend_id);
@@ -291,13 +291,16 @@ export async function deleteWork(req, attend_id){
     );
   }
 
+  // 관련된 좋아요와 피드백 삭제
   await workRepository.deleteLikesByAttendId(attend_id);
   await workRepository.deleteFeedbacksByAttendId(attend_id);
-  await workRepository.deleteWorkById(attend_id);
 
-  // 작업물 삭제 알림 추가
+  // Soft delete: is_delete를 true로 설정하고 삭제 이유 저장
+  await workRepository.deleteWorkById(attend_id, deleteReason);
+
+  // 작업물 삭제 알림 추가 (attend_id 포함)
   const userId = attend.user.user_id;
-  await noticeServices.addModifyNotice("작업물", "삭제", userId, attend.challenge.title);
+  await noticeServices.addAdminWorkUpdateNotice("삭제", userId, attend.challenge.title, deleteReason, attend_id);
 
   // 삭제 완료 메시지 반환
   return { message: "삭제 완료 "};

@@ -127,7 +127,8 @@ export const updateWorkController = asyncHandler(async (req, res) => {
 // 삭제
 export const deleteWorkController = asyncHandler(async (req, res) => {
   const { attendId } = req.params;
-  const data = await deleteWork(req, attendId);
+  const { deleteReason } = req.body;
+  const data = await deleteWork(req, attendId, deleteReason);
   res.status(HTTP_STATUS.OK).json({ success: true, data});
 });
 

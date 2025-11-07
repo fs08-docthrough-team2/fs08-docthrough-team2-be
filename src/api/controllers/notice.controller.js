@@ -33,7 +33,18 @@ const addMarkNoticeAsReadInput = asyncHandler(async (req, res) => {
 });
 
 const getUserNoticeInput = asyncHandler(async (req, res) => {
-  const userID = !isUUID.v4(req.auth?.userId) ? undefined : req.auth?.userId;
+  const userID = req.auth?.userId;
+
+  // userID 검증 추가
+  if (!userID) {
+    return res.status(HTTP_STATUS.UNAUTHORIZED).json(
+      errorResponse({
+        code: 'UNAUTHORIZED',
+        message: '인증되지 않은 사용자입니다.',
+      })
+    );
+  }
+
   const { page, pageSize } = req.query;
   const pageNum = Number(page);
   const pageSizeNum = Number(pageSize);
@@ -57,7 +68,8 @@ const getUserNoticeInput = asyncHandler(async (req, res) => {
 
   const noticeList = await noticeService.getUserNotice(userID, pageNum, pageSizeNum);
 
-  res.status(HTTP_STATUS.OK).json(successResponse({ data: noticeList }));
+  // service에서 이미 success를 반환하므로 직접 반환
+  res.status(HTTP_STATUS.OK).json(noticeList);
 });
 
 export default {
