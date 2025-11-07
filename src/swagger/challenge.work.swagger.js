@@ -12,6 +12,8 @@
  *     summary: 제출된 작업물 리스트 조회
  *     description: 특정 첼린지에 제출된 모든 작업물 목록을 페이지네이션 형태로 반환합니다.
  *     tags: [ChallengeWork]
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - in: query
  *         name: challengeId
@@ -91,6 +93,27 @@
  *                   error:
  *                     code: "VALIDATION_ERROR"
  *                     message: "입력값이 올바르지 않습니다. challengeId는 필수 항목입니다."
+ *       401:
+ *         description: 인증 실패 - 토큰이 없거나 유효하지 않음
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             examples:
+ *               missingToken:
+ *                 summary: 토큰 없음
+ *                 value:
+ *                   success: false
+ *                   error:
+ *                     code: "MISSING_AUTH_TOKEN"
+ *                     message: "인증 토큰이 제공되지 않았습니다. Authorization 헤더에 Bearer 토큰을 포함해주세요."
+ *               invalidToken:
+ *                 summary: 유효하지 않은 토큰
+ *                 value:
+ *                   success: false
+ *                   error:
+ *                     code: "INVALID_TOKEN"
+ *                     message: "제공된 액세스 토큰이 유효하지 않습니다. 토큰이 만료되었거나 변조되었을 수 있습니다. 다시 로그인해주세요."
  *       500:
  *         description: 서버 내부 오류
  *         content:
@@ -106,6 +129,8 @@
  *     summary: 제출된 작업물 상세 조회
  *     description: 특정 참가자의 제출된 작업물 상세 정보를 조회합니다.
  *     tags: [ChallengeWork]
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: attendId
@@ -203,6 +228,8 @@
  *     summary: 임시 저장된 작업물 리스트 조회
  *     description: 사용자가 임시로 저장한 작업물 리스트를 조회합니다.
  *     tags: [ChallengeWork]
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - in: query
  *         name: page
@@ -300,6 +327,8 @@
  *     summary: 임시 저장 상세 조회
  *     description: 특정 임시 저장 작업물의 상세 내용을 조회합니다.
  *     tags: [ChallengeWork]
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: attendId
@@ -398,6 +427,8 @@
  *     summary: 작업물 제출
  *     description: 사용자 작업물을 제출(저장)합니다.
  *     tags: [ChallengeWork]
+ *     security:
+ *       - BearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -433,7 +464,7 @@
  *                       type: string
  *                       example: "uuid-string"
  *       400:
- *         description: 잘못된 요청 - 유효성 검증 실패 또는 챌린지 종료됨
+ *         description: 잘못된 요청 - 유효성 검증 실패, 챌린지 종료됨, 또는 정원 초과
  *         content:
  *           application/json:
  *             schema:
@@ -453,6 +484,13 @@
  *                   error:
  *                     code: "CHALLENGE_ALREADY_CLOSED"
  *                     message: "챌린지 ID 'challenge-123'는 이미 종료되었습니다. 종료된 챌린지에는 작업물을 제출할 수 없습니다. 진행 중인 다른 챌린지를 선택해주세요."
+ *               capacityFull:
+ *                 summary: 정원 초과
+ *                 value:
+ *                   success: false
+ *                   error:
+ *                     code: "CHALLENGE_CAPACITY_FULL"
+ *                     message: "챌린지 ID 'challenge-123'의 참여 인원이 이미 정원(30명)에 도달했습니다. 현재 참여자 수: 30명. 다른 챌린지를 선택해주세요."
  *       401:
  *         description: 인증 실패 - 토큰이 없거나 유효하지 않음
  *         content:
@@ -500,6 +538,8 @@
  *     summary: 작업물 임시 저장
  *     description: 작업물을 임시 저장합니다.
  *     tags: [ChallengeWork]
+ *     security:
+ *       - BearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -591,6 +631,8 @@
  *     summary: 작업물 수정
  *     description: 제출된 작업물의 제목 및 내용을 수정합니다.
  *     tags: [ChallengeWork]
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: attendId
@@ -705,6 +747,8 @@
  *     summary: 작업물 삭제
  *     description: 제출된 작업물을 삭제합니다.
  *     tags: [ChallengeWork]
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: attendId
@@ -797,6 +841,8 @@
  *     summary: 좋아요 토글
  *     description: 특정 작업물의 좋아요 상태를 토글합니다.
  *     tags: [ChallengeWork]
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: attendId
