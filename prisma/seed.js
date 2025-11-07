@@ -156,6 +156,7 @@ async function seedChallenges(users) {
       isApprove: true,
       isClose: false,
       isReject: false,
+      adminId: admin.user_id,
     },
   });
   challenges.push(ch1);
@@ -176,6 +177,7 @@ async function seedChallenges(users) {
       isApprove: true,
       isClose: false,
       isReject: false,
+      adminId: admin.user_id,
     },
   });
   challenges.push(ch2);
@@ -196,6 +198,7 @@ async function seedChallenges(users) {
       isApprove: true,
       isClose: true,
       isReject: false,
+      adminId: admin.user_id,
     },
   });
   challenges.push(ch3);
@@ -217,6 +220,7 @@ async function seedChallenges(users) {
       isClose: false,
       isReject: true,
       reject_content: '개인 블로그보다는 공식 문서 번역을 권장합니다. 더 공신력 있는 자료로 다시 신청해주세요.',
+      adminId: admin.user_id,
     },
   });
   challenges.push(ch4);
@@ -355,6 +359,7 @@ async function seedChallenges(users) {
         isApprove: challengeData.status === 'APPROVED',
         isClose: false,
         isReject: false,
+        adminId: challengeData.status === 'APPROVED' ? admin.user_id : null,
       },
     });
     challenges.push(ch);
@@ -420,6 +425,7 @@ async function seedChallenges(users) {
         isApprove: true,
         isClose: false,
         isReject: false,
+        adminId: admin.user_id,
       },
     });
     challenges.push(ch);
@@ -540,6 +546,7 @@ async function seedChallenges(users) {
         isApprove: data.status === 'APPROVED',
         isClose: data.status === 'DEADLINE',
         isReject: false,
+        adminId: data.status === 'APPROVED' || data.status === 'DEADLINE' ? admin.user_id : null,
       },
     });
     challenges.push(ch);
@@ -585,10 +592,25 @@ async function seedAttends(challenges, users) {
         title: participation.title,
         work_item: `${participation.title}에 대한 상세한 번역 작업물입니다. 원문의 의미를 정확히 전달하면서도 한국어로 자연스럽게 표현했습니다.`,
         isSave: participation.isSave,
+        is_delete: false,
       },
     });
     allAttends.push(attend);
   }
+
+  // test@master.com의 삭제된 작업물 예제 추가
+  const deletedAttend1 = await prisma.attend.create({
+    data: {
+      challenge_id: challenges[0].challenge_id,
+      user_id: testMaster.user_id,
+      title: 'React 18 Concurrent Features (삭제됨)',
+      work_item: '초기 번역 작업물입니다.',
+      isSave: false,
+      is_delete: true,
+      delete_reason: '더 나은 버전으로 재작성하기 위해 삭제했습니다.',
+    },
+  });
+  allAttends.push(deletedAttend1);
 
   // ====== 다른 사용자들의 작업물들 ======
 
@@ -610,6 +632,8 @@ async function seedAttends(challenges, users) {
           title: `${user.nick_name}의 ${challenge.title.substring(0, 20)} 번역`,
           work_item: `${challenge.title}의 ${i + 1}번째 섹션을 번역했습니다. 전문 용어를 정확히 번역하고 예제 코드도 함께 제공합니다.`,
           isSave: i % 5 === 0, // 일부는 임시 저장
+          is_delete: i === 0 && Math.random() > 0.7, // 일부는 삭제됨
+          delete_reason: i === 0 && Math.random() > 0.7 ? '내용이 부적절하여 삭제되었습니다.' : null,
         },
       });
       allAttends.push(attend);
@@ -633,6 +657,7 @@ async function seedAttends(challenges, users) {
           title: `${user.nick_name}의 ${challenge.title.substring(0, 20)} 완료`,
           work_item: `${challenge.title}에 대한 번역 작업을 완료했습니다.`,
           isSave: false,
+          is_delete: false,
         },
       });
       allAttends.push(attend);
