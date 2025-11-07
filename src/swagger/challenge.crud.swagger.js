@@ -609,7 +609,7 @@
  *     tags:
  *       - 챌린지 관리
  *     summary: 챌린지 삭제 (소프트 삭제)
- *     description: 챌린지를 논리적으로 삭제합니다. (isDelete를 true로, status를 DEADLINE으로 설정)
+ *     description: 챌린지를 논리적으로 삭제합니다. (isDelete를 true로, status를 DELETED로 설정)
  *     security:
  *       - BearerAuth: []
  *     parameters:
