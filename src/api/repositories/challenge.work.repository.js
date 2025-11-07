@@ -139,7 +139,7 @@ export async function findSaveById(attendId) {
 }
 
 /**
- * 챌린지 조회 (isClose 확인용)
+ * 챌린지 조회 (isClose, capacity 확인용)
  */
 export async function findChallengeIsClose(challengeId) {
   return prisma.challenge.findUnique({
@@ -147,6 +147,12 @@ export async function findChallengeIsClose(challengeId) {
     select: {
       isClose: true,
       title: true,
+      capacity: true,
+      _count: {
+        select: {
+          attends: true
+        }
+      }
     },
   });
 }
