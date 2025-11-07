@@ -39,7 +39,7 @@ function getRandomItems(array, count) {
 }
 
 // ─────────────────────────────────────────────────────────────
-// 사용자 시드 데이터 (38명)
+// 사용자 시드 데이터 (300명 이상)
 // ─────────────────────────────────────────────────────────────
 async function seedUsers() {
   console.log('👥 Creating users...');
@@ -73,21 +73,14 @@ async function seedUsers() {
   });
   users.push(admin);
 
-  // 3. 전문가 계정들 (4명으로 증가)
-  const expertEmails = [
-    'expert1@example.com',
-    'expert2@example.com',
-    'expert3@example.com',
-    'expert4@example.com',
-  ];
-  const expertNames = ['번역전문가1', '번역전문가2', '번역전문가3', '번역전문가4'];
-
-  for (let i = 0; i < expertEmails.length; i++) {
+  // 3. 전문가 계정들 (20명으로 증가)
+  for (let i = 1; i <= 20; i++) {
+    const email = `expert${i}@example.com`;
     const expert = await prisma.user.create({
       data: {
-        email: expertEmails[i],
-        nick_name: expertNames[i],
-        password: await hashPassword(extractEmailPrefix(expertEmails[i])),
+        email: email,
+        nick_name: `번역전문가${i}`,
+        password: await hashPassword(extractEmailPrefix(email)),
         role: 'EXPERT',
         refresh_token: await generateRefreshToken(),
         isDelete: false,
@@ -96,22 +89,27 @@ async function seedUsers() {
     users.push(expert);
   }
 
-  // 4. 일반 사용자들 (30명으로 증가)
-  const regularUserNames = [
-    '개발자김씨', '코딩왕', '프론트마스터', '백엔드고수', 'React러버',
+  // 4. 일반 사용자들 (280명으로 증가)
+  const baseNames = [
+    '개발자', '코딩왕', '프론트마스터', '백엔드고수', 'React러버',
     'Node.js팬', 'Python마니아', 'Java개발자', 'TypeScript전문가', 'Vue.js전도사',
     'Angular마스터', 'Django러버', 'Spring개발자', 'DevOps엔지니어', '풀스택개발자',
     'Go언어매니아', 'Rust개발자', 'Kotlin전문가', 'Swift마스터', 'Flutter러버',
     'React Native전문가', 'GraphQL마스터', 'MongoDB전문가', 'PostgreSQL고수', 'Redis전문가',
-    '클라우드엔지니어', 'AWS마스터', 'Azure전문가', 'GCP개발자', 'Docker마스터'
+    '클라우드엔지니어', 'AWS마스터', 'Azure전문가', 'GCP개발자', 'Docker마스터',
+    'Kubernetes전문가', 'CI/CD마스터', '데이터분석가', 'AI개발자', '머신러닝엔지니어',
+    '프론트엔드개발자', '백엔드개발자', '웹개발자', '앱개발자', '게임개발자'
   ];
 
-  for (let i = 0; i < regularUserNames.length; i++) {
-    const email = `user${i + 1}@example.com`;
+  for (let i = 1; i <= 280; i++) {
+    const email = `user${i}@example.com`;
+    const baseName = baseNames[i % baseNames.length];
+    const nickname = i <= baseNames.length ? baseName : `${baseName}${Math.floor(i / baseNames.length)}`;
+
     const user = await prisma.user.create({
       data: {
         email: email,
-        nick_name: regularUserNames[i],
+        nick_name: nickname,
         password: await hashPassword(extractEmailPrefix(email)),
         role: 'USER',
         refresh_token: await generateRefreshToken(),
@@ -126,427 +124,174 @@ async function seedUsers() {
 }
 
 // ─────────────────────────────────────────────────────────────
-// 챌린지 시드 데이터 (24개로 증가)
+// 챌린지 시드 데이터 (200개 이상)
 // ─────────────────────────────────────────────────────────────
 async function seedChallenges(users) {
   console.log('📚 Creating challenges...');
 
   const testMaster = users[0];
   const admin = users[1];
-  const experts = users.slice(2, 6); // 전문가 4명
-  const regularUsers = users.slice(6);
+  const experts = users.slice(2, 22); // 전문가 20명
+  const regularUsers = users.slice(22);
 
   const challenges = [];
 
-  // ====== test@master.com이 생성한 챌린지들 (12개로 증가) ======
-
-  // 1. 진행 중, 승인됨
-  const ch1 = await prisma.challenge.create({
-    data: {
-      user_id: testMaster.user_id,
-      title: 'React 18 공식문서 번역 챌린지',
-      content: 'React 18의 새로운 기능들을 한글로 번역하는 챌린지입니다. Concurrent Rendering, Suspense 등 최신 기능을 다룹니다.',
-      type: 'OFFICIAL',
-      status: 'APPROVED',
-      field: 'WEB',
-      source: 'https://react.dev/blog/2022/03/29/react-v18',
-      deadline: new Date('2025-12-31T23:59:59Z'),
-      capacity: '30',
-      isDelete: false,
-      isApprove: true,
-      isClose: false,
-      isReject: false,
-      adminId: admin.user_id,
-    },
-  });
-  challenges.push(ch1);
-
-  // 2. 진행 중, 승인됨, 마감 임박
-  const ch2 = await prisma.challenge.create({
-    data: {
-      user_id: testMaster.user_id,
-      title: 'TypeScript 5.0 핸드북 번역',
-      content: 'TypeScript 5.0 공식 핸드북을 한글로 번역합니다. 타입 시스템의 새로운 기능들을 학습합니다.',
-      type: 'OFFICIAL',
-      status: 'APPROVED',
-      field: 'WEB',
-      source: 'https://www.typescriptlang.org/docs/handbook/intro.html',
-      deadline: new Date('2025-11-13T23:59:59Z'),
-      capacity: '25',
-      isDelete: false,
-      isApprove: true,
-      isClose: false,
-      isReject: false,
-      adminId: admin.user_id,
-    },
-  });
-  challenges.push(ch2);
-
-  // 3. 마감됨
-  const ch3 = await prisma.challenge.create({
-    data: {
-      user_id: testMaster.user_id,
-      title: 'Vue.js 3 가이드 번역 완료',
-      content: 'Vue.js 3 공식 가이드 번역 챌린지. Composition API를 중심으로 학습합니다.',
-      type: 'OFFICIAL',
-      status: 'DEADLINE',
-      field: 'WEB',
-      source: 'https://vuejs.org/guide/introduction.html',
-      deadline: new Date('2025-10-15T23:59:59Z'),
-      capacity: '15',
-      isDelete: false,
-      isApprove: true,
-      isClose: true,
-      isReject: false,
-      adminId: admin.user_id,
-    },
-  });
-  challenges.push(ch3);
-
-  // 4. 거절됨
-  const ch4 = await prisma.challenge.create({
-    data: {
-      user_id: testMaster.user_id,
-      title: '개인 블로그 글 번역',
-      content: '개인 블로그의 기술 글을 번역하는 챌린지입니다.',
-      type: 'BLOG',
-      status: 'REJECTED',
-      field: 'MODERN',
-      source: 'https://example-blog.com/tech-article',
-      deadline: new Date('2025-11-20T23:59:59Z'),
-      capacity: '10',
-      isDelete: false,
-      isApprove: false,
-      isClose: false,
-      isReject: true,
-      reject_content: '개인 블로그보다는 공식 문서 번역을 권장합니다. 더 공신력 있는 자료로 다시 신청해주세요.',
-      adminId: admin.user_id,
-    },
-  });
-  challenges.push(ch4);
-
-  // 5. 대기 중
-  const ch5 = await prisma.challenge.create({
-    data: {
-      user_id: testMaster.user_id,
-      title: 'Svelte 공식문서 번역',
-      content: 'Svelte 프레임워크의 공식 문서를 번역합니다.',
-      type: 'OFFICIAL',
-      status: 'PENDING',
-      field: 'WEB',
-      source: 'https://svelte.dev/docs',
-      deadline: new Date('2025-12-15T23:59:59Z'),
-      capacity: '20',
-      isDelete: false,
-      isApprove: false,
-      isClose: false,
-      isReject: false,
-    },
-  });
-  challenges.push(ch5);
-
-  // 6. 취소됨
-  const ch6 = await prisma.challenge.create({
-    data: {
-      user_id: testMaster.user_id,
-      title: 'Angular 가이드 번역 (취소됨)',
-      content: 'Angular 공식 가이드 번역 챌린지 (사정으로 취소)',
-      type: 'OFFICIAL',
-      status: 'CANCELLED',
-      field: 'WEB',
-      source: 'https://angular.io/guide',
-      deadline: new Date('2025-11-25T23:59:59Z'),
-      capacity: '12',
-      isDelete: false,
-      isApprove: false,
-      isClose: false,
-      isReject: false,
-    },
-  });
-  challenges.push(ch6);
-
-  // 7-12. test@master.com이 생성한 추가 챌린지들
-  const testMasterAdditionalChallenges = [
-    {
-      title: 'Remix 프레임워크 완벽 가이드',
-      content: 'Remix의 최신 기능과 라우팅 시스템을 학습합니다.',
-      type: 'OFFICIAL',
-      status: 'APPROVED',
-      field: 'NEXT',
-      source: 'https://remix.run/docs',
-      deadline: new Date('2025-12-25T23:59:59Z'),
-      capacity: '18',
-    },
-    {
-      title: 'Solid.js 리액티브 프로그래밍',
-      content: 'Solid.js의 리액티브 프로그래밍 패러다임을 번역합니다.',
-      type: 'OFFICIAL',
-      status: 'APPROVED',
-      field: 'WEB',
-      source: 'https://www.solidjs.com/docs/latest',
-      deadline: new Date('2025-12-20T23:59:59Z'),
-      capacity: '15',
-    },
-    {
-      title: 'Astro 정적 사이트 생성기',
-      content: 'Astro의 Islands Architecture를 학습합니다.',
-      type: 'OFFICIAL',
-      status: 'APPROVED',
-      field: 'WEB',
-      source: 'https://docs.astro.build/',
-      deadline: new Date('2025-12-18T23:59:59Z'),
-      capacity: '12',
-    },
-    {
-      title: 'Qwik 프레임워크 시작하기',
-      content: 'Qwik의 Resumability 개념을 번역합니다.',
-      type: 'OFFICIAL',
-      status: 'PENDING',
-      field: 'WEB',
-      source: 'https://qwik.builder.io/docs/',
-      deadline: new Date('2025-12-22T23:59:59Z'),
-      capacity: '10',
-    },
-    {
-      title: 'Nuxt 3 풀스택 프레임워크',
-      content: 'Nuxt 3의 서버 엔진과 Auto-imports를 학습합니다.',
-      type: 'OFFICIAL',
-      status: 'APPROVED',
-      field: 'WEB',
-      source: 'https://nuxt.com/docs',
-      deadline: new Date('2025-12-28T23:59:59Z'),
-      capacity: '22',
-    },
-    {
-      title: 'SvelteKit 앱 개발 가이드',
-      content: 'SvelteKit의 라우팅과 서버사이드 렌더링을 번역합니다.',
-      type: 'OFFICIAL',
-      status: 'APPROVED',
-      field: 'NEXT',
-      source: 'https://kit.svelte.dev/docs',
-      deadline: new Date('2025-12-30T23:59:59Z'),
-      capacity: '20',
-    },
+  // 챌린지 제목 템플릿 (대량 생성용)
+  const challengeTemplates = [
+    { title: 'React', field: 'WEB', type: 'OFFICIAL', source: 'https://react.dev/' },
+    { title: 'Vue.js', field: 'WEB', type: 'OFFICIAL', source: 'https://vuejs.org/' },
+    { title: 'Angular', field: 'WEB', type: 'OFFICIAL', source: 'https://angular.io/' },
+    { title: 'Svelte', field: 'WEB', type: 'OFFICIAL', source: 'https://svelte.dev/' },
+    { title: 'Next.js', field: 'NEXT', type: 'OFFICIAL', source: 'https://nextjs.org/' },
+    { title: 'Nuxt', field: 'NEXT', type: 'OFFICIAL', source: 'https://nuxt.com/' },
+    { title: 'Remix', field: 'NEXT', type: 'OFFICIAL', source: 'https://remix.run/' },
+    { title: 'SvelteKit', field: 'NEXT', type: 'OFFICIAL', source: 'https://kit.svelte.dev/' },
+    { title: 'Node.js', field: 'API', type: 'OFFICIAL', source: 'https://nodejs.org/' },
+    { title: 'Express', field: 'API', type: 'OFFICIAL', source: 'https://expressjs.com/' },
+    { title: 'Fastify', field: 'API', type: 'OFFICIAL', source: 'https://fastify.io/' },
+    { title: 'NestJS', field: 'API', type: 'OFFICIAL', source: 'https://nestjs.com/' },
+    { title: 'TypeScript', field: 'WEB', type: 'OFFICIAL', source: 'https://typescriptlang.org/' },
+    { title: 'JavaScript MDN', field: 'WEB', type: 'OFFICIAL', source: 'https://developer.mozilla.org/' },
+    { title: 'Python', field: 'API', type: 'OFFICIAL', source: 'https://python.org/' },
+    { title: 'Django', field: 'API', type: 'OFFICIAL', source: 'https://djangoproject.com/' },
+    { title: 'FastAPI', field: 'API', type: 'OFFICIAL', source: 'https://fastapi.tiangolo.com/' },
+    { title: 'Flask', field: 'API', type: 'OFFICIAL', source: 'https://flask.palletsprojects.com/' },
+    { title: 'Docker', field: 'MODERN', type: 'OFFICIAL', source: 'https://docs.docker.com/' },
+    { title: 'Kubernetes', field: 'MODERN', type: 'OFFICIAL', source: 'https://kubernetes.io/' },
+    { title: 'AWS', field: 'MODERN', type: 'OFFICIAL', source: 'https://aws.amazon.com/' },
+    { title: 'GraphQL', field: 'API', type: 'OFFICIAL', source: 'https://graphql.org/' },
+    { title: 'PostgreSQL', field: 'API', type: 'OFFICIAL', source: 'https://postgresql.org/' },
+    { title: 'MongoDB', field: 'API', type: 'OFFICIAL', source: 'https://mongodb.com/' },
+    { title: 'Redis', field: 'API', type: 'OFFICIAL', source: 'https://redis.io/' },
+    { title: 'Git', field: 'MODERN', type: 'OFFICIAL', source: 'https://git-scm.com/' },
+    { title: 'Tailwind CSS', field: 'WEB', type: 'OFFICIAL', source: 'https://tailwindcss.com/' },
+    { title: 'CSS Grid', field: 'WEB', type: 'BLOG', source: 'https://developer.mozilla.org/' },
+    { title: 'Flexbox', field: 'WEB', type: 'BLOG', source: 'https://developer.mozilla.org/' },
+    { title: 'Webpack', field: 'MODERN', type: 'OFFICIAL', source: 'https://webpack.js.org/' },
+    { title: 'Vite', field: 'MODERN', type: 'OFFICIAL', source: 'https://vitejs.dev/' },
+    { title: 'Jest', field: 'MODERN', type: 'OFFICIAL', source: 'https://jestjs.io/' },
+    { title: 'Vitest', field: 'MODERN', type: 'OFFICIAL', source: 'https://vitest.dev/' },
+    { title: 'Playwright', field: 'MODERN', type: 'OFFICIAL', source: 'https://playwright.dev/' },
+    { title: 'Cypress', field: 'MODERN', type: 'OFFICIAL', source: 'https://cypress.io/' },
+    { title: 'Go', field: 'API', type: 'OFFICIAL', source: 'https://go.dev/' },
+    { title: 'Rust', field: 'API', type: 'OFFICIAL', source: 'https://rust-lang.org/' },
+    { title: 'Deno', field: 'API', type: 'OFFICIAL', source: 'https://deno.land/' },
+    { title: 'Bun', field: 'MODERN', type: 'OFFICIAL', source: 'https://bun.sh/' },
+    { title: 'Solid.js', field: 'WEB', type: 'OFFICIAL', source: 'https://solidjs.com/' },
   ];
 
-  // 13. 삭제된 챌린지 예제 (delete_reason 포함)
-  const ch_deleted = await prisma.challenge.create({
-    data: {
-      user_id: testMaster.user_id,
-      title: 'Ember.js 가이드 번역 (삭제됨)',
-      content: 'Ember.js 공식 가이드를 번역하는 챌린지입니다.',
-      type: 'OFFICIAL',
-      status: 'DELETED',
-      field: 'WEB',
-      source: 'https://guides.emberjs.com/',
-      deadline: new Date('2025-11-15T23:59:59Z'),
-      capacity: '10',
-      isDelete: true,
-      delete_reason: '참여자가 없어서 챌린지를 삭제했습니다.',
-      isApprove: false,
-      isClose: false,
-      isReject: false,
-    },
-  });
-  challenges.push(ch_deleted);
+  const statuses = ['APPROVED', 'PENDING', 'REJECTED', 'DEADLINE', 'CANCELLED', 'DELETED'];
+  const statusWeights = [0.7, 0.1, 0.05, 0.1, 0.03, 0.02]; // APPROVED가 70%
 
-  for (const challengeData of testMasterAdditionalChallenges) {
+  // 가중치 기반 랜덤 상태 선택 함수
+  function getRandomStatus() {
+    const random = Math.random();
+    let cumulative = 0;
+    for (let i = 0; i < statuses.length; i++) {
+      cumulative += statusWeights[i];
+      if (random < cumulative) return statuses[i];
+    }
+    return 'APPROVED';
+  }
+
+  // 랜덤 마감일 생성 (현재부터 1~60일 후)
+  function getRandomDeadline() {
+    const days = Math.floor(Math.random() * 60) + 1;
+    const deadline = new Date();
+    deadline.setDate(deadline.getDate() + days);
+    return deadline;
+  }
+
+  // 챌린지 suffixes
+  const suffixes = ['공식 문서 번역', '완벽 가이드', '시작하기', '기초부터 고급까지',
+                    '핵심 개념', '실전 예제', '베스트 프랙티스', '심화 가이드'];
+
+  // test@master.com이 생성한 챌린지 (20개)
+  for (let i = 0; i < 20; i++) {
+    const template = challengeTemplates[i % challengeTemplates.length];
+    const suffix = suffixes[i % suffixes.length];
+    const status = i < 15 ? 'APPROVED' : getRandomStatus();
+
     const ch = await prisma.challenge.create({
       data: {
         user_id: testMaster.user_id,
-        ...challengeData,
-        isDelete: false,
-        isApprove: challengeData.status === 'APPROVED',
-        isClose: false,
-        isReject: false,
-        adminId: challengeData.status === 'APPROVED' ? admin.user_id : null,
+        title: `${template.title} ${suffix} ${i + 1}`,
+        content: `${template.title}에 대한 ${suffix}입니다. 상세한 번역과 실전 예제를 포함합니다.`,
+        type: template.type,
+        status: status,
+        field: template.field,
+        source: template.source,
+        deadline: getRandomDeadline(),
+        capacity: String(Math.floor(Math.random() * 30) + 10),
+        isDelete: status === 'DELETED',
+        isApprove: status === 'APPROVED' || status === 'DEADLINE',
+        isClose: status === 'DEADLINE',
+        isReject: status === 'REJECTED',
+        delete_reason: status === 'DELETED' ? '참여자가 부족하여 삭제되었습니다.' : null,
+        reject_content: status === 'REJECTED' ? '더 공신력 있는 자료를 권장합니다.' : null,
+        adminId: (status === 'APPROVED' || status === 'DEADLINE' || status === 'REJECTED') ? admin.user_id : null,
       },
     });
     challenges.push(ch);
   }
 
-  // ====== 다른 사용자들이 생성한 챌린지들 (12개) ======
+  // 전문가들이 생성한 챌린지 (각 전문가당 5개, 총 100개)
+  for (let i = 0; i < experts.length; i++) {
+    for (let j = 0; j < 5; j++) {
+      const templateIndex = (i * 5 + j) % challengeTemplates.length;
+      const template = challengeTemplates[templateIndex];
+      const suffix = suffixes[j % suffixes.length];
+      const status = Math.random() < 0.85 ? 'APPROVED' : getRandomStatus();
 
-  // 전문가들이 생성
-  const expertChallenges = [
-    {
-      user: experts[0],
-      title: 'Next.js 14 App Router 완벽 가이드',
-      content: 'Next.js 14의 App Router를 완벽하게 이해하고 번역합니다.',
-      type: 'OFFICIAL',
-      status: 'APPROVED',
-      field: 'NEXT',
-      source: 'https://nextjs.org/docs/app',
-      deadline: new Date('2025-12-20T23:59:59Z'),
-      capacity: '35',
-    },
-    {
-      user: experts[1],
-      title: 'Node.js 최신 API 문서 번역',
-      content: 'Node.js의 최신 API 문서를 번역합니다.',
-      type: 'OFFICIAL',
-      status: 'APPROVED',
-      field: 'API',
-      source: 'https://nodejs.org/api/',
-      deadline: new Date('2025-12-10T23:59:59Z'),
-      capacity: '28',
-    },
-    {
-      user: experts[2],
-      title: 'Deno 런타임 공식 가이드',
-      content: 'Deno의 보안 모델과 표준 라이브러리를 번역합니다.',
-      type: 'OFFICIAL',
-      status: 'APPROVED',
-      field: 'API',
-      source: 'https://deno.land/manual',
-      deadline: new Date('2025-12-15T23:59:59Z'),
-      capacity: '20',
-    },
-    {
-      user: experts[3],
-      title: 'Bun 자바스크립트 런타임',
-      content: 'Bun의 빠른 성능과 내장 도구를 학습합니다.',
-      type: 'OFFICIAL',
-      status: 'APPROVED',
-      field: 'MODERN',
-      source: 'https://bun.sh/docs',
-      deadline: new Date('2025-12-12T23:59:59Z'),
-      capacity: '18',
-    },
-  ];
-
-  for (const challengeData of expertChallenges) {
-    const { user, ...data } = challengeData;
-    const ch = await prisma.challenge.create({
-      data: {
-        user_id: user.user_id,
-        ...data,
-        isDelete: false,
-        isApprove: true,
-        isClose: false,
-        isReject: false,
-        adminId: admin.user_id,
-      },
-    });
-    challenges.push(ch);
+      const ch = await prisma.challenge.create({
+        data: {
+          user_id: experts[i].user_id,
+          title: `${template.title} ${suffix} [전문가 ${i + 1}-${j + 1}]`,
+          content: `${template.title}에 대한 ${suffix}입니다. 전문가가 검증한 번역 자료를 제공합니다.`,
+          type: template.type,
+          status: status,
+          field: template.field,
+          source: template.source,
+          deadline: getRandomDeadline(),
+          capacity: String(Math.floor(Math.random() * 40) + 15),
+          isDelete: status === 'DELETED',
+          isApprove: status === 'APPROVED' || status === 'DEADLINE',
+          isClose: status === 'DEADLINE',
+          isReject: status === 'REJECTED',
+          delete_reason: status === 'DELETED' ? '운영 정책 위반으로 삭제되었습니다.' : null,
+          reject_content: status === 'REJECTED' ? '내용 검토 결과 부적합하여 거절되었습니다.' : null,
+          adminId: (status === 'APPROVED' || status === 'DEADLINE' || status === 'REJECTED') ? admin.user_id : null,
+        },
+      });
+      challenges.push(ch);
+    }
   }
 
-  // 일반 사용자들이 생성
-  const userChallenges = [
-    {
-      user: regularUsers[0],
-      title: 'Python Django REST Framework 튜토리얼',
-      content: 'Django REST Framework의 공식 튜토리얼을 번역합니다.',
-      type: 'OFFICIAL',
-      status: 'APPROVED',
-      field: 'API',
-      source: 'https://www.django-rest-framework.org/',
-      deadline: new Date('2025-11-30T23:59:59Z'),
-      capacity: '25',
-    },
-    {
-      user: regularUsers[8],
-      title: '개인 블로그 포스트 번역 (삭제됨)',
-      content: '개인 기술 블로그의 게시글을 번역하는 챌린지입니다.',
-      type: 'BLOG',
-      status: 'DELETED',
-      field: 'WEB',
-      source: 'https://example.com/blog',
-      deadline: new Date('2025-11-05T23:59:59Z'),
-      capacity: '5',
-      isDelete: true,
-      delete_reason: '저작권 문제로 인해 삭제되었습니다.',
-    },
-    {
-      user: regularUsers[1],
-      title: 'Docker 공식 가이드 번역 완료',
-      content: 'Docker 컨테이너 기술의 공식 가이드를 번역했습니다.',
-      type: 'OFFICIAL',
-      status: 'DEADLINE',
-      field: 'MODERN',
-      source: 'https://docs.docker.com/get-started/',
-      deadline: new Date('2025-10-20T23:59:59Z'),
-      capacity: '20',
-    },
-    {
-      user: regularUsers[2],
-      title: 'MDN Web Docs - CSS 그리드 레이아웃',
-      content: 'MDN의 CSS Grid Layout 문서를 번역합니다.',
-      type: 'BLOG',
-      status: 'APPROVED',
-      field: 'WEB',
-      source: 'https://developer.mozilla.org/ko/docs/Web/CSS/CSS_Grid_Layout',
-      deadline: new Date('2025-12-05T23:59:59Z'),
-      capacity: '15',
-    },
-    {
-      user: regularUsers[3],
-      title: '개발자 면접 준비 가이드',
-      content: '해외 유명 개발자 면접 준비 가이드를 번역합니다.',
-      type: 'BLOG',
-      status: 'APPROVED',
-      field: 'CAREER',
-      source: 'https://www.techinterviewhandbook.org/',
-      deadline: new Date('2025-11-28T23:59:59Z'),
-      capacity: '30',
-    },
-    {
-      user: regularUsers[4],
-      title: 'Kubernetes 완벽 가이드',
-      content: 'Kubernetes의 핵심 개념과 오케스트레이션을 학습합니다.',
-      type: 'OFFICIAL',
-      status: 'APPROVED',
-      field: 'MODERN',
-      source: 'https://kubernetes.io/docs/home/',
-      deadline: new Date('2025-12-08T23:59:59Z'),
-      capacity: '25',
-    },
-    {
-      user: regularUsers[5],
-      title: 'Terraform 인프라스트럭처 코드',
-      content: 'Terraform으로 클라우드 인프라를 코드로 관리합니다.',
-      type: 'OFFICIAL',
-      status: 'APPROVED',
-      field: 'MODERN',
-      source: 'https://www.terraform.io/docs',
-      deadline: new Date('2025-12-18T23:59:59Z'),
-      capacity: '20',
-    },
-    {
-      user: regularUsers[6],
-      title: 'GraphQL 스펙 완벽 이해',
-      content: 'GraphQL의 쿼리 언어와 타입 시스템을 번역합니다.',
-      type: 'OFFICIAL',
-      status: 'APPROVED',
-      field: 'API',
-      source: 'https://graphql.org/learn/',
-      deadline: new Date('2025-12-22T23:59:59Z'),
-      capacity: '22',
-    },
-    {
-      user: regularUsers[7],
-      title: 'Redis 인메모리 데이터베이스',
-      content: 'Redis의 데이터 구조와 캐싱 전략을 학습합니다.',
-      type: 'OFFICIAL',
-      status: 'APPROVED',
-      field: 'API',
-      source: 'https://redis.io/docs/',
-      deadline: new Date('2025-12-16T23:59:59Z'),
-      capacity: '18',
-    },
-  ];
+  // 일반 사용자들이 생성한 챌린지 (각 10명당 1개, 총 약 28개)
+  const challengeCreators = getRandomItems(regularUsers, 28);
+  for (let i = 0; i < challengeCreators.length; i++) {
+    const template = challengeTemplates[i % challengeTemplates.length];
+    const suffix = suffixes[Math.floor(Math.random() * suffixes.length)];
+    const status = getRandomStatus();
 
-  for (const challengeData of userChallenges) {
-    const { user, ...data } = challengeData;
     const ch = await prisma.challenge.create({
       data: {
-        user_id: user.user_id,
-        ...data,
-        isDelete: data.isDelete ?? false,
-        isApprove: data.status === 'APPROVED',
-        isClose: data.status === 'DEADLINE',
-        isReject: false,
-        adminId: data.status === 'APPROVED' || data.status === 'DEADLINE' ? admin.user_id : null,
+        user_id: challengeCreators[i].user_id,
+        title: `${template.title} ${suffix} [일반-${i + 1}]`,
+        content: `${template.title}를 함께 번역하고 학습하는 챌린지입니다.`,
+        type: template.type,
+        status: status,
+        field: template.field,
+        source: template.source,
+        deadline: getRandomDeadline(),
+        capacity: String(Math.floor(Math.random() * 25) + 5),
+        isDelete: status === 'DELETED',
+        isApprove: status === 'APPROVED' || status === 'DEADLINE',
+        isClose: status === 'DEADLINE',
+        isReject: status === 'REJECTED',
+        delete_reason: status === 'DELETED' ? '참여자 부족으로 삭제되었습니다.' : null,
+        reject_content: status === 'REJECTED' ? '공식 문서 번역을 권장합니다.' : null,
+        adminId: (status === 'APPROVED' || status === 'DEADLINE' || status === 'REJECTED') ? admin.user_id : null,
       },
     });
     challenges.push(ch);
@@ -563,64 +308,53 @@ async function seedAttends(challenges, users) {
   console.log('📝 Creating work submissions (attends)...');
 
   const testMaster = users[0];
-  const regularUsers = users.slice(6);
+  const regularUsers = users.slice(22); // 일반 사용자는 22번째부터 (0=test, 1=admin, 2-21=experts)
 
   const allAttends = [];
 
-  // ====== test@master.com이 참여한 작업물들 (12개로 증가) ======
+  // ====== test@master.com이 참여한 작업물들 (20개) ======
+  const approvedForTest = challenges.filter(c => c.status === 'APPROVED' && !c.isClose).slice(0, 20);
 
-  const testMasterParticipations = [
-    { challengeIndex: 13, title: 'Next.js Server Components 번역', isSave: false },
-    { challengeIndex: 14, title: 'Node.js Worker Threads API', isSave: false },
-    { challengeIndex: 15, title: 'Deno Permission 시스템', isSave: false },
-    { challengeIndex: 16, title: 'Bun 빠른 시작 가이드', isSave: false },
-    { challengeIndex: 17, title: 'Django Serializer 번역', isSave: false },
-    { challengeIndex: 19, title: 'CSS Grid 완벽 가이드', isSave: false },
-    { challengeIndex: 20, title: '기술 면접 알고리즘 문제', isSave: false },
-    { challengeIndex: 21, title: 'Kubernetes Pod 개념', isSave: false },
-    { challengeIndex: 22, title: 'Terraform Provider 설정', isSave: true }, // 임시 저장
-    { challengeIndex: 23, title: 'GraphQL Schema 정의', isSave: true }, // 임시 저장
-    { challengeIndex: 18, title: 'Docker Compose 가이드 (완료)', isSave: false }, // 마감된 챌린지
-    { challengeIndex: 2, title: 'Vue.js Composition API (완료)', isSave: false }, // 마감된 챌린지
-  ];
-
-  for (const participation of testMasterParticipations) {
+  for (let i = 0; i < approvedForTest.length; i++) {
+    const challenge = approvedForTest[i];
     const attend = await prisma.attend.create({
       data: {
-        challenge_id: challenges[participation.challengeIndex].challenge_id,
+        challenge_id: challenge.challenge_id,
         user_id: testMaster.user_id,
-        title: participation.title,
-        work_item: `${participation.title}에 대한 상세한 번역 작업물입니다. 원문의 의미를 정확히 전달하면서도 한국어로 자연스럽게 표현했습니다.`,
-        isSave: participation.isSave,
+        title: `테스트마스터의 ${challenge.title.substring(0, 30)} 번역`,
+        work_item: `${challenge.title}에 대한 상세한 번역 작업물입니다. 원문의 의미를 정확히 전달하면서도 한국어로 자연스럽게 표현했습니다.`,
+        isSave: i >= 18, // 마지막 2개는 임시 저장
         is_delete: false,
       },
     });
     allAttends.push(attend);
   }
 
-  // test@master.com의 삭제된 작업물 예제 추가
-  const deletedAttend1 = await prisma.attend.create({
-    data: {
-      challenge_id: challenges[0].challenge_id,
-      user_id: testMaster.user_id,
-      title: 'React 18 Concurrent Features (삭제됨)',
-      work_item: '초기 번역 작업물입니다.',
-      isSave: false,
-      is_delete: true,
-      delete_reason: '더 나은 버전으로 재작성하기 위해 삭제했습니다.',
-    },
-  });
-  allAttends.push(deletedAttend1);
+  // test@master.com의 삭제된 작업물 예제 2개 추가
+  for (let i = 0; i < 2; i++) {
+    const deletedAttend = await prisma.attend.create({
+      data: {
+        challenge_id: challenges[i].challenge_id,
+        user_id: testMaster.user_id,
+        title: `작업물 ${i + 1} (삭제됨)`,
+        work_item: '초기 번역 작업물입니다.',
+        isSave: false,
+        is_delete: true,
+        delete_reason: '더 나은 버전으로 재작성하기 위해 삭제했습니다.',
+      },
+    });
+    allAttends.push(deletedAttend);
+  }
 
   // ====== 다른 사용자들의 작업물들 ======
 
-  // 각 승인된 챌린지에 10-15명의 참여자 추가 (삭제되지 않은 챌린지만)
+  // 각 승인된 챌린지에 15-30명의 참여자 추가 (대폭 증가)
   const approvedChallenges = challenges.filter(
     c => c.status === 'APPROVED' && !c.isClose && !c.isDelete
   );
 
   for (const challenge of approvedChallenges) {
-    const numParticipants = Math.floor(Math.random() * 6) + 10; // 10-15명
+    const numParticipants = Math.floor(Math.random() * 16) + 15; // 15-30명
     const participants = getRandomItems(regularUsers, numParticipants);
 
     for (let i = 0; i < participants.length; i++) {
@@ -629,11 +363,11 @@ async function seedAttends(challenges, users) {
         data: {
           challenge_id: challenge.challenge_id,
           user_id: user.user_id,
-          title: `${user.nick_name}의 ${challenge.title.substring(0, 20)} 번역`,
-          work_item: `${challenge.title}의 ${i + 1}번째 섹션을 번역했습니다. 전문 용어를 정확히 번역하고 예제 코드도 함께 제공합니다.`,
-          isSave: i % 5 === 0, // 일부는 임시 저장
-          is_delete: i === 0 && Math.random() > 0.7, // 일부는 삭제됨
-          delete_reason: i === 0 && Math.random() > 0.7 ? '내용이 부적절하여 삭제되었습니다.' : null,
+          title: `${user.nick_name}의 ${challenge.title.substring(0, 30)} 번역 ${i + 1}`,
+          work_item: `${challenge.title}의 섹션을 번역했습니다. 전문 용어를 정확히 번역하고 예제 코드도 함께 제공합니다.`,
+          isSave: i % 8 === 0, // 일부는 임시 저장
+          is_delete: i % 25 === 0, // 일부는 삭제됨
+          delete_reason: i % 25 === 0 ? '내용이 부적절하여 삭제되었습니다.' : null,
         },
       });
       allAttends.push(attend);
@@ -646,7 +380,7 @@ async function seedAttends(challenges, users) {
   );
 
   for (const challenge of deadlineChallenges) {
-    const numParticipants = Math.floor(Math.random() * 5) + 5; // 5-9명
+    const numParticipants = Math.floor(Math.random() * 11) + 10; // 10-20명
     const participants = getRandomItems(regularUsers, numParticipants);
 
     for (const user of participants) {
@@ -654,7 +388,7 @@ async function seedAttends(challenges, users) {
         data: {
           challenge_id: challenge.challenge_id,
           user_id: user.user_id,
-          title: `${user.nick_name}의 ${challenge.title.substring(0, 20)} 완료`,
+          title: `${user.nick_name}의 ${challenge.title.substring(0, 30)} 완료`,
           work_item: `${challenge.title}에 대한 번역 작업을 완료했습니다.`,
           isSave: false,
           is_delete: false,
@@ -675,32 +409,36 @@ async function seedLikes(attends, users) {
   console.log('❤️  Creating likes...');
 
   const testMaster = users[0];
-  const regularUsers = users.slice(6);
+  const regularUsers = users.slice(22); // 일반 사용자는 22번째부터
 
   let likeCount = 0;
 
-  // test@master.com이 받은 좋아요 (각 작업물당 10-20개)
-  const testMasterAttends = attends.filter(a => a.user_id === testMaster.user_id && !a.isSave);
+  // test@master.com이 받은 좋아요 (각 작업물당 20-40개)
+  const testMasterAttends = attends.filter(a => a.user_id === testMaster.user_id && !a.isSave && !a.is_delete);
 
   for (const attend of testMasterAttends) {
-    const numLikes = Math.floor(Math.random() * 11) + 10; // 10-20개
+    const numLikes = Math.floor(Math.random() * 21) + 20; // 20-40개
     const likers = getRandomItems(regularUsers, numLikes);
 
     for (const liker of likers) {
-      await prisma.like.create({
-        data: {
-          user_id: liker.user_id,
-          attend_id: attend.attend_id,
-          liker: true,
-        },
-      });
-      likeCount++;
+      try {
+        await prisma.like.create({
+          data: {
+            user_id: liker.user_id,
+            attend_id: attend.attend_id,
+            liker: true,
+          },
+        });
+        likeCount++;
+      } catch (e) {
+        // 중복 스킵
+      }
     }
   }
 
-  // test@master.com이 다른 사람 작업물에 좋아요 (20개)
-  const otherAttends = attends.filter(a => a.user_id !== testMaster.user_id && !a.isSave);
-  const attendsToLike = getRandomItems(otherAttends, 20);
+  // test@master.com이 다른 사람 작업물에 좋아요 (50개)
+  const otherAttends = attends.filter(a => a.user_id !== testMaster.user_id && !a.isSave && !a.is_delete);
+  const attendsToLike = getRandomItems(otherAttends, Math.min(50, otherAttends.length));
 
   for (const attend of attendsToLike) {
     await prisma.like.create({
@@ -713,22 +451,24 @@ async function seedLikes(attends, users) {
     likeCount++;
   }
 
-  // 다른 사용자들끼리도 좋아요 (100개)
-  for (let i = 0; i < 100; i++) {
-    const attend = getRandomItem(otherAttends);
-    const liker = getRandomItem(regularUsers);
+  // 다른 사용자들끼리도 좋아요 (대량 생성: 각 작업물당 5-15개)
+  for (const attend of otherAttends) {
+    const numLikes = Math.floor(Math.random() * 11) + 5; // 5-15개
+    const likers = getRandomItems(regularUsers, numLikes);
 
-    try {
-      await prisma.like.create({
-        data: {
-          user_id: liker.user_id,
-          attend_id: attend.attend_id,
-          liker: true,
-        },
-      });
-      likeCount++;
-    } catch (e) {
-      // 중복이면 스킵
+    for (const liker of likers) {
+      try {
+        await prisma.like.create({
+          data: {
+            user_id: liker.user_id,
+            attend_id: attend.attend_id,
+            liker: true,
+          },
+        });
+        likeCount++;
+      } catch (e) {
+        // 중복이면 스킵
+      }
     }
   }
 
@@ -742,8 +482,8 @@ async function seedFeedbacks(attends, users) {
   console.log('💬 Creating feedbacks...');
 
   const testMaster = users[0];
-  const experts = users.slice(2, 6);
-  const regularUsers = users.slice(6);
+  const experts = users.slice(2, 22); // 전문가 20명
+  const regularUsers = users.slice(22); // 일반 사용자는 22번째부터
 
   const feedbackTemplates = [
     '번역이 매우 자연스럽고 이해하기 쉽습니다! 훌륭한 작업입니다.',
@@ -765,14 +505,14 @@ async function seedFeedbacks(attends, users) {
 
   let feedbackCount = 0;
 
-  // test@master.com이 받은 피드백 (각 작업물당 3-6개)
-  const testMasterAttends = attends.filter(a => a.user_id === testMaster.user_id && !a.isSave);
+  // test@master.com이 받은 피드백 (각 작업물당 5-10개)
+  const testMasterAttends = attends.filter(a => a.user_id === testMaster.user_id && !a.isSave && !a.is_delete);
 
   for (const attend of testMasterAttends) {
-    const numFeedbacks = Math.floor(Math.random() * 4) + 3; // 3-6개
+    const numFeedbacks = Math.floor(Math.random() * 6) + 5; // 5-10개
 
     for (let i = 0; i < numFeedbacks; i++) {
-      const author = i === 0 ? getRandomItem(experts) : getRandomItem([...regularUsers, ...experts]);
+      const author = i < 2 ? getRandomItem(experts) : getRandomItem([...regularUsers, ...experts]);
 
       await prisma.feedback.create({
         data: {
@@ -785,9 +525,9 @@ async function seedFeedbacks(attends, users) {
     }
   }
 
-  // test@master.com이 다른 사람에게 남긴 피드백 (30개)
-  const otherAttends = attends.filter(a => a.user_id !== testMaster.user_id && !a.isSave);
-  const attendsToFeedback = getRandomItems(otherAttends, 30);
+  // test@master.com이 다른 사람에게 남긴 피드백 (80개)
+  const otherAttends = attends.filter(a => a.user_id !== testMaster.user_id && !a.isSave && !a.is_delete);
+  const attendsToFeedback = getRandomItems(otherAttends, Math.min(80, otherAttends.length));
 
   for (const attend of attendsToFeedback) {
     await prisma.feedback.create({
@@ -800,19 +540,22 @@ async function seedFeedbacks(attends, users) {
     feedbackCount++;
   }
 
-  // 다른 사용자들끼리도 피드백 (80개)
-  for (let i = 0; i < 80; i++) {
-    const attend = getRandomItem(otherAttends);
-    const author = getRandomItem(regularUsers);
+  // 다른 사용자들끼리도 피드백 (대량 생성: 각 작업물당 1-4개)
+  for (const attend of otherAttends.slice(0, Math.min(500, otherAttends.length))) {
+    const numFeedbacks = Math.floor(Math.random() * 4) + 1; // 1-4개
 
-    await prisma.feedback.create({
-      data: {
-        attend_id: attend.attend_id,
-        user_id: author.user_id,
-        content: getRandomItem(feedbackTemplates),
-      },
-    });
-    feedbackCount++;
+    for (let i = 0; i < numFeedbacks; i++) {
+      const author = Math.random() < 0.3 ? getRandomItem(experts) : getRandomItem(regularUsers);
+
+      await prisma.feedback.create({
+        data: {
+          attend_id: attend.attend_id,
+          user_id: author.user_id,
+          content: getRandomItem(feedbackTemplates),
+        },
+      });
+      feedbackCount++;
+    }
   }
 
   console.log(`  ✓ Created ${feedbackCount} feedbacks`);
@@ -825,14 +568,14 @@ async function seedNotices(challenges, users, attends) {
   console.log('🔔 Creating notices...');
 
   const testMaster = users[0];
-  const regularUsers = users.slice(6);
+  const regularUsers = users.slice(22); // 일반 사용자는 22번째부터
 
   let noticeCount = 0;
 
   // test@master.com의 작업물 가져오기 (attend_id 연결용)
-  const testMasterAttends = attends.filter(a => a.user_id === testMaster.user_id && !a.isSave);
+  const testMasterAttends = attends.filter(a => a.user_id === testMaster.user_id && !a.isSave && !a.is_delete);
 
-  // test@master.com에게 다양한 알림들 (20개)
+  // test@master.com에게 다양한 알림들 (50개로 증가)
 
   const testMasterNotices = [
     { type: 'CHALLENGE', content: '챌린지 "React 18 공식문서 번역 챌린지"가 생성되었습니다.', isRead: true },
@@ -872,20 +615,51 @@ async function seedNotices(challenges, users, attends) {
     noticeCount++;
   }
 
-  // 다른 사용자들에게도 알림 (30개)
+  // test@master.com에게 추가 알림 30개 더 생성
   for (let i = 0; i < 30; i++) {
-    const user = getRandomItem(regularUsers);
-    const types = ['CHALLENGE', 'FEEDBACK', 'ATTEND', 'APPROVAL', 'DEADLINE'];
+    const types = ['FEEDBACK', 'ATTEND', 'DEADLINE'];
+    const type = getRandomItem(types);
+    const validAttends = testMasterAttends.filter(a => !a.is_delete);
+    const attendId = type === 'FEEDBACK' && validAttends.length > 0
+      ? getRandomItem(validAttends).attend_id
+      : null;
 
     await prisma.notice.create({
       data: {
-        user_id: user.user_id,
-        type: getRandomItem(types),
-        content: '새로운 활동이 있습니다.',
-        isRead: Math.random() > 0.5,
+        user_id: testMaster.user_id,
+        attend_id: attendId,
+        type: type,
+        content: `${type === 'FEEDBACK' ? '새로운 피드백이 도착했습니다' : type === 'ATTEND' ? '새로운 참여가 있습니다' : '챌린지 마감이 임박했습니다'}.`,
+        isRead: Math.random() > 0.6,
       },
     });
     noticeCount++;
+  }
+
+  // 다른 사용자들에게도 알림 (각 사용자당 3-8개, 총 300명 중 50명에게)
+  const noticeReceivers = getRandomItems(regularUsers, 50);
+  for (const user of noticeReceivers) {
+    const numNotices = Math.floor(Math.random() * 6) + 3; // 3-8개
+    const userAttends = attends.filter(a => a.user_id === user.user_id && !a.isSave && !a.is_delete);
+
+    for (let i = 0; i < numNotices; i++) {
+      const types = ['CHALLENGE', 'FEEDBACK', 'ATTEND', 'APPROVAL', 'DEADLINE'];
+      const type = getRandomItem(types);
+      const attendId = type === 'FEEDBACK' && userAttends.length > 0
+        ? getRandomItem(userAttends).attend_id
+        : null;
+
+      await prisma.notice.create({
+        data: {
+          user_id: user.user_id,
+          attend_id: attendId,
+          type: type,
+          content: `새로운 ${type} 활동이 있습니다.`,
+          isRead: Math.random() > 0.4,
+        },
+      });
+      noticeCount++;
+    }
   }
 
   console.log(`  ✓ Created ${noticeCount} notices`);
@@ -895,7 +669,7 @@ async function seedNotices(challenges, users, attends) {
 // 메인 시드 함수
 // ─────────────────────────────────────────────────────────────
 async function main() {
-  console.log('\n🌱 Starting comprehensive seed process (2x data)...\n');
+  console.log('\n🌱 Starting comprehensive seed process (8x~16x data)...\n');
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
 
   try {
@@ -936,22 +710,22 @@ async function main() {
     console.log('   Role: USER\n');
     console.log('💡 Password Rule: 이메일 @ 앞부분 + 1234 (예: admin@example.com → admin1234)\n');
     console.log('📊 Summary:');
-    console.log(`   Users: ${users.length} (2x increase)`);
-    console.log(`   Challenges: ${challenges.length} (2x increase)`);
-    console.log(`   Work Submissions: ${attends.length} (2x+ increase)`);
-    console.log('   Likes: Many (2x+ increase)');
-    console.log('   Feedbacks: Many (2x+ increase)');
-    console.log('   Notices: Many (increased)\n');
+    console.log(`   Users: ${users.length} (8x increase)`);
+    console.log(`   Challenges: ${challenges.length} (6x increase)`);
+    console.log(`   Work Submissions: ${attends.length} (10x+ increase)`);
+    console.log('   Likes: Many (15x+ increase)');
+    console.log('   Feedbacks: Many (12x+ increase)');
+    console.log('   Notices: Many (8x+ increase)\n');
     console.log('🎯 Test Scenarios Available:');
-    console.log('   ✓ User created challenges (various statuses)');
-    console.log('   ✓ User participated challenges');
-    console.log('   ✓ Submitted works with likes and feedbacks');
-    console.log('   ✓ Draft works (temporary saves)');
-    console.log('   ✓ Read/Unread notifications');
-    console.log('   ✓ Approved/Rejected/Pending challenges');
-    console.log('   ✓ Active/Expired challenges');
-    console.log('   ✓ Given/Received likes and feedbacks');
-    console.log('   ✓ More diverse test scenarios with doubled data\n');
+    console.log('   ✓ 300+ users with realistic data');
+    console.log('   ✓ 150+ challenges with various statuses');
+    console.log('   ✓ 2000+ work submissions with likes and feedbacks');
+    console.log('   ✓ Massive realistic dataset for performance testing');
+    console.log('   ✓ Read/Unread notifications with attend_id relations');
+    console.log('   ✓ Approved/Rejected/Pending/Deadline/Deleted challenges');
+    console.log('   ✓ Active/Expired challenges with various dates');
+    console.log('   ✓ Comprehensive feedback and like interactions');
+    console.log('   ✓ Perfect for load testing and UI pagination\n');
 
   } catch (error) {
     console.error('\n❌ Seed failed:', error);
