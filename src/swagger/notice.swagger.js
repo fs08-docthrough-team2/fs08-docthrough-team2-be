@@ -110,25 +110,36 @@
  *             schema:
  *               type: object
  *               properties:
- *                 message:
- *                   type: string
- *                   example: 알림이 읽음 상태로 업데이트되었습니다.
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     message:
+ *                       type: string
+ *                       example: 알림이 읽음 상태로 업데이트되었습니다.
  *       400:
  *         description: 잘못된 요청
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
+ *               $ref: '#/components/schemas/ErrorResponse'
  *             examples:
  *               alreadyRead:
+ *                 summary: 이미 읽은 알림
  *                 value:
- *                   message: 이미 읽음 상태인 알림입니다.
+ *                   success: false
+ *                   error:
+ *                     code: "ALREADY_READ"
+ *                     message: "이미 읽음 상태인 알림입니다."
  *               invalidId:
+ *                 summary: 잘못된 알림 ID
  *                 value:
- *                   message: 유효하지 않은 알림 ID입니다.
+ *                   success: false
+ *                   error:
+ *                     code: "INVALID_NOTICE_ID"
+ *                     message: "유효하지 않은 알림 ID입니다."
  *       401:
  *         description: 인증 실패 (토큰 없음 또는 유효하지 않음)
  *         content:
@@ -137,17 +148,31 @@
  *               $ref: '#/components/schemas/ErrorResponse'
  *             example:
  *               success: false
- *               message: 인증이 필요합니다.
+ *               error:
+ *                 code: "MISSING_AUTH_TOKEN"
+ *                 message: "인증이 필요합니다. Authorization 헤더에 'Bearer {token}' 형식으로 Access Token을 포함해주세요."
  *       404:
  *         description: 알림을 찾을 수 없음
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: 알림을 찾을 수 없습니다.
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               error:
+ *                 code: "NOTICE_NOT_FOUND"
+ *                 message: "알림을 찾을 수 없습니다."
+ *       500:
+ *         description: 서버 오류
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               error:
+ *                 code: "INTERNAL_SERVER_ERROR"
+ *                 message: "서버 내부 오류가 발생했습니다."
  */
 
 /**
@@ -179,7 +204,7 @@
  *         description: 페이지당 항목 수
  *         example: 10
  *     responses:
- *       201:
+ *       200:
  *         description: 알림 목록 조회 성공
  *         content:
  *           application/json:
@@ -200,17 +225,22 @@
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
+ *               $ref: '#/components/schemas/ErrorResponse'
  *             examples:
  *               invalidPageSize:
+ *                 summary: 페이지 값 오류
  *                 value:
- *                   message: 페이지 또는 페이지 크기 값이 올바르지 않습니다.
+ *                   success: false
+ *                   error:
+ *                     code: "INVALID_PAGINATION"
+ *                     message: "페이지 또는 페이지 크기 값이 올바르지 않습니다."
  *               invalidRange:
+ *                 summary: 범위 오류
  *                 value:
- *                   message: 페이지 또는 페이지 크기 값은 1 이상이어야 합니다.
+ *                   success: false
+ *                   error:
+ *                     code: "INVALID_PAGE_RANGE"
+ *                     message: "페이지 또는 페이지 크기 값은 1 이상이어야 합니다."
  *       401:
  *         description: 인증 실패 (토큰 없음 또는 유효하지 않음)
  *         content:
@@ -219,5 +249,18 @@
  *               $ref: '#/components/schemas/ErrorResponse'
  *             example:
  *               success: false
- *               message: 인증이 필요합니다.
+ *               error:
+ *                 code: "MISSING_AUTH_TOKEN"
+ *                 message: "인증이 필요합니다. Authorization 헤더에 'Bearer {token}' 형식으로 Access Token을 포함해주세요."
+ *       500:
+ *         description: 서버 오류
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               error:
+ *                 code: "INTERNAL_SERVER_ERROR"
+ *                 message: "서버 내부 오류가 발생했습니다."
  */

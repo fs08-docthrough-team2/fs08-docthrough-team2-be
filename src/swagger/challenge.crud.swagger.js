@@ -1,6 +1,25 @@
 /**
  * @swagger
  * components:
+ *   schemas:
+ *     ErrorResponse:
+ *       type: object
+ *       properties:
+ *         success:
+ *           type: boolean
+ *           example: false
+ *         error:
+ *           type: object
+ *           properties:
+ *             code:
+ *               type: string
+ *               description: 에러 코드
+ *             message:
+ *               type: string
+ *               description: 상세한 에러 메시지
+ *             details:
+ *               type: object
+ *               description: 추가 에러 상세 정보 (선택적)
  *   securitySchemes:
  *     BearerAuth:
  *       type: http
@@ -150,27 +169,54 @@
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   examples:
- *                     missingValues:
- *                       value: "챌린지 추가에 필요한 값이 입력되지 않았습니다."
- *                     invalidCapacity:
- *                       value: "챌린지 인원은 2명 이상의 문자여야 합니다."
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             examples:
+ *               missingValues:
+ *                 summary: 필수 값 누락
+ *                 value:
+ *                   success: false
+ *                   error:
+ *                     code: "VALIDATION_ERROR"
+ *                     message: "챌린지 추가에 필요한 값이 입력되지 않았습니다."
+ *               invalidCapacity:
+ *                 summary: 인원 검증 실패
+ *                 value:
+ *                   success: false
+ *                   error:
+ *                     code: "VALIDATION_ERROR"
+ *                     message: "챌린지 인원은 2명 이상의 문자여야 합니다."
  *       401:
  *         description: 인증 실패 (토큰 없음 또는 유효하지 않음)
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: "인증이 필요합니다."
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             examples:
+ *               noToken:
+ *                 summary: 토큰 없음
+ *                 value:
+ *                   success: false
+ *                   error:
+ *                     code: "UNAUTHORIZED"
+ *                     message: "인증이 필요합니다."
+ *               invalidToken:
+ *                 summary: 유효하지 않은 토큰
+ *                 value:
+ *                   success: false
+ *                   error:
+ *                     code: "INVALID_TOKEN"
+ *                     message: "유효하지 않은 토큰입니다."
  *       500:
  *         description: 서버 오류
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               error:
+ *                 code: "INTERNAL_SERVER_ERROR"
+ *                 message: "서버 내부 오류가 발생했습니다."
  */
 
 /**
@@ -306,20 +352,81 @@
  *                           type: string
  *                           format: date-time
  *                           example: "2025-10-29T08:03:12.292Z"
+ *       400:
+ *         description: 잘못된 요청 (유효하지 않은 챌린지 ID 또는 입력값)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             examples:
+ *               invalidId:
+ *                 summary: 유효하지 않은 챌린지 ID
+ *                 value:
+ *                   success: false
+ *                   error:
+ *                     code: "VALIDATION_ERROR"
+ *                     message: "유효하지 않은 챌린지 ID 형식입니다."
+ *               invalidInput:
+ *                 summary: 유효하지 않은 입력값
+ *                 value:
+ *                   success: false
+ *                   error:
+ *                     code: "VALIDATION_ERROR"
+ *                     message: "입력값이 올바르지 않습니다."
  *       401:
  *         description: 인증 실패 (토큰 없음 또는 유효하지 않음)
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: "인증이 필요합니다."
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             examples:
+ *               noToken:
+ *                 summary: 토큰 없음
+ *                 value:
+ *                   success: false
+ *                   error:
+ *                     code: "UNAUTHORIZED"
+ *                     message: "인증이 필요합니다."
+ *               invalidToken:
+ *                 summary: 유효하지 않은 토큰
+ *                 value:
+ *                   success: false
+ *                   error:
+ *                     code: "INVALID_TOKEN"
+ *                     message: "유효하지 않은 토큰입니다."
+ *       403:
+ *         description: 권한 없음 (챌린지 작성자가 아님)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               error:
+ *                 code: "FORBIDDEN"
+ *                 message: "해당 챌린지를 수정할 권한이 없습니다."
  *       404:
  *         description: 챌린지를 찾을 수 없음
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               error:
+ *                 code: "NOT_FOUND"
+ *                 message: "챌린지를 찾을 수 없습니다."
  *       500:
  *         description: 서버 오류
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               error:
+ *                 code: "INTERNAL_SERVER_ERROR"
+ *                 message: "서버 내부 오류가 발생했습니다."
  */
 
 /**
@@ -428,20 +535,71 @@
  *                           type: string
  *                           format: date-time
  *                           example: "2025-10-29T08:03:25.973Z"
+ *       400:
+ *         description: 잘못된 요청 (유효하지 않은 챌린지 ID)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               error:
+ *                 code: "VALIDATION_ERROR"
+ *                 message: "유효하지 않은 챌린지 ID 형식입니다."
  *       401:
  *         description: 인증 실패 (토큰 없음 또는 유효하지 않음)
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: "인증이 필요합니다."
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             examples:
+ *               noToken:
+ *                 summary: 토큰 없음
+ *                 value:
+ *                   success: false
+ *                   error:
+ *                     code: "UNAUTHORIZED"
+ *                     message: "인증이 필요합니다."
+ *               invalidToken:
+ *                 summary: 유효하지 않은 토큰
+ *                 value:
+ *                   success: false
+ *                   error:
+ *                     code: "INVALID_TOKEN"
+ *                     message: "유효하지 않은 토큰입니다."
+ *       403:
+ *         description: 권한 없음 (챌린지 작성자가 아님)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               error:
+ *                 code: "FORBIDDEN"
+ *                 message: "해당 챌린지를 취소할 권한이 없습니다."
  *       404:
  *         description: 챌린지를 찾을 수 없음
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               error:
+ *                 code: "NOT_FOUND"
+ *                 message: "챌린지를 찾을 수 없습니다."
  *       500:
  *         description: 서버 오류
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               error:
+ *                 code: "INTERNAL_SERVER_ERROR"
+ *                 message: "서버 내부 오류가 발생했습니다."
  */
 
 /**
@@ -550,20 +708,71 @@
  *                           type: string
  *                           format: date-time
  *                           example: "2025-10-29T08:03:37.304Z"
+ *       400:
+ *         description: 잘못된 요청 (유효하지 않은 챌린지 ID)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               error:
+ *                 code: "VALIDATION_ERROR"
+ *                 message: "유효하지 않은 챌린지 ID 형식입니다."
  *       401:
  *         description: 인증 실패 (토큰 없음 또는 유효하지 않음)
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: "인증이 필요합니다."
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             examples:
+ *               noToken:
+ *                 summary: 토큰 없음
+ *                 value:
+ *                   success: false
+ *                   error:
+ *                     code: "UNAUTHORIZED"
+ *                     message: "인증이 필요합니다."
+ *               invalidToken:
+ *                 summary: 유효하지 않은 토큰
+ *                 value:
+ *                   success: false
+ *                   error:
+ *                     code: "INVALID_TOKEN"
+ *                     message: "유효하지 않은 토큰입니다."
+ *       403:
+ *         description: 권한 없음 (챌린지 작성자가 아님)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               error:
+ *                 code: "FORBIDDEN"
+ *                 message: "해당 챌린지를 삭제할 권한이 없습니다."
  *       404:
  *         description: 챌린지를 찾을 수 없음
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               error:
+ *                 code: "NOT_FOUND"
+ *                 message: "챌린지를 찾을 수 없습니다."
  *       500:
  *         description: 서버 오류
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               error:
+ *                 code: "INTERNAL_SERVER_ERROR"
+ *                 message: "서버 내부 오류가 발생했습니다."
  */
 
 /**
@@ -672,28 +881,69 @@
  *                           type: string
  *                           format: date-time
  *                           example: "2025-10-29T08:03:37.304Z"
+ *       400:
+ *         description: 잘못된 요청 (유효하지 않은 챌린지 ID)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               error:
+ *                 code: "VALIDATION_ERROR"
+ *                 message: "유효하지 않은 챌린지 ID 형식입니다."
  *       401:
  *         description: 인증 실패 (토큰 없음 또는 유효하지 않음)
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: "인증이 필요합니다."
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             examples:
+ *               noToken:
+ *                 summary: 토큰 없음
+ *                 value:
+ *                   success: false
+ *                   error:
+ *                     code: "UNAUTHORIZED"
+ *                     message: "인증이 필요합니다."
+ *               invalidToken:
+ *                 summary: 유효하지 않은 토큰
+ *                 value:
+ *                   success: false
+ *                   error:
+ *                     code: "INVALID_TOKEN"
+ *                     message: "유효하지 않은 토큰입니다."
  *       403:
  *         description: 권한 부족 (관리자 권한 필요)
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: "관리자 권한이 필요합니다!"
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               error:
+ *                 code: "FORBIDDEN"
+ *                 message: "관리자 권한이 필요합니다!"
  *       404:
  *         description: 챌린지를 찾을 수 없음
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               error:
+ *                 code: "NOT_FOUND"
+ *                 message: "챌린지를 찾을 수 없습니다."
  *       500:
  *         description: 서버 오류
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               error:
+ *                 code: "INTERNAL_SERVER_ERROR"
+ *                 message: "서버 내부 오류가 발생했습니다."
  */
