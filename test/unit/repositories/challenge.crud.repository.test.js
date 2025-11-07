@@ -180,32 +180,40 @@ describe('Challenge CRUD Repository Tests', () => {
 
   describe('deleteChallengeById', () => {
     it('챌린지를 soft delete해야 함', async () => {
+      const delete_reason = '참여자가 없어서 챌린지를 삭제합니다.';
       const mockDeletedChallenge = {
         challenge_id: 'challenge-1',
         isDelete: true,
-        status: 'DEADLINE',
+        status: 'DELETED',
+        delete_reason: delete_reason,
       };
 
       mockPrisma.challenge.update.mockResolvedValue(mockDeletedChallenge);
 
-      const result = await challengeCrudRepository.deleteChallengeById('challenge-1');
+      const result = await challengeCrudRepository.deleteChallengeById('challenge-1', delete_reason);
 
       expect(mockPrisma.challenge.update).toHaveBeenCalledTimes(1);
       expect(mockPrisma.challenge.update).toHaveBeenCalledWith({
         where: { challenge_id: 'challenge-1' },
-        data: { isDelete: true, status: 'DEADLINE' },
+        data: {
+          isDelete: true,
+          status: 'DELETED',
+          delete_reason: delete_reason
+        },
       });
       expect(result).toEqual(mockDeletedChallenge);
     });
 
     it('삭제 시 올바른 필드를 업데이트해야 함', async () => {
+      const delete_reason = '저작권 문제로 인해 삭제되었습니다.';
       mockPrisma.challenge.update.mockResolvedValue({});
 
-      await challengeCrudRepository.deleteChallengeById('challenge-1');
+      await challengeCrudRepository.deleteChallengeById('challenge-1', delete_reason);
 
       const callArgs = mockPrisma.challenge.update.mock.calls[0][0];
       expect(callArgs.data.isDelete).toBe(true);
-      expect(callArgs.data.status).toBe('DEADLINE');
+      expect(callArgs.data.status).toBe('DELETED');
+      expect(callArgs.data.delete_reason).toBe(delete_reason);
     });
   });
 

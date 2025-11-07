@@ -325,6 +325,27 @@ async function seedChallenges(users) {
     },
   ];
 
+  // 13. 삭제된 챌린지 예제 (delete_reason 포함)
+  const ch_deleted = await prisma.challenge.create({
+    data: {
+      user_id: testMaster.user_id,
+      title: 'Ember.js 가이드 번역 (삭제됨)',
+      content: 'Ember.js 공식 가이드를 번역하는 챌린지입니다.',
+      type: 'OFFICIAL',
+      status: 'DELETED',
+      field: 'WEB',
+      source: 'https://guides.emberjs.com/',
+      deadline: new Date('2025-11-15T23:59:59Z'),
+      capacity: '10',
+      isDelete: true,
+      delete_reason: '참여자가 없어서 챌린지를 삭제했습니다.',
+      isApprove: false,
+      isClose: false,
+      isReject: false,
+    },
+  });
+  challenges.push(ch_deleted);
+
   for (const challengeData of testMasterAdditionalChallenges) {
     const ch = await prisma.challenge.create({
       data: {
@@ -418,6 +439,19 @@ async function seedChallenges(users) {
       capacity: '25',
     },
     {
+      user: regularUsers[8],
+      title: '개인 블로그 포스트 번역 (삭제됨)',
+      content: '개인 기술 블로그의 게시글을 번역하는 챌린지입니다.',
+      type: 'BLOG',
+      status: 'DELETED',
+      field: 'WEB',
+      source: 'https://example.com/blog',
+      deadline: new Date('2025-11-05T23:59:59Z'),
+      capacity: '5',
+      isDelete: true,
+      delete_reason: '저작권 문제로 인해 삭제되었습니다.',
+    },
+    {
       user: regularUsers[1],
       title: 'Docker 공식 가이드 번역 완료',
       content: 'Docker 컨테이너 기술의 공식 가이드를 번역했습니다.',
@@ -502,7 +536,7 @@ async function seedChallenges(users) {
       data: {
         user_id: user.user_id,
         ...data,
-        isDelete: false,
+        isDelete: data.isDelete ?? false,
         isApprove: data.status === 'APPROVED',
         isClose: data.status === 'DEADLINE',
         isReject: false,
@@ -558,9 +592,9 @@ async function seedAttends(challenges, users) {
 
   // ====== 다른 사용자들의 작업물들 ======
 
-  // 각 승인된 챌린지에 10-15명의 참여자 추가
+  // 각 승인된 챌린지에 10-15명의 참여자 추가 (삭제되지 않은 챌린지만)
   const approvedChallenges = challenges.filter(
-    c => c.status === 'APPROVED' && !c.isClose
+    c => c.status === 'APPROVED' && !c.isClose && !c.isDelete
   );
 
   for (const challenge of approvedChallenges) {

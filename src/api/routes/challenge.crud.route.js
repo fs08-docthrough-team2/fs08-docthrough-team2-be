@@ -9,6 +9,7 @@ import {
   createChallengeSchema,
   updateChallengeSchema,
   challengeIdParamSchema,
+  deleteChallengeSchema,
 } from '../../validators/challenge.validator.js';
 
 const router = express.Router();
@@ -41,7 +42,7 @@ router.patch(
 router.patch(
   '/delete/:challengeId',
   authMiddleware.verifyAccessToken,
-  validate(challengeIdParamSchema),
+  validate(deleteChallengeSchema),
   challengeCRUDControllers.deleteChallengeInput,
 );
 

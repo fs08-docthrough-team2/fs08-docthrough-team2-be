@@ -8,7 +8,7 @@ CREATE TYPE "Provider" AS ENUM ('GOOGLE', 'NAVER', 'KAKAO');
 CREATE TYPE "ChallengeType" AS ENUM ('OFFICIAL', 'BLOG');
 
 -- CreateEnum
-CREATE TYPE "ChallengeStatus" AS ENUM ('DEADLINE', 'INPROGRESS', 'APPROVED', 'REJECTED', 'CANCELLED', 'PENDING');
+CREATE TYPE "ChallengeStatus" AS ENUM ('DEADLINE', 'INPROGRESS', 'APPROVED', 'REJECTED', 'CANCELLED', 'PENDING', 'DELETED');
 
 -- CreateEnum
 CREATE TYPE "ChallengeField" AS ENUM ('NEXT', 'MODERN', 'API', 'WEB', 'CAREER');
@@ -46,10 +46,11 @@ CREATE TABLE "Challenge" (
     "deadline" TIMESTAMP(3) NOT NULL,
     "capacity" TEXT NOT NULL,
     "isDelete" BOOLEAN NOT NULL DEFAULT false,
+    "delete_reason" TEXT,
     "isClose" BOOLEAN NOT NULL DEFAULT false,
     "isReject" BOOLEAN NOT NULL DEFAULT false,
-    "isApprove" BOOLEAN NOT NULL DEFAULT false,
     "reject_content" TEXT,
+    "isApprove" BOOLEAN NOT NULL DEFAULT false,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
 

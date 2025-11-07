@@ -61,6 +61,13 @@ router.get(
   challengeControllers.getUserChallengeDetailInput,
 );
 
+router.get(
+  '/challenge-status/:challengeId',
+  authMiddleware.verifyAccessToken,
+  challengeControllers.getChallengeStatusInput,
+)
+
+
 // 에러 핸들링 미들웨어 적용
 router.use(errorMiddleware.errorHandler);
 

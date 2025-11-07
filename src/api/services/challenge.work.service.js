@@ -164,6 +164,17 @@ export async function createWork(req, challenge_id, title, workItem){
     );
   }
 
+  // 참여자 정원 초과 검증
+  const currentParticipants = await workRepository.countWorksByChallengeId(challenge_id);
+  const maxParticipants = parseInt(challenge.capacity);
+
+  if (currentParticipants >= maxParticipants) {
+    throw new BadRequestError(
+      `챌린지 ID '${challenge_id}'의 참여 인원이 이미 정원(${maxParticipants}명)에 도달했습니다. 현재 참여자 수: ${currentParticipants}명. 다른 챌린지를 선택해주세요.`,
+      'CHALLENGE_CAPACITY_FULL'
+    );
+  }
+
   const existinWork = await workRepository.findExistingWork(challenge_id, userId);
 
   if(existinWork){

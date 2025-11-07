@@ -181,12 +181,36 @@ export const rejectChallengeSchema = z.object({
       .string({
         required_error: '챌린지 거절 사유를 입력해주세요. 거절 사유는 필수 입력 항목입니다.',
       })
-      .min(10, '거절 사유가 너무 짧습니다. 거절 사유는 최소 10자 이상이어야 합니다. 구체적인 거절 사유를 작성해주세요.')
+      .min(1, '거절 사유가 너무 짧습니다. 거절 사유는 최소 1자 이상이어야 합니다.')
       .max(500, '거절 사유가 너무 깁니다. 거절 사유는 최대 500자까지만 입력 가능합니다.')
       .trim()
       .refine(
         (val) => !/<script|javascript:/i.test(val),
         '거절 사유에 보안상 위험한 문자가 포함되어 있습니다. <script>, javascript: 등의 스크립트 관련 문자는 사용할 수 없습니다.'
+      ),
+  }),
+});
+
+/**
+ * 챌린지 삭제 스키마
+ */
+export const deleteChallengeSchema = z.object({
+  params: z.object({
+    challengeId: z
+      .string()
+      .uuid('유효하지 않은 챌린지 ID 형식입니다.'),
+  }),
+  body: z.object({
+    delete_reason: z
+      .string({
+        required_error: '챌린지 삭제 사유를 입력해주세요. 삭제 사유는 필수 입력 항목입니다.',
+      })
+      .min(1, '삭제 사유가 너무 짧습니다. 삭제 사유는 최소 1자 이상이어야 합니다.')
+      .max(500, '삭제 사유가 너무 깁니다. 삭제 사유는 최대 500자까지만 입력 가능합니다.')
+      .trim()
+      .refine(
+        (val) => !/<script|javascript:/i.test(val),
+        '삭제 사유에 보안상 위험한 문자가 포함되어 있습니다. <script>, javascript: 등의 스크립트 관련 문자는 사용할 수 없습니다.'
       ),
   }),
 });

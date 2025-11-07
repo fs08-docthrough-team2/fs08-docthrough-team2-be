@@ -1,28 +1,34 @@
 ### GET Work List
-GET {{baseUrl}}/api/challenge/work/translated-list?challenge_id=0685b51d-953f-4943-bef7-8eebba911e8e&page=1&size=10
+GET {{baseUrl}}/api/challenge/work/translated-list?challengeId=0685b51d-953f-4943-bef7-8eebba911e8e&page=1&size=10
+Authorization: Bearer {{accessToken}}
 
 ### GET Work Detail
 GET {{baseUrl}}/api/challenge/work/translated-detail/dda81aff-0289-4d6d-996b-b1c9863e86a3
+Authorization: Bearer {{accessToken}}
 
 ### GET Save List
-GET {{baseUrl}}/api/challenge/work/translated-list/save?challenge_id=0685b51d-953f-4943-bef7-8eebba911e8e&page=1&size=10
+GET {{baseUrl}}/api/challenge/work/translated-list/save?challengeId=0685b51d-953f-4943-bef7-8eebba911e8e&page=1&size=10
+Authorization: Bearer {{accessToken}}
 
 ### GET Save Detail
 GET {{baseUrl}}/api/challenge/work/translated-detail/save/dda81aff-0289-4d6d-996b-b1c9863e86a3
+Authorization: Bearer {{accessToken}}
 
 ### POST Create Work
 POST {{baseUrl}}/api/challenge/work/translated-detail
-content-type: application/json
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
 
 {
-  "challengeId": "0685b51d-953f-4943-bef7-8eebba911e8e",
+  "challengeId": "e5b29ba5-6f0a-4735-af1a-6c84b678cd1c",
   "title": "작업물 제목",
   "workItem": "번역 내용"
 }
 
 ### POST Create Save Work
 POST {{baseUrl}}/api/challenge/work/translated-detail/save
-content-type: application/json
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
 
 {
   "challengeId": "0685b51d-953f-4943-bef7-8eebba911e8e",
@@ -32,7 +38,8 @@ content-type: application/json
 
 ### PATCH Update Work
 PATCH {{baseUrl}}/api/challenge/work/translated-detail/dda81aff-0289-4d6d-996b-b1c9863e86a3
-content-type: application/json
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
 
 {
   "title": "수정된 제목",
@@ -41,6 +48,8 @@ content-type: application/json
 
 ### DELETE Work
 DELETE {{baseUrl}}/api/challenge/work/translated-detail/dda81aff-0289-4d6d-996b-b1c9863e86a3
+Authorization: Bearer {{accessToken}}
 
 ### POST Toggle Like
 POST {{baseUrl}}/api/challenge/work/translated-detail/like/dda81aff-0289-4d6d-996b-b1c9863e86a3
+Authorization: Bearer {{accessToken}}
