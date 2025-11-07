@@ -1,4 +1,5 @@
 import * as challengeInquiryRepository from '../repositories/challenge.inquiry.repository.js';
+import { NotFoundError, UnauthorizedError, BadRequestError, ConflictError } from '../../utils/error.util.js';
 
 async function getChallengeList({ title, field, type, status, page, pageSize, sort }) {
   try {
@@ -55,7 +56,10 @@ async function getChallengeList({ title, field, type, status, page, pageSize, so
 
     // challenges가 배열인지 확인
     if (!Array.isArray(challenges)) {
-      throw new Error('챌린지 목록 조회에 실패했습니다.');
+      throw new BadRequestError(
+        '챌린지 목록 조회에 실패했습니다. 데이터베이스에서 올바른 형식의 데이터를 반환받지 못했습니다. 잠시 후 다시 시도하거나 관리자에게 문의해주세요.',
+        'CHALLENGE_LIST_FETCH_FAILED'
+      );
     }
 
     // 응답 데이터 포맷팅
@@ -91,12 +95,12 @@ async function getChallengeDetail(challengeId) {
   try {
     // 챌린지 상세 내용 조회
     const challenge = await challengeInquiryRepository.findChallengeDetailById(challengeId);
-    // 결과를 찾을 수 없는 경우, 에러 메시지 반환
+    // 결과를 찾을 수 없는 경우, 에러 던지기
     if (!challenge) {
-      return {
-        success: false,
-        message: '챌린지를 찾을 수 없습니다.',
-      };
+      throw new NotFoundError(
+        `챌린지 ID '${challengeId}'를 찾을 수 없습니다. 챌린지가 존재하지 않거나 삭제되었을 수 있습니다. 챌린지 ID를 확인해주세요.`,
+        'CHALLENGE_NOT_FOUND'
+      );
     }
 
     // 결과를 반환
@@ -122,6 +126,15 @@ async function getChallengeDetail(challengeId) {
 
 async function getParticipateList(challengeId, page, pageSize) {
   try {
+    // 챌린지가 존재하는지 먼저 확인
+    const challenge = await challengeInquiryRepository.findChallengeDetailById(challengeId);
+    if (!challenge) {
+      throw new NotFoundError(
+        `챌린지 ID '${challengeId}'를 찾을 수 없습니다. 챌린지가 존재하지 않거나 삭제되었을 수 있습니다. 참여자 목록을 조회하기 전에 챌린지 ID를 확인해주세요.`,
+        'CHALLENGE_NOT_FOUND'
+      );
+    }
+
     // 참여자 목록 조회
     const participates = await challengeInquiryRepository.findParticipatesByChallenge({
       challengeId,
@@ -131,7 +144,10 @@ async function getParticipateList(challengeId, page, pageSize) {
 
     // participates가 배열인지 확인
     if (!Array.isArray(participates)) {
-      throw new Error('참여자 목록 조회에 실패했습니다.');
+      throw new BadRequestError(
+        `챌린지 ID '${challengeId}'의 참여자 목록 조회에 실패했습니다. 데이터베이스에서 올바른 형식의 데이터를 반환받지 못했습니다. 잠시 후 다시 시도하거나 관리자에게 문의해주세요.`,
+        'PARTICIPATE_LIST_FETCH_FAILED'
+      );
     }
 
     // 순위 추가
@@ -174,10 +190,20 @@ async function getUserParticipateList(userID, title, field, type, status, page, 
       whereCondition.type = type;
     }
     if (status) {
-      whereCondition.status = status;
-    }
-    if (userID) {
-      whereCondition.user_id = userID;
+      switch (status) {
+        case '신청승인':
+          whereCondition.status = 'APPROVED';
+          break;
+        case '신청거절':
+          whereCondition.status = 'REJECTED';
+          break;
+        case '신청취소':
+          whereCondition.status = 'CANCELLED';
+          break;
+        case '신청대기':
+          whereCondition.status = 'PENDING';
+          break;
+      }
     }
     if (title) {
       whereCondition.title = {
@@ -205,8 +231,9 @@ async function getUserParticipateList(userID, title, field, type, status, page, 
         orderBy = { created_at: 'desc' };
     }
 
-    // 챌린지 목록 조회
+    // 챌린지 목록 조회 - userId를 별도 파라미터로 전달
     const participates = await challengeInquiryRepository.findUserChallenges({
+      userId: userID,
       where: whereCondition,
       skip: (page - 1) * pageSize,
       take: pageSize,
@@ -223,6 +250,7 @@ async function getUserParticipateList(userID, title, field, type, status, page, 
       field: participate.field,
       source: participate.source,
       deadline: participate.deadline,
+      appliedDate: participate.created_at,
       currentParticipants: participate._count.attends,
       maxParticipants: parseInt(participate.capacity),
     }));
@@ -257,10 +285,20 @@ async function getUserCompleteList(userID, title, field, type, status, page, pag
       whereCondition.type = type;
     }
     if (status) {
-      whereCondition.status = status;
-    }
-    if (userID) {
-      whereCondition.user_id = userID;
+      switch (status) {
+        case '신청승인':
+          whereCondition.status = 'APPROVED';
+          break;
+        case '신청거절':
+          whereCondition.status = 'REJECTED';
+          break;
+        case '신청취소':
+          whereCondition.status = 'CANCELLED';
+          break;
+        case '신청대기':
+          whereCondition.status = 'PENDING';
+          break;
+      }
     }
     if (title) {
       whereCondition.title = {
@@ -288,8 +326,9 @@ async function getUserCompleteList(userID, title, field, type, status, page, pag
         orderBy = { created_at: 'desc' };
     }
 
-    // 챌린지 목록 조회
+    // 챌린지 목록 조회 - userId를 별도 파라미터로 전달
     const participates = await challengeInquiryRepository.findUserChallenges({
+      userId: userID,
       where: whereCondition,
       skip: (page - 1) * pageSize,
       take: pageSize,
@@ -306,6 +345,7 @@ async function getUserCompleteList(userID, title, field, type, status, page, pag
       field: participate.field,
       source: participate.source,
       deadline: participate.deadline,
+      appliedDate: participate.created_at,
       currentParticipants: participate._count.attends,
       maxParticipants: parseInt(participate.capacity),
     }));
@@ -341,7 +381,20 @@ async function getUserChallengeDetail(userID, title, field, type, status, page, 
       whereCondition.type = type;
     }
     if (status) {
-      whereCondition.status = status;
+      switch (status) {
+        case '신청승인':
+          whereCondition.status = 'APPROVED';
+          break;
+        case '신청거절':
+          whereCondition.status = 'REJECTED';
+          break;
+        case '신청취소':
+          whereCondition.status = 'CANCELLED';
+          break;
+        case '신청대기':
+          whereCondition.status = 'PENDING';
+          break;
+      }
     }
     if (userID) {
       whereCondition.user_id = userID;
@@ -365,6 +418,12 @@ async function getUserChallengeDetail(userID, title, field, type, status, page, 
       default:
         orderBy = { created_at: 'desc' };
     }
+    if (title) {
+      whereCondition.title = {
+        contains: title.trim(),
+        mode: 'insensitive',
+      };
+    }
 
     // 챌린지 목록 조회
     const participates = await challengeInquiryRepository.findUserChallengeDetails({
@@ -384,6 +443,7 @@ async function getUserChallengeDetail(userID, title, field, type, status, page, 
       field: participate.field,
       source: participate.source,
       deadline: participate.deadline,
+      appliedDate: participate.created_at,
       currentParticipants: participate._count.attends,
       maxParticipants: parseInt(participate.capacity),
       isReject: participate.isReject,

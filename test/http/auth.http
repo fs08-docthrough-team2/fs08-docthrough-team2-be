@@ -3,8 +3,8 @@ POST {{baseUrl}}/api/auth/signup
 content-type: application/json
 
 {
-  "email": "newuser@example.com",
-  "password": "newuser1234",
+  "email": "test@example.com",
+  "password": "test",
   "nickName": "New User"
 }
 
@@ -13,8 +13,8 @@ POST {{baseUrl}}/api/auth/login
 content-type: application/json
 
 {
-  "email": "admin@example.com",
-  "password": "admin1234"
+  "email": "test@master.com",
+  "password": "test1234"
 }
 
 ### POST Login (User)

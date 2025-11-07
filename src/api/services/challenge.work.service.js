@@ -1,5 +1,5 @@
 import * as workRepository from "../repositories/challenge.work.repository.js";
-
+import { NotFoundError, UnauthorizedError, BadRequestError, ConflictError } from '../../utils/error.util.js';
 import { getUserFromToken } from "./user.service.js";
 import noticeServices from './notice.service.js';
 
@@ -17,7 +17,10 @@ export async function getWorkList({ challenge_id, page = 1, size = 10 }){
 
   // attends가 배열인지 확인
   if (!Array.isArray(attends)) {
-    throw new Error("작업물 목록 조회에 실패했습니다.");
+    throw new BadRequestError(
+      `챌린지 ID '${challenge_id}'의 작업물 목록 조회에 실패했습니다. 데이터베이스에서 올바른 형식의 데이터를 반환받지 못했습니다. 잠시 후 다시 시도하거나 관리자에게 문의해주세요.`,
+      'WORK_LIST_FETCH_FAILED'
+    );
   }
 
   const rows = attends.map((a)=> ({
@@ -50,7 +53,10 @@ export async function getWorkDetail(req,attend_id){
   const attend = await workRepository.findWorkById(attend_id);
 
   if(!attend){
-    throw new Error("작업물을 찾을 수 없습니다.");
+    throw new NotFoundError(
+      `작업물 ID '${attend_id}'를 찾을 수 없습니다. 작업물이 존재하지 않거나 이미 삭제되었을 수 있습니다. 작업물 ID를 확인해주세요.`,
+      'WORK_NOT_FOUND'
+    );
   }
   const likeCount = attend.likes.filter((l) => l.liker).length;
 
@@ -89,7 +95,10 @@ export async function getSaveList(req, { page = 1, size = 5 }){
 
   // attends가 배열인지 확인
   if (!Array.isArray(attends)) {
-    throw new Error("임시 저장 목록 조회에 실패했습니다.");
+    throw new BadRequestError(
+      `사용자 ID '${userId}'의 임시 저장 목록 조회에 실패했습니다. 데이터베이스에서 올바른 형식의 데이터를 반환받지 못했습니다. 잠시 후 다시 시도하거나 관리자에게 문의해주세요.`,
+      'SAVE_LIST_FETCH_FAILED'
+    );
   }
 
   const rows = attends.map((a) => ({
@@ -118,10 +127,16 @@ export async function getSaveDetail(req, attend_id){
   const attend = await workRepository.findSaveById(attend_id);
 
   if (!attend)
-    throw new Error("임시 저장된 작업물을 찾을 수 없습니다.");
+    throw new NotFoundError(
+      `임시 저장 ID '${attend_id}'를 찾을 수 없습니다. 임시 저장된 작업물이 존재하지 않거나 이미 삭제되었을 수 있습니다. 임시 저장 ID를 확인해주세요.`,
+      'SAVE_NOT_FOUND'
+    );
 
   if(viewer.userId !== attend.user_id)
-    throw new Error("본인의 임시 저장만 조회 가능합니다.");
+    throw new UnauthorizedError(
+      `임시 저장 ID '${attend_id}'에 대한 조회 권한이 없습니다. 본인이 작성한 임시 저장만 조회할 수 있습니다. 현재 사용자 ID: '${viewer.userId}', 작성자 ID: '${attend.user_id}'`,
+      'SAVE_ACCESS_DENIED'
+    );
 
   return{
     item:{
@@ -143,17 +158,19 @@ export async function createWork(req, challenge_id, title, workItem){
   const challenge = await workRepository.findChallengeIsClose(challenge_id);
 
   if(challenge?.isClose){
-    const err = new Error("이미 종료된 첼린지 입니다.");
-    err.status = 403;
-    throw err;
+    throw new BadRequestError(
+      `챌린지 ID '${challenge_id}'는 이미 종료되었습니다. 종료된 챌린지에는 작업물을 제출할 수 없습니다. 진행 중인 다른 챌린지를 선택해주세요.`,
+      'CHALLENGE_ALREADY_CLOSED'
+    );
   }
 
   const existinWork = await workRepository.findExistingWork(challenge_id, userId);
 
   if(existinWork){
-    const err = new Error("이미 제출된 작업물이 존재합니다.");
-    err.status = 400;
-    throw err;
+    throw new ConflictError(
+      `챌린지 ID '${challenge_id}'에 이미 제출된 작업물이 존재합니다. 하나의 챌린지에는 한 번만 작업물을 제출할 수 있습니다. 기존 작업물 ID: '${existinWork.attend_id}'`,
+      'WORK_ALREADY_SUBMITTED'
+    );
   }
 
   const setTitle = title && title.trim() != "" ? title: `${userId}입니다.`
@@ -182,7 +199,10 @@ export async function createSaveWork(req, challenge_id, title, workItem){
   const challenge = await workRepository.findChallengeIsClose(challenge_id);
 
   if(challenge?.isClose){
-    throw new Error("이미 종료된 첼린지 입니다.");
+    throw new BadRequestError(
+      `챌린지 ID '${challenge_id}'는 이미 종료되었습니다. 종료된 챌린지에는 작업물을 임시 저장할 수 없습니다. 진행 중인 다른 챌린지를 선택해주세요.`,
+      'CHALLENGE_ALREADY_CLOSED'
+    );
   }
   const setTitle = title && title.trim() != "" ? title: `${userId}입니다.`
 
@@ -209,13 +229,22 @@ export async function updateWork(req, attend_id, { title, workItem }){
   const attend = await workRepository.findWorkWithChallengeById(attend_id);
 
   if(!attend)
-    throw new Error("작업물을 찾을 수 없습니다.");
+    throw new NotFoundError(
+      `작업물 ID '${attend_id}'를 찾을 수 없습니다. 작업물이 존재하지 않거나 이미 삭제되었을 수 있습니다. 작업물 ID를 확인해주세요.`,
+      'WORK_NOT_FOUND'
+    );
 
   if(attend.user_id !== user.userId && user.role !== "ADMIN")
-    throw new Error("본인만 수정할 수 있습니다.");
+    throw new UnauthorizedError(
+      `작업물 ID '${attend_id}'에 대한 수정 권한이 없습니다. 본인이 작성한 작업물만 수정할 수 있습니다. 현재 사용자 ID: '${user.userId}', 작성자 ID: '${attend.user_id}'`,
+      'WORK_UPDATE_DENIED'
+    );
 
   if(attend.challenge?.isClose)
-    throw new Error("이미 종료된 첼린지");
+    throw new BadRequestError(
+      `챌린지 ID '${attend.challenge.challenge_id}'는 이미 종료되었습니다. 종료된 챌린지의 작업물은 수정할 수 없습니다.`,
+      'CHALLENGE_ALREADY_CLOSED'
+    );
 
   const updated = await workRepository.updateWorkById(attend_id, {
     title,
@@ -233,13 +262,22 @@ export async function deleteWork(req, attend_id){
   const attend = await workRepository.findWorkWithChallengeById(attend_id);
 
   if(!attend)
-    throw new Error("작업물을 찾을 수 없습니다.");
+    throw new NotFoundError(
+      `작업물 ID '${attend_id}'를 찾을 수 없습니다. 작업물이 존재하지 않거나 이미 삭제되었을 수 있습니다. 작업물 ID를 확인해주세요.`,
+      'WORK_NOT_FOUND'
+    );
   //오타 if(); <- ; 들어가서 삭제 불가능 판정
   if(attend.user_id !== user.userId && user.role !== "ADMIN")
-    throw new Error("본인만 삭제할 수 있습니다.");
+    throw new UnauthorizedError(
+      `작업물 ID '${attend_id}'에 대한 삭제 권한이 없습니다. 본인이 작성한 작업물만 삭제할 수 있습니다. 현재 사용자 ID: '${user.userId}', 작성자 ID: '${attend.user_id}'`,
+      'WORK_DELETE_DENIED'
+    );
 
   if(attend.challenge?.isClose){
-    throw new Error("이미 종료된 첼린지입니다.");
+    throw new BadRequestError(
+      `챌린지 ID '${attend.challenge.challenge_id}'는 이미 종료되었습니다. 종료된 챌린지의 작업물은 삭제할 수 없습니다.`,
+      'CHALLENGE_ALREADY_CLOSED'
+    );
   }
 
   await workRepository.deleteLikesByAttendId(attend_id);

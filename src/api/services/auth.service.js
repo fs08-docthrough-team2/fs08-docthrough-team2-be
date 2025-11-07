@@ -1,27 +1,34 @@
-import argon2 from "argon2";
+import * as argon2 from "argon2";
 import jwt from 'jsonwebtoken';
 import dotenv from "dotenv";
 import {
   findUserByEmail,
   findUserByNickName,
   createUser,
-} 
+}
 from '../repositories/auth.repository.js';
 import {
   findUserByRefreshToken,
   updateRefreshToken,
-} 
+}
 from "../repositories/token.repository.js"
+import { ConflictError, UnauthorizedError, BadRequestError } from '../../utils/error.util.js';
 dotenv.config();
 
 export async function signup(email, password, nickName) {
   const existing = await findUserByEmail(email);
-  if (existing) 
-    throw new Error("이미 등록된 이메일입니다.");
+  if (existing)
+    throw new ConflictError(
+      `이메일 '${email}'은(는) 이미 등록되어 있습니다. 다른 이메일 주소를 사용하거나 로그인을 시도해주세요.`,
+      'DUPLICATE_EMAIL'
+    );
 
   const existingNickName = await findUserByNickName(nickName);
   if(existingNickName)
-    throw new Error("이미 사용 중인 닉네임입니다.");
+    throw new ConflictError(
+      `닉네임 '${nickName}'은(는) 이미 사용 중입니다. 다른 닉네임을 선택해주세요. 닉네임은 고유해야 하며, 다른 사용자와 중복될 수 없습니다.`,
+      'DUPLICATE_NICKNAME'
+    );
 
   const hashed = await argon2.hash(password);
 
@@ -70,12 +77,18 @@ export async function generateTokens(user) {
 export async function login(email, password) {
   const user = await findUserByEmail(email);
 
-  if (!user || user.isDelete) 
-    throw new Error('존재하지 않는 사용자입니다.');
+  if (!user || user.isDelete)
+    throw new UnauthorizedError(
+      `이메일 '${email}'로 등록된 사용자를 찾을 수 없습니다. 이메일 주소를 확인하거나 회원가입을 진행해주세요.`,
+      'USER_NOT_FOUND'
+    );
 
-  const match = await argon2.verify(user.password, password); 
-  if (!match) 
-    throw new Error('비밀번호가 올바르지 않습니다.');
+  const match = await argon2.verify(user.password, password);
+  if (!match)
+    throw new UnauthorizedError(
+      '입력하신 비밀번호가 올바르지 않습니다. 비밀번호는 대소문자를 구분하며, 등록 시 설정한 비밀번호와 정확히 일치해야 합니다. 비밀번호를 잊으셨다면 비밀번호 재설정을 이용해주세요.',
+      'INVALID_PASSWORD'
+    );
 
   const accessToken = jwt.sign(
     { userId: user.user_id, role: user.role },
@@ -103,12 +116,18 @@ export async function login(email, password) {
 
 export async function logout(refreshToken) {
   if (!refreshToken) {
-    throw new Error("Refresh Token이 없습니다.");
+    throw new BadRequestError(
+      "Refresh Token이 제공되지 않았습니다. 로그아웃을 하려면 유효한 Refresh Token이 필요합니다. 쿠키가 만료되었거나 삭제된 경우 다시 로그인해주세요.",
+      'MISSING_REFRESH_TOKEN'
+    );
   }
 
   const user = await findUserByRefreshToken(refreshToken);
   if (!user) {
-    throw new Error("유효하지 않은 Refresh Token입니다.");
+    throw new UnauthorizedError(
+      "제공된 Refresh Token이 유효하지 않습니다. Token이 만료되었거나, 이미 로그아웃된 상태이거나, 잘못된 Token입니다. 다시 로그인해주세요.",
+      'INVALID_REFRESH_TOKEN'
+    );
   }
 
   await updateRefreshToken(user.user_id, " ");
