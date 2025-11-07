@@ -10,7 +10,7 @@ describe('Feedback Validator Tests', () => {
     it('유효한 피드백 생성 데이터는 통과해야 함', () => {
       const validData = {
         body: {
-          attend_id: '123e4567-e89b-12d3-a456-426614174000',
+          attendId: '123e4567-e89b-12d3-a456-426614174000',
           content: '이것은 유효한 피드백입니다.',
         },
       };
@@ -35,7 +35,7 @@ describe('Feedback Validator Tests', () => {
     it('attend_id가 유효하지 않은 UUID면 실패해야 함', () => {
       const invalidData = {
         body: {
-          attend_id: 'invalid-uuid',
+          attendId: 'invalid-uuid',
           content: '피드백 내용',
         },
       };
@@ -48,7 +48,7 @@ describe('Feedback Validator Tests', () => {
     it('content가 없으면 실패해야 함', () => {
       const invalidData = {
         body: {
-          attend_id: '123e4567-e89b-12d3-a456-426614174000',
+          attendId: '123e4567-e89b-12d3-a456-426614174000',
         },
       };
 
@@ -61,59 +61,59 @@ describe('Feedback Validator Tests', () => {
     it('content가 빈 문자열이면 실패해야 함', () => {
       const invalidData = {
         body: {
-          attend_id: '123e4567-e89b-12d3-a456-426614174000',
+          attendId: '123e4567-e89b-12d3-a456-426614174000',
           content: '',
         },
       };
 
       const result = createFeedbackSchema.safeParse(invalidData);
       expect(result.success).toBe(false);
-      expect(result.error.issues[0].message).toMatch(/최소.*1자/);
+      expect(result.error.issues[0].message).toMatch(/피드백 내용이 입력되지 않았습니다/);
     });
 
     it('content가 1000자를 초과하면 실패해야 함', () => {
       const invalidData = {
         body: {
-          attend_id: '123e4567-e89b-12d3-a456-426614174000',
+          attendId: '123e4567-e89b-12d3-a456-426614174000',
           content: 'a'.repeat(1001),
         },
       };
 
       const result = createFeedbackSchema.safeParse(invalidData);
       expect(result.success).toBe(false);
-      expect(result.error.issues[0].message).toMatch(/최대.*1000자/);
+      expect(result.error.issues[0].message).toMatch(/피드백 내용이 너무 깁니다/);
     });
 
     it('content에 script 태그가 있으면 실패해야 함 (XSS 방지)', () => {
       const invalidData = {
         body: {
-          attend_id: '123e4567-e89b-12d3-a456-426614174000',
+          attendId: '123e4567-e89b-12d3-a456-426614174000',
           content: '이것은 <script>alert("xss")</script> 공격입니다.',
         },
       };
 
       const result = createFeedbackSchema.safeParse(invalidData);
       expect(result.success).toBe(false);
-      expect(result.error.issues[0].message).toMatch(/허용되지 않는 문자/);
+      expect(result.error.issues[0].message).toMatch(/보안상 위험한 문자/);
     });
 
     it('content에 javascript: 프로토콜이 있으면 실패해야 함 (XSS 방지)', () => {
       const invalidData = {
         body: {
-          attend_id: '123e4567-e89b-12d3-a456-426614174000',
+          attendId: '123e4567-e89b-12d3-a456-426614174000',
           content: '<a href="javascript:alert(1)">클릭</a>',
         },
       };
 
       const result = createFeedbackSchema.safeParse(invalidData);
       expect(result.success).toBe(false);
-      expect(result.error.issues[0].message).toMatch(/허용되지 않는 문자/);
+      expect(result.error.issues[0].message).toMatch(/보안상 위험한 문자/);
     });
 
     it('content의 앞뒤 공백은 제거되어야 함', () => {
       const dataWithSpaces = {
         body: {
-          attend_id: '123e4567-e89b-12d3-a456-426614174000',
+          attendId: '123e4567-e89b-12d3-a456-426614174000',
           content: '  피드백 내용  ',
         },
       };
@@ -128,7 +128,7 @@ describe('Feedback Validator Tests', () => {
     it('유효한 피드백 수정 데이터는 통과해야 함', () => {
       const validData = {
         body: {
-          feedback_id: '123e4567-e89b-12d3-a456-426614174000',
+          feedbackId: '123e4567-e89b-12d3-a456-426614174000',
           content: '수정된 피드백 내용입니다.',
         },
       };
@@ -153,7 +153,7 @@ describe('Feedback Validator Tests', () => {
     it('feedback_id가 유효하지 않은 UUID면 실패해야 함', () => {
       const invalidData = {
         body: {
-          feedback_id: 'not-a-uuid',
+          feedbackId: 'not-a-uuid',
           content: '피드백 내용',
         },
       };
@@ -166,14 +166,14 @@ describe('Feedback Validator Tests', () => {
     it('content가 1000자를 초과하면 실패해야 함', () => {
       const invalidData = {
         body: {
-          feedback_id: '123e4567-e89b-12d3-a456-426614174000',
+          feedbackId: '123e4567-e89b-12d3-a456-426614174000',
           content: 'x'.repeat(1001),
         },
       };
 
       const result = updateFeedbackSchema.safeParse(invalidData);
       expect(result.success).toBe(false);
-      expect(result.error.issues[0].message).toMatch(/최대.*1000자/);
+      expect(result.error.issues[0].message).toMatch(/피드백 내용이 너무 깁니다/);
     });
   });
 
@@ -181,7 +181,7 @@ describe('Feedback Validator Tests', () => {
     it('유효한 쿼리 파라미터는 통과해야 함', () => {
       const validData = {
         query: {
-          attend_id: '123e4567-e89b-12d3-a456-426614174000',
+          attendId: '123e4567-e89b-12d3-a456-426614174000',
           page: '1',
           size: '10',
         },
@@ -205,12 +205,12 @@ describe('Feedback Validator Tests', () => {
     it('attend_id가 유효하지 않은 UUID면 실패해야 함', () => {
       const invalidData = {
         query: {
-          attend_id: 'invalid-uuid-format',
+          attendId: 'invalid-uuid-format',
         },
       };
 
       const result = getFeedbackListQuerySchema.safeParse(invalidData);
-      expect(result.success).toBe(false);
+      expect(result.success).toBe(false); // When provided, it must be valid UUID
     });
 
     it('page가 숫자가 아니면 실패해야 함', () => {

@@ -111,7 +111,7 @@ describe('Work Validator Tests', () => {
 
         const result = createWorkSchema.safeParse(invalidData);
         expect(result.success).toBe(false);
-        expect(result.error.issues[0].message).toMatch(/허용되지 않는 문자/);
+        expect(result.error.issues[0].message).toMatch(/보안상 위험한 문자/);
       });
 
       it('title에 javascript: 프로토콜이 있으면 실패해야 함', () => {
@@ -212,7 +212,7 @@ describe('Work Validator Tests', () => {
 
         const result = createWorkSchema.safeParse(invalidData);
         expect(result.success).toBe(false);
-        expect(result.error.issues[0].message).toMatch(/허용되지 않는 문자/);
+        expect(result.error.issues[0].message).toMatch(/보안상 위험한 문자/);
       });
 
       it('workItem에 javascript: 프로토콜이 있으면 실패해야 함', () => {
@@ -272,7 +272,7 @@ describe('Work Validator Tests', () => {
   describe('updateWorkSchema', () => {
     const validUpdateData = {
       params: {
-        attend_id: '123e4567-e89b-12d3-a456-426614174000',
+        attendId: '123e4567-e89b-12d3-a456-426614174000',
       },
       body: {
         title: '수정된 제목',
@@ -301,7 +301,7 @@ describe('Work Validator Tests', () => {
       it('attend_id가 유효하지 않은 UUID면 실패해야 함', () => {
         const invalidData = {
           params: {
-            attend_id: 'invalid-uuid',
+            attendId: 'invalid-uuid',
           },
           body: validUpdateData.body,
         };
@@ -317,9 +317,9 @@ describe('Work Validator Tests', () => {
           'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11',
         ];
 
-        validUUIDs.forEach((attend_id) => {
+        validUUIDs.forEach((attendId) => {
           const validData = {
-            params: { attend_id },
+            params: { attendId },
             body: validUpdateData.body,
           };
           const result = updateWorkSchema.safeParse(validData);
@@ -486,7 +486,7 @@ describe('Work Validator Tests', () => {
       it('challenge_id가 유효하지 않은 UUID면 실패해야 함', () => {
         const invalidData = {
           query: {
-            challenge_id: 'invalid-uuid',
+            challengeId: 'invalid-uuid',
           },
         };
 
@@ -498,7 +498,7 @@ describe('Work Validator Tests', () => {
       it('유효한 challenge_id는 통과해야 함', () => {
         const validData = {
           query: {
-            challenge_id: '123e4567-e89b-12d3-a456-426614174000',
+            challengeId: '123e4567-e89b-12d3-a456-426614174000',
           },
         };
 
@@ -622,7 +622,7 @@ describe('Work Validator Tests', () => {
 
         const result = getWorkListQuerySchema.safeParse(invalidData);
         expect(result.success).toBe(false);
-        expect(result.error.issues[0].message).toMatch(/100.*이하/);
+        expect(result.error.issues[0].message).toMatch(/페이지 크기가 너무 큽니다/);
       });
 
       it('size가 1-100 사이면 통과해야 함', () => {

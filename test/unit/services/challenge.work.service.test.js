@@ -119,8 +119,14 @@ describe('Challenge Work Service Tests', () => {
 
   describe('getWorkDetail', () => {
     it('작업물 상세 정보를 조회해야 함', async () => {
+      const mockReq = {
+        cookies: { accessToken: 'valid-token' },
+        headers: {},
+      };
+
       const mockWork = {
         attend_id: 'attend-123',
+        user_id: 'user-123',
         title: '작업물 제목',
         work_item: '작업물 내용',
         created_at: new Date(),
@@ -129,27 +135,37 @@ describe('Challenge Work Service Tests', () => {
         challenge: { isClose: false },
       };
 
+      userService.getUserFromToken.mockResolvedValue({ userId: 'user-123', role: 'USER' });
       workRepository.findWorkById.mockResolvedValue(mockWork);
+      workRepository.findExistingLike.mockResolvedValue(null);
 
-      const result = await workService.getWorkDetail('attend-123');
+      const result = await workService.getWorkDetail(mockReq, 'attend-123');
 
       expect(workRepository.findWorkById).toHaveBeenCalledWith('attend-123');
       expect(result.item).toEqual({
         attendId: 'attend-123',
+        userId: 'user-123',
         title: '작업물 제목',
         workItem: '작업물 내용',
         createdAt: mockWork.created_at,
         nickName: '테스트유저',
         role: 'USER',
         likeCount: 2,
+        likeByMe: false,
         isClose: false,
       });
     });
 
     it('작업물을 찾을 수 없으면 에러를 던져야 함', async () => {
+      const mockReq = {
+        cookies: { accessToken: 'valid-token' },
+        headers: {},
+      };
+
+      userService.getUserFromToken.mockResolvedValue({ userId: 'user-123', role: 'USER' });
       workRepository.findWorkById.mockResolvedValue(null);
 
-      await expect(workService.getWorkDetail('invalid-id')).rejects.toThrow(
+      await expect(workService.getWorkDetail(mockReq, 'invalid-id')).rejects.toThrow(
         /작업물.*찾을 수 없습니다/
       );
     });
@@ -318,6 +334,7 @@ describe('Challenge Work Service Tests', () => {
 
       expect(workRepository.createWork).toHaveBeenCalledWith({
         challenge_id: 'challenge-123',
+        title: '작업물 제목',
         user_id: 'user-123',
         work_item: '작업물 내용',
         isSave: false,
@@ -349,7 +366,7 @@ describe('Challenge Work Service Tests', () => {
         await workService.createWork(mockReq, 'challenge-123', '작업물 제목', '작업물 내용');
       } catch (error) {
         expect(error.message).toMatch(/이미.*종료.*챌린지/);
-        expect(error.status).toBe(403);
+        expect(error.status).toBe(400);
       }
     });
 
@@ -373,7 +390,7 @@ describe('Challenge Work Service Tests', () => {
         await workService.createWork(mockReq, 'challenge-123', '작업물 제목', '작업물 내용');
       } catch (error) {
         expect(error.message).toMatch(/이미.*제출.*작업물.*존재/);
-        expect(error.status).toBe(400);
+        expect(error.status).toBe(409);
       }
     });
   });
@@ -414,6 +431,7 @@ describe('Challenge Work Service Tests', () => {
       expect(workRepository.createWork).toHaveBeenCalledWith({
         challenge_id: 'challenge-123',
         user_id: 'user-123',
+        title: '임시 저장 제목',
         work_item: '임시 저장 내용',
         isSave: true,
       });
