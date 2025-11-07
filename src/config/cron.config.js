@@ -44,11 +44,12 @@ async function scheduleDeadlineCheck() {
   try {
     const now = new Date();
 
-    // 만료된 챌린지 찾기 (deadline이 현재 시간보다 이전이고, 아직 RECRUITING 상태인 것)
+    // 만료된 챌린지 찾기 (deadline이 현재 시간보다 이전이고, 아직 진행 중인 챌린지)
     const overdueChallenges = await prisma.challenge.findMany({
       where: {
         deadline: { lt: now },  // ✅ deadline이 현재보다 이전 (이미 지남)
-        status: { not: 'DEADLINE'},   // ✅ 아직 모집 중인 챌린지
+        status: { notIn: ['DEADLINE', 'DELETED', 'CANCELLED'] },   // ✅ 삭제/취소/마감되지 않은 챌린지
+        isDelete: false,  // ✅ 삭제되지 않은 챌린지
       },
       include: {
         attends: {

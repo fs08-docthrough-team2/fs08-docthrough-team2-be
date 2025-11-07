@@ -15,12 +15,15 @@ export const CHALLENGE_TYPE = {
   BLOG: 'BLOG',
 };
 
-// 챌린지 상태 Enum
+// 챌린지 상태 Enum (Prisma Schema와 일치)
 export const CHALLENGE_STATUS = {
-  RECRUITING: 'RECRUITING',
-  IN_PROGRESS: 'IN_PROGRESS',
-  COMPLETED: 'COMPLETED',
   DEADLINE: 'DEADLINE',
+  INPROGRESS: 'INPROGRESS',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+  CANCELLED: 'CANCELLED',
+  PENDING: 'PENDING',
+  DELETED: 'DELETED',
 };
 
 // 사용자 역할 Enum

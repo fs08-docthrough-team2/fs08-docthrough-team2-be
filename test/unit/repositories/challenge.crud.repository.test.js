@@ -184,7 +184,7 @@ describe('Challenge CRUD Repository Tests', () => {
       const mockDeletedChallenge = {
         challenge_id: 'challenge-1',
         isDelete: true,
-        status: 'DEADLINE',
+        status: 'DELETED',
         delete_reason: delete_reason,
       };
 
@@ -197,7 +197,7 @@ describe('Challenge CRUD Repository Tests', () => {
         where: { challenge_id: 'challenge-1' },
         data: {
           isDelete: true,
-          status: 'DEADLINE',
+          status: 'DELETED',
           delete_reason: delete_reason
         },
       });
@@ -212,7 +212,7 @@ describe('Challenge CRUD Repository Tests', () => {
 
       const callArgs = mockPrisma.challenge.update.mock.calls[0][0];
       expect(callArgs.data.isDelete).toBe(true);
-      expect(callArgs.data.status).toBe('DEADLINE');
+      expect(callArgs.data.status).toBe('DELETED');
       expect(callArgs.data.delete_reason).toBe(delete_reason);
     });
   });
