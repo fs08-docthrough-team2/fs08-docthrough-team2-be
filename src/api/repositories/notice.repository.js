@@ -42,6 +42,16 @@ export async function countUserNotices(userId) {
 export async function findUserNotices(userId, skip, take) {
   return prisma.notice.findMany({
     where: { user_id: userId },
+    include: {
+      attend: {
+        select: {
+          attend_id: true,
+          delete_reason: true,
+          is_delete: true,
+          title: true,
+        }
+      }
+    },
     orderBy: { created_at: 'desc' },
     skip,
     take,

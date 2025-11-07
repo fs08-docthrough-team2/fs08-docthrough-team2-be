@@ -28,6 +28,12 @@
  *           format: uuid
  *           description: 사용자 ID
  *           example: a2547373-5303-48e6-b452-c7bd9ff095fd
+ *         attend_id:
+ *           type: string
+ *           format: uuid
+ *           nullable: true
+ *           description: 작업물 ID (선택적, ATTEND 또는 FEEDBACK 타입일 때 포함될 수 있음)
+ *           example: 1a2b3c4d-5e6f-7g8h-9i0j-1k2l3m4n5o6p
  *         type:
  *           type: string
  *           enum: [CHALLENGE, APPROVAL, FEEDBACK, DEADLINE, ATTEND]
