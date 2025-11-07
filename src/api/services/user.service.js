@@ -46,8 +46,10 @@ export async function getUserFromToken(req){
     );
 
   const decoded = jwt.verify(token, process.env.JWT_SECRET);
-  const { user }= await getUserProfileFromToken(decoded);
-  return { ...user, userId: decoded.userId};
+  
+  const { user } = await getUserProfileFromToken(decoded);  // destructure
+
+  return { ...user, userId: decoded.userId };
 }
 
 
