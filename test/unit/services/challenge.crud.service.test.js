@@ -229,10 +229,12 @@ describe('Challenge CRUD Service Tests', () => {
 
   describe('deleteChallenge', () => {
     it('챌린지를 소프트 삭제하고 알림을 전송해야 함', async () => {
+      const delete_reason = '참여자가 없어서 챌린지를 삭제합니다.';
       const mockDeletedChallenge = {
         challenge_id: 'challenge-123',
         title: '삭제된 챌린지',
         isDelete: true,
+        delete_reason: delete_reason,
       };
 
       challengeCrudRepository.deleteChallengeById.mockResolvedValue(mockDeletedChallenge);
@@ -240,10 +242,11 @@ describe('Challenge CRUD Service Tests', () => {
 
       const result = await challengeCrudService.default.deleteChallenge(
         'challenge-123',
-        'user-123'
+        'user-123',
+        delete_reason
       );
 
-      expect(challengeCrudRepository.deleteChallengeById).toHaveBeenCalledWith('challenge-123');
+      expect(challengeCrudRepository.deleteChallengeById).toHaveBeenCalledWith('challenge-123', delete_reason);
       expect(noticeService.default.addModifyNotice).toHaveBeenCalledWith(
         '챌린지',
         '삭제',
@@ -256,12 +259,13 @@ describe('Challenge CRUD Service Tests', () => {
     });
 
     it('에러 발생 시 에러를 던져야 함', async () => {
+      const delete_reason = '저작권 문제로 인해 삭제되었습니다.';
       challengeCrudRepository.deleteChallengeById.mockRejectedValue(
         new Error('삭제 권한이 없습니다')
       );
 
       await expect(
-        challengeCrudService.default.deleteChallenge('challenge-123', 'user-123')
+        challengeCrudService.default.deleteChallenge('challenge-123', 'user-123', delete_reason)
       ).rejects.toThrow('삭제 권한이 없습니다');
     });
   });

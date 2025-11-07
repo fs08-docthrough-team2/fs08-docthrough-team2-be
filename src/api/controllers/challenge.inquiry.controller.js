@@ -4,7 +4,7 @@ import challengeService from '../services/challenge.inquiry.service.js';
 import { ChallengeField, ChallengeStatus, ChallengeType } from '@prisma/client';
 // 상수 임포트
 import HTTP_STATUS from '../../constants/http.constant.js';
-import { PAGINATION, SORT_ORDER } from '../../constants/pagination.constant.js';
+import { PAGINATION } from '../../constants/pagination.constant.js';
 // 공통 검증 함수 임포트
 import {
   validatePagination,
@@ -14,7 +14,7 @@ import {
   validateSort,
   validateChallengeId,
   validateUserId,
-  sanitizeString, validateEnum,
+  sanitizeString,
 } from '../../utils/validation.util.js';
 
 const SORTLIST = ['신청시간빠름순', '신청시간느림순', '마감기한빠름순', '마감기한느림순'];
@@ -220,6 +220,21 @@ const getUserChallengeDetailInput = asyncHandler(async (req, res) => {
   return res.status(HTTP_STATUS.OK).json(userChallengeDetailData);
 });
 
+const getChallengeStatusInput = asyncHandler(async (req, res) => {
+  // 입력값 불러오기
+  const { challengeId } = req.params;
+
+  // 입력값 검증
+  const valid = validateChallengeId(challengeId, res);
+  if (valid !== true) return valid;
+
+  // 서비스 호출
+  const statusData = await challengeService.getChallengeStatus(challengeId);
+
+  // 호출 결과 반환
+  return res.status(HTTP_STATUS.OK).json(statusData);
+});
+
 export default {
   getChallengeListInput,
   getChallengeDetailInput,
@@ -227,4 +242,5 @@ export default {
   getUserParticipateListInput,
   getUserCompleteListInput,
   getUserChallengeDetailInput,
+  getChallengeStatusInput,
 };

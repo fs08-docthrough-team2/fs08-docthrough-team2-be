@@ -901,6 +901,156 @@
 
 /**
  * @swagger
+ * /api/challenge/inquiry/challenge-status/{challengeId}:
+ *   get:
+ *     tags:
+ *       - 챌린지 조회
+ *     summary: 챌린지 상태 조회 (삭제/승인/거절 여부)
+ *     description: 특정 챌린지의 삭제 여부, 삭제 사유, 승인/거절 여부, 거절 사유를 조회합니다.
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: challengeId
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: 챌린지 ID
+ *         example: "de68229a-3f0b-4869-b220-d04c186a7024"
+ *     responses:
+ *       200:
+ *         description: 챌린지 상태 조회 성공
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     challengeId:
+ *                       type: string
+ *                       format: uuid
+ *                       description: 챌린지 ID
+ *                       example: "de68229a-3f0b-4869-b220-d04c186a7024"
+ *                     isDeleted:
+ *                       type: boolean
+ *                       description: 삭제 여부
+ *                       example: false
+ *                     deleteReason:
+ *                       type: string
+ *                       nullable: true
+ *                       description: 삭제 사유 (삭제된 경우에만 값 존재)
+ *                       example: null
+ *                     isApprove:
+ *                       type: boolean
+ *                       description: 승인 여부
+ *                       example: true
+ *                     isReject:
+ *                       type: boolean
+ *                       description: 거절 여부
+ *                       example: false
+ *                     rejectReason:
+ *                       type: string
+ *                       nullable: true
+ *                       description: 거절 사유 (거절된 경우에만 값 존재)
+ *                       example: null
+ *             examples:
+ *               approved:
+ *                 summary: 승인된 챌린지
+ *                 value:
+ *                   success: true
+ *                   data:
+ *                     challengeId: "de68229a-3f0b-4869-b220-d04c186a7024"
+ *                     isDeleted: false
+ *                     deleteReason: null
+ *                     isApprove: true
+ *                     isReject: false
+ *                     rejectReason: null
+ *               rejected:
+ *                 summary: 거절된 챌린지
+ *                 value:
+ *                   success: true
+ *                   data:
+ *                     challengeId: "de68229a-3f0b-4869-b220-d04c186a7024"
+ *                     isDeleted: false
+ *                     deleteReason: null
+ *                     isApprove: false
+ *                     isReject: true
+ *                     rejectReason: "제출 자료가 요구사항에 맞지 않습니다."
+ *               deleted:
+ *                 summary: 삭제된 챌린지
+ *                 value:
+ *                   success: true
+ *                   data:
+ *                     challengeId: "de68229a-3f0b-4869-b220-d04c186a7024"
+ *                     isDeleted: true
+ *                     deleteReason: "참여자가 없어서 챌린지를 삭제합니다."
+ *                     isApprove: false
+ *                     isReject: false
+ *                     rejectReason: null
+ *       400:
+ *         description: 잘못된 요청 - 유효하지 않은 챌린지 ID
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               error:
+ *                 code: "VALIDATION_ERROR"
+ *                 message: "유효하지 않은 챌린지 ID 형식입니다."
+ *       401:
+ *         description: 인증 실패 - 토큰 없음 또는 유효하지 않음
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             examples:
+ *               missingToken:
+ *                 summary: 토큰 없음
+ *                 value:
+ *                   success: false
+ *                   error:
+ *                     code: "MISSING_AUTH_TOKEN"
+ *                     message: "인증 토큰이 제공되지 않았습니다. Authorization 헤더에 Bearer 토큰을 포함해주세요."
+ *               invalidToken:
+ *                 summary: 잘못된 토큰
+ *                 value:
+ *                   success: false
+ *                   error:
+ *                     code: "INVALID_TOKEN"
+ *                     message: "제공된 액세스 토큰이 유효하지 않습니다. 토큰이 만료되었거나 변조되었을 수 있습니다. 다시 로그인해주세요."
+ *       404:
+ *         description: 리소스를 찾을 수 없음
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               error:
+ *                 code: "CHALLENGE_NOT_FOUND"
+ *                 message: "챌린지 ID 'de68229a-3f0b-4869-b220-d04c186a7024'를 찾을 수 없습니다. 챌린지가 존재하지 않거나 삭제되었을 수 있습니다. 챌린지 ID를 확인해주세요."
+ *       500:
+ *         description: 서버 오류
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               error:
+ *                 code: "INTERNAL_SERVER_ERROR"
+ *                 message: "서버 내부 오류가 발생했습니다."
+ */
+
+/**
+ * @swagger
  * /api/challenge/inquiry/individual-challenge-detail:
  *   get:
  *     tags:

@@ -22,7 +22,6 @@ export const getWorkListController = asyncHandler(async (req, res) =>{
   const { challengeId, page, size } = req.query;
   const data = await getWorkList({
     challengeId,
-    page: Number(page) || 1,
     page: Number(page) || PAGINATION.DEFAULT_PAGE,
     size: Number(size) || PAGINATION.DEFAULT_PAGE_SIZE,
   });

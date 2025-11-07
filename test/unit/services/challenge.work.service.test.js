@@ -309,6 +309,7 @@ describe('Challenge Work Service Tests', () => {
         challenge_id: 'challenge-123',
         title: 'React 챌린지',
         isClose: false,
+        capacity: '30',
       };
 
       const mockWork = {
@@ -321,6 +322,7 @@ describe('Challenge Work Service Tests', () => {
 
       userService.getUserFromToken.mockResolvedValue({ userId: 'user-123', role: 'USER' });
       workRepository.findChallengeIsClose.mockResolvedValue(mockChallenge);
+      workRepository.countWorksByChallengeId.mockResolvedValue(10); // 현재 10명 참여 중
       workRepository.findExistingWork.mockResolvedValue(null);
       workRepository.createWork.mockResolvedValue(mockWork);
       noticeService.default.addWorkSubmitNotice.mockResolvedValue();
@@ -380,10 +382,12 @@ describe('Challenge Work Service Tests', () => {
         challenge_id: 'challenge-123',
         title: 'React 챌린지',
         isClose: false,
+        capacity: '30',
       };
 
       userService.getUserFromToken.mockResolvedValue({ userId: 'user-123', role: 'USER' });
       workRepository.findChallengeIsClose.mockResolvedValue(mockChallenge);
+      workRepository.countWorksByChallengeId.mockResolvedValue(5);
       workRepository.findExistingWork.mockResolvedValue({ attend_id: 'existing-attend' });
 
       try {
@@ -391,6 +395,59 @@ describe('Challenge Work Service Tests', () => {
       } catch (error) {
         expect(error.message).toMatch(/이미.*제출.*작업물.*존재/);
         expect(error.status).toBe(409);
+      }
+    });
+
+    it('참여 인원이 정원에 도달하면 에러를 던져야 함', async () => {
+      const mockReq = {
+        cookies: { accessToken: 'valid-token' },
+        headers: {},
+      };
+
+      const mockChallenge = {
+        challenge_id: 'challenge-123',
+        title: 'React 챌린지',
+        isClose: false,
+        capacity: '30',
+      };
+
+      userService.getUserFromToken.mockResolvedValue({ userId: 'user-123', role: 'USER' });
+      workRepository.findChallengeIsClose.mockResolvedValue(mockChallenge);
+      workRepository.countWorksByChallengeId.mockResolvedValue(30); // 정원 30명 꽉 참
+
+      try {
+        await workService.createWork(mockReq, 'challenge-123', '작업물 제목', '작업물 내용');
+      } catch (error) {
+        expect(error.message).toMatch(/참여.*인원.*정원.*도달/);
+        expect(error.message).toContain('30명');
+        expect(error.status).toBe(400);
+      }
+    });
+
+    it('참여 인원이 정원을 초과하면 에러를 던져야 함', async () => {
+      const mockReq = {
+        cookies: { accessToken: 'valid-token' },
+        headers: {},
+      };
+
+      const mockChallenge = {
+        challenge_id: 'challenge-123',
+        title: 'React 챌린지',
+        isClose: false,
+        capacity: '10',
+      };
+
+      userService.getUserFromToken.mockResolvedValue({ userId: 'user-123', role: 'USER' });
+      workRepository.findChallengeIsClose.mockResolvedValue(mockChallenge);
+      workRepository.countWorksByChallengeId.mockResolvedValue(12); // 정원 10명인데 12명
+
+      try {
+        await workService.createWork(mockReq, 'challenge-123', '작업물 제목', '작업물 내용');
+      } catch (error) {
+        expect(error.message).toMatch(/참여.*인원.*정원.*도달/);
+        expect(error.message).toContain('10명');
+        expect(error.message).toContain('12명');
+        expect(error.status).toBe(400);
       }
     });
   });

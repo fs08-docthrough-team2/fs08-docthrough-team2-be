@@ -77,10 +77,10 @@ async function cancelChallenge(challengeID, userID) {
   }
 }
 
-async function deleteChallenge(challengeID, userID) {
+async function deleteChallenge(challengeID, userID, delete_reason) {
   try{
     // 챌린지를 DB에 업데이트하고, 내용을 반환 받음
-    const deletedChallenge = await challengeCrudRepository.deleteChallengeById(challengeID);
+    const deletedChallenge = await challengeCrudRepository.deleteChallengeById(challengeID, delete_reason);
 
     // 챌린지 삭제 알림 함수 호출
     await noticeService.addModifyNotice("챌린지","삭제", userID, deletedChallenge.title);

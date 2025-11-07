@@ -80,6 +80,7 @@ export async function findParticipatesByChallenge({ challengeId, skip, take }) {
       user: {
         select: {
           nick_name: true,
+          role: true,
         },
       },
       _count: {
@@ -166,11 +167,25 @@ export async function findUserChallengeDetails({ where, skip, take, orderBy }) {
   });
 }
 
+export async function findChallengeStatusById(challengeId) {
+  return prisma.challenge.findUnique({
+    where: {
+      challenge_id: challengeId,
+    },
+    select: {
+      isDelete: true,
+      delete_reason: true,
+      isApprove: true,
+      isReject: true,
+      reject_content: true,
+    }
+  });
+}
+
 export default {
   countChallenges,
   findChallengesWithAttendCount,
   findChallengeDetailById,
   findParticipatesByChallenge,
   findUserChallenges,
-  findUserChallengeDetails,
 };
