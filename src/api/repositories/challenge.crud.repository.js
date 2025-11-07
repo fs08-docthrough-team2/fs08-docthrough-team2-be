@@ -35,7 +35,7 @@ export async function deleteChallengeById(challengeId, delete_reason) {
     where: { challenge_id: challengeId },
     data: {
       isDelete: true,
-      status: 'DEADLINE',
+      status: 'DELETED',
       delete_reason: delete_reason
     },
   });
