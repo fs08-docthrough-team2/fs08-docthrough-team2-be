@@ -821,13 +821,16 @@ async function seedFeedbacks(attends, users) {
 // ─────────────────────────────────────────────────────────────
 // 알림(Notice) 시드 데이터 (증가)
 // ─────────────────────────────────────────────────────────────
-async function seedNotices(challenges, users) {
+async function seedNotices(challenges, users, attends) {
   console.log('🔔 Creating notices...');
 
   const testMaster = users[0];
   const regularUsers = users.slice(6);
 
   let noticeCount = 0;
+
+  // test@master.com의 작업물 가져오기 (attend_id 연결용)
+  const testMasterAttends = attends.filter(a => a.user_id === testMaster.user_id && !a.isSave);
 
   // test@master.com에게 다양한 알림들 (20개)
 
@@ -837,12 +840,12 @@ async function seedNotices(challenges, users) {
     { type: 'APPROVAL', content: '챌린지 "TypeScript 5.0 핸드북 번역"이 승인되었습니다.', isRead: true },
     { type: 'APPROVAL', content: '챌린지 "개인 블로그 글 번역"이 거절되었습니다. 사유: 개인 블로그보다는 공식 문서 번역을 권장합니다.', isRead: false },
     { type: 'DEADLINE', content: '챌린지 "TypeScript 5.0 핸드북 번역"의 마감이 7일 남았습니다.', isRead: false },
-    { type: 'ATTEND', content: '작업물 "Next.js Server Components 번역"이 성공적으로 제출되었습니다.', isRead: true },
-    { type: 'FEEDBACK', content: '작업물에 새로운 피드백이 등록되었습니다.', isRead: false },
-    { type: 'FEEDBACK', content: '"번역전문가1"님이 피드백을 남겼습니다.', isRead: false },
-    { type: 'FEEDBACK', content: '"코딩왕"님이 피드백을 남겼습니다.', isRead: false },
-    { type: 'FEEDBACK', content: '작업물 "Node.js Worker Threads API"에 새 피드백이 있습니다.', isRead: true },
-    { type: 'FEEDBACK', content: '작업물 "Deno Permission 시스템"에 새 피드백이 있습니다.', isRead: true },
+    { type: 'ATTEND', content: '작업물 "Next.js Server Components 번역"이 성공적으로 제출되었습니다.', isRead: true, attendIndex: 0 },
+    { type: 'FEEDBACK', content: '작업물에 새로운 피드백이 등록되었습니다.', isRead: false, attendIndex: 1 },
+    { type: 'FEEDBACK', content: '"번역전문가1"님이 피드백을 남겼습니다.', isRead: false, attendIndex: 1 },
+    { type: 'FEEDBACK', content: '"코딩왕"님이 피드백을 남겼습니다.', isRead: false, attendIndex: 2 },
+    { type: 'FEEDBACK', content: '작업물 "Node.js Worker Threads API"에 새 피드백이 있습니다.', isRead: true, attendIndex: 2 },
+    { type: 'FEEDBACK', content: '작업물 "Deno Permission 시스템"에 새 피드백이 있습니다.', isRead: true, attendIndex: 3 },
     { type: 'ATTEND', content: '"개발자김씨"님이 "React 18 공식문서 번역 챌린지"에 참여했습니다.', isRead: false },
     { type: 'ATTEND', content: '"코딩왕"님이 "React 18 공식문서 번역 챌린지"에 작업물을 제출했습니다.', isRead: false },
     { type: 'ATTEND', content: '"프론트마스터"님이 "TypeScript 5.0 핸드북 번역"에 참여했습니다.', isRead: false },
@@ -851,13 +854,16 @@ async function seedNotices(challenges, users) {
     { type: 'CHALLENGE', content: '챌린지 "Solid.js 리액티브 프로그래밍"이 생성되었습니다.', isRead: true },
     { type: 'APPROVAL', content: '챌린지 "Nuxt 3 풀스택 프레임워크"가 승인되었습니다.', isRead: false },
     { type: 'DEADLINE', content: '챌린지 "Astro 정적 사이트 생성기"의 마감이 임박했습니다.', isRead: false },
-    { type: 'ATTEND', content: '작업물 "Kubernetes Pod 개념"이 제출되었습니다.', isRead: true },
+    { type: 'ATTEND', content: '작업물 "Kubernetes Pod 개념"이 제출되었습니다.', isRead: true, attendIndex: 4 },
   ];
 
   for (const notice of testMasterNotices) {
     await prisma.notice.create({
       data: {
         user_id: testMaster.user_id,
+        attend_id: notice.attendIndex !== undefined && testMasterAttends[notice.attendIndex]
+          ? testMasterAttends[notice.attendIndex].attend_id
+          : null,
         type: notice.type,
         content: notice.content,
         isRead: notice.isRead,
@@ -919,7 +925,7 @@ async function main() {
     await seedFeedbacks(attends, users);
     console.log('');
 
-    await seedNotices(challenges, users);
+    await seedNotices(challenges, users, attends);
     console.log('');
 
     console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
