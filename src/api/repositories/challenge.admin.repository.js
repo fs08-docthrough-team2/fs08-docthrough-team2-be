@@ -74,10 +74,20 @@ export async function rejectChallengeById(challengeId, rejectComment) {
   });
 }
 
+export async function updateChallengeAdminId(challengeId, adminId) {
+  return prisma.challenge.update({
+    where: { challenge_id: challengeId },
+    data: {
+      adminId: adminId,
+    },
+  });
+}
+
 export default {
   countChallenges,
   findChallengesForAdmin,
   findChallengeById,
   approveChallengeById,
   rejectChallengeById,
+  updateChallengeAdminId,
 };

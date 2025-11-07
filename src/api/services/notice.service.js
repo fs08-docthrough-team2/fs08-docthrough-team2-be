@@ -45,10 +45,10 @@ async function addModifyNotice(type = undefined, mode = undefined, userID, chall
 }
 
 // 챌린지의 상태가 변경되었을 때 전송되는 알림
-async function addChallengeStateNotice(state = undefined, userID, challengeTitle) {
+async function addChallengeStateNotice(state = undefined, adminID, challengeTitle) {
   // 알림 생성 후, 데이터베이스에 저장
   await noticeRepository.createNotice({
-    user_id: userID,
+    user_id: adminID,
     type: 'CHALLENGE',
     content:
       '챌린지가 ' +
@@ -138,9 +138,9 @@ async function addMarkNoticeAsRead(noticeId) {
 }
 
 // 어드민이 챌린지를 수정/삭제했을 때 신청자에게 사유가 전송되는 알림
-async function addAdminChallengeUpdateNotice(mode = undefined, userID, challengeTitle, reason) {
+async function addAdminChallengeUpdateNotice(mode = undefined, adminID, challengeTitle, reason) {
   await noticeRepository.createNotice({
-    user_id: userID,
+    user_id: adminID,
     type: TYPE_ADMIN,
     content:
       '어드민이 챌린지를 ' +

@@ -60,6 +60,7 @@ model Challenge {
   isDelete       Boolean         @default(false)
   delete_reason  String?
   isClose        Boolean         @default(false)
+  adminId        String?
   isReject       Boolean         @default(false)
   reject_content String?
   isApprove      Boolean         @default(false)
@@ -94,14 +95,16 @@ enum ChallengeField {
 }
 
 model Attend {
-  attend_id    String   @id @default(uuid())
-  challenge_id String
-  user_id      String
-  title        String?
-  work_item    String
-  isSave       Boolean  @default(false)
-  created_at   DateTime @default(now())
-  updated_at   DateTime @updatedAt
+  attend_id     String   @id @default(uuid())
+  challenge_id  String
+  user_id       String
+  title         String?
+  work_item     String
+  isSave        Boolean  @default(false)
+  is_delete     Boolean  @default(false)
+  delete_reason String?
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
 
   user      User       @relation(fields: [user_id], references: [user_id])
   challenge Challenge  @relation(fields: [challenge_id], references: [challenge_id])
