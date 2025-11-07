@@ -176,8 +176,10 @@ export async function findChallengeStatusById(challengeId) {
       isDelete: true,
       delete_reason: true,
       isApprove: true,
+      adminId: true,
       isReject: true,
       reject_content: true,
+      updated_at: true,
     }
   });
 }

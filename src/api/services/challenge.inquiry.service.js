@@ -468,7 +468,7 @@ async function getUserChallengeDetail(userID, title, field, type, status, page, 
   }
 }
 
-async function getChallengeStatus(challengeId) {
+async function getChallengeStatus(challengeId, userId) {
   try {
     // 챌린지 상태 조회
     const challenge = await challengeInquiryRepository.findChallengeStatusById(challengeId);
@@ -488,8 +488,10 @@ async function getChallengeStatus(challengeId) {
         isDeleted: challenge.isDelete,
         deleteReason: challenge.delete_reason,
         isApprove: challenge.isApprove,
+        adminId: challenge.adminId,
         isReject: challenge.isReject,
         rejectReason: challenge.reject_content,
+        updatedAt: challenge.updated_at,
       },
     };
   } catch (error) {

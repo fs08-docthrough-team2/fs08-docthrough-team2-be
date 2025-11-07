@@ -132,7 +132,7 @@ async function getChallengeDetail(challengeId) {
   }
 }
 
-async function approveChallenge(challengeId) {
+async function approveChallenge(challengeId, adminID) {
   try {
     // 챌린지 승인 상태 변경
     const approvedChallenge = await challengeAdminRepository.approveChallengeById(challengeId);
@@ -145,10 +145,13 @@ async function approveChallenge(challengeId) {
       );
     }
 
+    // 승인 했을 때의 adminId 업데이트
+    await challengeAdminRepository.updateChallengeAdminId(challengeId, adminID);
+
     // 승인 알림 전송
     await noticeService.addChallengeStateNotice(
       '승인',
-      approvedChallenge.user_id,
+      adminID,
       approvedChallenge.title,
     );
 
@@ -165,7 +168,7 @@ async function approveChallenge(challengeId) {
   }
 }
 
-async function rejectChallenge(challengeId, reject_comment) {
+async function rejectChallenge(challengeId, adminID, reject_comment) {
   try {
     // 챌린지 거절 상태 변경
     const rejectedChallenge = await challengeAdminRepository.rejectChallengeById(
@@ -181,10 +184,13 @@ async function rejectChallenge(challengeId, reject_comment) {
       );
     }
 
+    // 거절 했을 때의 adminId 업데이트
+    await challengeAdminRepository.updateChallengeAdminId(challengeId, adminID);
+
     // 거절 알림 전송 (사유 포함)
     await noticeService.addAdminChallengeUpdateNotice(
       '거절',
-      rejectedChallenge.user_id,
+      adminID,
       rejectedChallenge.title,
       reject_comment,
     );

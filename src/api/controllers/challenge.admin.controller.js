@@ -62,10 +62,10 @@ const getChallengeDetailInput = asyncHandler(async (req, res) => {
 const approveChallengeInput = asyncHandler(async (req, res) => {
   // 입력값 불러오기
   const challengeID = req.params.challengeId;
-  const userID = req.auth?.userId;
+  const adminID = req.auth?.userId;
 
   // 입력값 검증
-  let valid = validateUserId(userID, res);
+  let valid = validateUserId(adminID, res);
   if (valid !== true) return valid;
 
   valid = validateChallengeId(challengeID, res);
@@ -73,7 +73,7 @@ const approveChallengeInput = asyncHandler(async (req, res) => {
 
   // 서비스 호출
   const response = await challengeAdminServices.approveChallenge(
-    challengeID, userID
+    challengeID, adminID
   );
 
   // 호출 결과 반환
