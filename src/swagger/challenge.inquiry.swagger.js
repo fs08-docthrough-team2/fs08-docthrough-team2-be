@@ -1,6 +1,25 @@
 /**
  * @swagger
  * components:
+ *   schemas:
+ *     ErrorResponse:
+ *       type: object
+ *       properties:
+ *         success:
+ *           type: boolean
+ *           example: false
+ *         error:
+ *           type: object
+ *           properties:
+ *             code:
+ *               type: string
+ *               description: 에러 코드
+ *             message:
+ *               type: string
+ *               description: 상세한 에러 메시지
+ *             details:
+ *               type: object
+ *               description: 추가 에러 상세 정보 (선택적)
  *   securitySchemes:
  *     BearerAuth:
  *       type: http
@@ -152,44 +171,48 @@
  *                       description: 전체 페이지 수
  *                       example: 50
  *       400:
- *         description: 잘못된 요청 (유효하지 않은 파라미터)
+ *         description: 잘못된 요청 - 데이터 조회 실패
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: "필드 값이 올바르지 않습니다."
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               error:
+ *                 code: "CHALLENGE_LIST_FETCH_FAILED"
+ *                 message: "챌린지 목록 조회에 실패했습니다. 데이터베이스에서 올바른 형식의 데이터를 반환받지 못했습니다. 잠시 후 다시 시도하거나 관리자에게 문의해주세요."
  *       401:
- *         description: 인증 실패 (토큰 없음 또는 유효하지 않음)
+ *         description: 인증 실패 - 토큰 없음 또는 유효하지 않음
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: "인증이 필요합니다."
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             examples:
+ *               missingToken:
+ *                 summary: 토큰 없음
+ *                 value:
+ *                   success: false
+ *                   error:
+ *                     code: "MISSING_AUTH_TOKEN"
+ *                     message: "인증 토큰이 제공되지 않았습니다. Authorization 헤더에 Bearer 토큰을 포함해주세요."
+ *               invalidToken:
+ *                 summary: 잘못된 토큰
+ *                 value:
+ *                   success: false
+ *                   error:
+ *                     code: "INVALID_TOKEN"
+ *                     message: "제공된 액세스 토큰이 유효하지 않습니다. 토큰이 만료되었거나 변조되었을 수 있습니다. 다시 로그인해주세요."
  *       500:
  *         description: 서버 오류
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: false
- *                 error:
- *                   type: object
- *                   properties:
- *                     code:
- *                       type: string
- *                       example: "INTERNAL_SERVER_ERROR"
- *                     message:
- *                       type: string
- *                       example: "서버 오류가 발생했습니다."
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               error:
+ *                 code: "INTERNAL_SERVER_ERROR"
+ *                 message: "서버 내부 오류가 발생했습니다."
  */
 
 /**
@@ -271,40 +294,59 @@
  *                       description: 원본 문서 링크
  *                       example: "https://nextjs.org/docs"
  *       400:
- *         description: 잘못된 요청 (유효하지 않은 UUID)
+ *         description: 잘못된 요청 - 유효하지 않은 파라미터
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: "유효하지 않은 챌린지 ID 형식입니다."
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               error:
+ *                 code: "VALIDATION_ERROR"
+ *                 message: "유효하지 않은 챌린지 ID 형식입니다."
  *       401:
- *         description: 인증 실패 (토큰 없음 또는 유효하지 않음)
+ *         description: 인증 실패 - 토큰 없음 또는 유효하지 않음
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: "인증이 필요합니다."
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             examples:
+ *               missingToken:
+ *                 summary: 토큰 없음
+ *                 value:
+ *                   success: false
+ *                   error:
+ *                     code: "MISSING_AUTH_TOKEN"
+ *                     message: "인증 토큰이 제공되지 않았습니다. Authorization 헤더에 Bearer 토큰을 포함해주세요."
+ *               invalidToken:
+ *                 summary: 잘못된 토큰
+ *                 value:
+ *                   success: false
+ *                   error:
+ *                     code: "INVALID_TOKEN"
+ *                     message: "제공된 액세스 토큰이 유효하지 않습니다. 토큰이 만료되었거나 변조되었을 수 있습니다. 다시 로그인해주세요."
  *       404:
- *         description: 챌린지를 찾을 수 없음
+ *         description: 리소스를 찾을 수 없음
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: false
- *                 message:
- *                   type: string
- *                   example: "챌린지를 찾을 수 없습니다."
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               error:
+ *                 code: "CHALLENGE_NOT_FOUND"
+ *                 message: "챌린지 ID 'de68229a-3f0b-4869-b220-d04c186a7024'를 찾을 수 없습니다. 챌린지가 존재하지 않거나 삭제되었을 수 있습니다. 챌린지 ID를 확인해주세요."
  *       500:
  *         description: 서버 오류
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               error:
+ *                 code: "INTERNAL_SERVER_ERROR"
+ *                 message: "서버 내부 오류가 발생했습니다."
  */
 
 /**
@@ -400,31 +442,69 @@
  *                       description: 페이지당 항목 수
  *                       example: 1
  *       400:
- *         description: 잘못된 요청
+ *         description: 잘못된 요청 - 데이터 조회 실패
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   examples:
- *                     invalidUUID:
- *                       value: "유효하지 않은 챌린지 ID 형식입니다."
- *                     invalidPagination:
- *                       value: "페이지 또는 페이지 크기 값이 올바르지 않습니다."
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             examples:
+ *               fetchFailed:
+ *                 summary: 참여자 목록 조회 실패
+ *                 value:
+ *                   success: false
+ *                   error:
+ *                     code: "PARTICIPATE_LIST_FETCH_FAILED"
+ *                     message: "챌린지 ID 'de68229a-3f0b-4869-b220-d04c186a7024'의 참여자 목록 조회에 실패했습니다. 데이터베이스에서 올바른 형식의 데이터를 반환받지 못했습니다. 잠시 후 다시 시도하거나 관리자에게 문의해주세요."
+ *               invalidUUID:
+ *                 summary: 잘못된 UUID 형식
+ *                 value:
+ *                   success: false
+ *                   error:
+ *                     code: "VALIDATION_ERROR"
+ *                     message: "유효하지 않은 챌린지 ID 형식입니다."
  *       401:
- *         description: 인증 실패 (토큰 없음 또는 유효하지 않음)
+ *         description: 인증 실패 - 토큰 없음 또는 유효하지 않음
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: "인증이 필요합니다."
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             examples:
+ *               missingToken:
+ *                 summary: 토큰 없음
+ *                 value:
+ *                   success: false
+ *                   error:
+ *                     code: "MISSING_AUTH_TOKEN"
+ *                     message: "인증 토큰이 제공되지 않았습니다. Authorization 헤더에 Bearer 토큰을 포함해주세요."
+ *               invalidToken:
+ *                 summary: 잘못된 토큰
+ *                 value:
+ *                   success: false
+ *                   error:
+ *                     code: "INVALID_TOKEN"
+ *                     message: "제공된 액세스 토큰이 유효하지 않습니다. 토큰이 만료되었거나 변조되었을 수 있습니다. 다시 로그인해주세요."
+ *       404:
+ *         description: 리소스를 찾을 수 없음
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               error:
+ *                 code: "CHALLENGE_NOT_FOUND"
+ *                 message: "챌린지 ID 'de68229a-3f0b-4869-b220-d04c186a7024'를 찾을 수 없습니다. 챌린지가 존재하지 않거나 삭제되었을 수 있습니다. 참여자 목록을 조회하기 전에 챌린지 ID를 확인해주세요."
  *       500:
  *         description: 서버 오류
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               error:
+ *                 code: "INTERNAL_SERVER_ERROR"
+ *                 message: "서버 내부 오류가 발생했습니다."
  */
 
 /**
@@ -562,41 +642,65 @@
  *                       description: 페이지당 항목 수
  *                       example: 10
  *       400:
- *         description: 잘못된 요청
+ *         description: 잘못된 요청 - 유효성 검증 실패
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   examples:
- *                     invalidUserId:
- *                       value: "유저 ID가 없거나 올바르지 않습니다."
- *                     invalidField:
- *                       value: "필드 값이 올바르지 않습니다."
- *                     invalidType:
- *                       value: "타입 값이 올바르지 않습니다."
- *                     invalidStatus:
- *                       value: "상태 값이 올바르지 않습니다."
- *                     invalidPagination:
- *                       value: "페이지 또는 페이지 크기 값이 올바르지 않습니다."
- *                     invalidPageValue:
- *                       value: "페이지 또는 페이지 크기 값은 1 이상이어야 합니다."
- *                     pageSizeLimit:
- *                       value: "페이지 크기는 100 이하여야 합니다."
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             examples:
+ *               invalidUserId:
+ *                 summary: 잘못된 사용자 ID
+ *                 value:
+ *                   success: false
+ *                   error:
+ *                     code: "VALIDATION_ERROR"
+ *                     message: "유저 ID가 없거나 올바르지 않습니다."
+ *               invalidField:
+ *                 summary: 잘못된 필드 값
+ *                 value:
+ *                   success: false
+ *                   error:
+ *                     code: "VALIDATION_ERROR"
+ *                     message: "필드 값이 올바르지 않습니다."
+ *               invalidPagination:
+ *                 summary: 잘못된 페이지 정보
+ *                 value:
+ *                   success: false
+ *                   error:
+ *                     code: "VALIDATION_ERROR"
+ *                     message: "페이지 또는 페이지 크기 값이 올바르지 않습니다."
  *       401:
- *         description: 인증 실패 (토큰 없음 또는 유효하지 않음)
+ *         description: 인증 실패 - 토큰 없음 또는 유효하지 않음
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: "인증이 필요합니다."
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             examples:
+ *               missingToken:
+ *                 summary: 토큰 없음
+ *                 value:
+ *                   success: false
+ *                   error:
+ *                     code: "MISSING_AUTH_TOKEN"
+ *                     message: "인증 토큰이 제공되지 않았습니다. Authorization 헤더에 Bearer 토큰을 포함해주세요."
+ *               invalidToken:
+ *                 summary: 잘못된 토큰
+ *                 value:
+ *                   success: false
+ *                   error:
+ *                     code: "INVALID_TOKEN"
+ *                     message: "제공된 액세스 토큰이 유효하지 않습니다. 토큰이 만료되었거나 변조되었을 수 있습니다. 다시 로그인해주세요."
  *       500:
  *         description: 서버 오류
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               error:
+ *                 code: "INTERNAL_SERVER_ERROR"
+ *                 message: "서버 내부 오류가 발생했습니다."
  */
 
 /**
@@ -734,41 +838,65 @@
  *                       description: 페이지당 항목 수
  *                       example: 10
  *       400:
- *         description: 잘못된 요청
+ *         description: 잘못된 요청 - 유효성 검증 실패
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   examples:
- *                     invalidUserId:
- *                       value: "유저 ID가 없거나 올바르지 않습니다."
- *                     invalidField:
- *                       value: "필드 값이 올바르지 않습니다."
- *                     invalidType:
- *                       value: "타입 값이 올바르지 않습니다."
- *                     invalidStatus:
- *                       value: "상태 값이 올바르지 않습니다."
- *                     invalidPagination:
- *                       value: "페이지 또는 페이지 크기 값이 올바르지 않습니다."
- *                     invalidPageValue:
- *                       value: "페이지 또는 페이지 크기 값은 1 이상이어야 합니다."
- *                     pageSizeLimit:
- *                       value: "페이지 크기는 100 이하여야 합니다."
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             examples:
+ *               invalidUserId:
+ *                 summary: 잘못된 사용자 ID
+ *                 value:
+ *                   success: false
+ *                   error:
+ *                     code: "VALIDATION_ERROR"
+ *                     message: "유저 ID가 없거나 올바르지 않습니다."
+ *               invalidField:
+ *                 summary: 잘못된 필드 값
+ *                 value:
+ *                   success: false
+ *                   error:
+ *                     code: "VALIDATION_ERROR"
+ *                     message: "필드 값이 올바르지 않습니다."
+ *               invalidPagination:
+ *                 summary: 잘못된 페이지 정보
+ *                 value:
+ *                   success: false
+ *                   error:
+ *                     code: "VALIDATION_ERROR"
+ *                     message: "페이지 또는 페이지 크기 값이 올바르지 않습니다."
  *       401:
- *         description: 인증 실패 (토큰 없음 또는 유효하지 않음)
+ *         description: 인증 실패 - 토큰 없음 또는 유효하지 않음
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: "인증이 필요합니다."
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             examples:
+ *               missingToken:
+ *                 summary: 토큰 없음
+ *                 value:
+ *                   success: false
+ *                   error:
+ *                     code: "MISSING_AUTH_TOKEN"
+ *                     message: "인증 토큰이 제공되지 않았습니다. Authorization 헤더에 Bearer 토큰을 포함해주세요."
+ *               invalidToken:
+ *                 summary: 잘못된 토큰
+ *                 value:
+ *                   success: false
+ *                   error:
+ *                     code: "INVALID_TOKEN"
+ *                     message: "제공된 액세스 토큰이 유효하지 않습니다. 토큰이 만료되었거나 변조되었을 수 있습니다. 다시 로그인해주세요."
  *       500:
  *         description: 서버 오류
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               error:
+ *                 code: "INTERNAL_SERVER_ERROR"
+ *                 message: "서버 내부 오류가 발생했습니다."
  */
 
 /**
@@ -954,33 +1082,56 @@
  *                     page: 1
  *                     pageSize: 10
  *       400:
- *         description: 잘못된 요청
+ *         description: 잘못된 요청 - 유효성 검증 실패
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   examples:
- *                     invalidUserId:
- *                       value: "유저 ID가 없거나 올바르지 않습니다."
- *                     invalidPagination:
- *                       value: "페이지 또는 페이지 크기 값이 올바르지 않습니다."
- *                     invalidPageValue:
- *                       value: "페이지 또는 페이지 크기 값은 1 이상이어야 합니다."
- *                     pageSizeLimit:
- *                       value: "페이지 크기는 100 이하여야 합니다."
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             examples:
+ *               invalidUserId:
+ *                 summary: 잘못된 사용자 ID
+ *                 value:
+ *                   success: false
+ *                   error:
+ *                     code: "VALIDATION_ERROR"
+ *                     message: "유저 ID가 없거나 올바르지 않습니다."
+ *               invalidPagination:
+ *                 summary: 잘못된 페이지 정보
+ *                 value:
+ *                   success: false
+ *                   error:
+ *                     code: "VALIDATION_ERROR"
+ *                     message: "페이지 또는 페이지 크기 값이 올바르지 않습니다."
  *       401:
- *         description: 인증 실패 (토큰 없음 또는 유효하지 않음)
+ *         description: 인증 실패 - 토큰 없음 또는 유효하지 않음
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: "인증이 필요합니다."
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             examples:
+ *               missingToken:
+ *                 summary: 토큰 없음
+ *                 value:
+ *                   success: false
+ *                   error:
+ *                     code: "MISSING_AUTH_TOKEN"
+ *                     message: "인증 토큰이 제공되지 않았습니다. Authorization 헤더에 Bearer 토큰을 포함해주세요."
+ *               invalidToken:
+ *                 summary: 잘못된 토큰
+ *                 value:
+ *                   success: false
+ *                   error:
+ *                     code: "INVALID_TOKEN"
+ *                     message: "제공된 액세스 토큰이 유효하지 않습니다. 토큰이 만료되었거나 변조되었을 수 있습니다. 다시 로그인해주세요."
  *       500:
  *         description: 서버 오류
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               error:
+ *                 code: "INTERNAL_SERVER_ERROR"
+ *                 message: "서버 내부 오류가 발생했습니다."
  */

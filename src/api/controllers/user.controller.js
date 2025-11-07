@@ -33,7 +33,6 @@ export const deleteUserProfileController = asyncHandler(async(req, res) => {
   const result = await deleteUserProfile(req);
   res.clearCookie("refreshToken", {
     ...cookiesOption,
-    path: "/",
     maxAge: 0,
   });
   res.status(HTTP_STATUS.OK).json(
