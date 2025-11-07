@@ -15,10 +15,10 @@ async function getChallengeList({ title, field, type, status, page, pageSize, so
       };
     }
     if (field) {
-      whereCondition.field = field;
+      whereCondition.field = Array.isArray(field) ? { in: field } : field;
     }
     if (type) {
-      whereCondition.type = type;
+      whereCondition.type = Array.isArray(type) ? { in: type } : type;
     }
     if (status) {
       whereCondition.status = status;
@@ -192,10 +192,10 @@ async function getUserParticipateList(userID, title, field, type, status, page, 
       deadline: { gt: new Date() },
     };
     if (field) {
-      whereCondition.field = field;
+      whereCondition.field = Array.isArray(field) ? { in: field } : field;
     }
     if (type) {
-      whereCondition.type = type;
+      whereCondition.type = Array.isArray(type) ? { in: type } : type;
     }
     if (status) {
       switch (status) {
@@ -295,10 +295,10 @@ async function getUserCompleteList(userID, title, field, type, status, page, pag
       deadline: { lte: new Date() },
     };
     if (field) {
-      whereCondition.field = field;
+      whereCondition.field = Array.isArray(field) ? { in: field } : field;
     }
     if (type) {
-      whereCondition.type = type;
+      whereCondition.type = Array.isArray(type) ? { in: type } : type;
     }
     if (status) {
       switch (status) {
@@ -399,10 +399,10 @@ async function getUserChallengeDetail(userID, title, field, type, status, page, 
       deadline: { gt: new Date() },
     };
     if (field) {
-      whereCondition.field = field;
+      whereCondition.field = Array.isArray(field) ? { in: field } : field;
     }
     if (type) {
-      whereCondition.type = type;
+      whereCondition.type = Array.isArray(type) ? { in: type } : type;
     }
     if (status) {
       switch (status) {
