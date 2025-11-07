@@ -25,6 +25,7 @@ describe('User Repository Tests', () => {
     it('토큰으로 사용자 프로필을 조회해야 함', async () => {
       const mockProfile = {
         user_id: 'user-123',
+        email: 'test@example.com',
         nick_name: 'TestUser',
         role: 'USER',
       };
@@ -38,6 +39,7 @@ describe('User Repository Tests', () => {
         where: { user_id: 'user-123' },
         select: {
           user_id: true,
+          email: true,
           nick_name: true,
           role: true,
         },
@@ -56,6 +58,7 @@ describe('User Repository Tests', () => {
     it('올바른 필드만 select해야 함', async () => {
       mockPrisma.user.findUnique.mockResolvedValue({
         user_id: 'user-123',
+        email: 'test@example.com',
         nick_name: 'TestUser',
         role: 'ADMIN',
       });
@@ -64,9 +67,9 @@ describe('User Repository Tests', () => {
 
       const callArgs = mockPrisma.user.findUnique.mock.calls[0][0];
       expect(callArgs.select.user_id).toBe(true);
+      expect(callArgs.select.email).toBe(true);
       expect(callArgs.select.nick_name).toBe(true);
       expect(callArgs.select.role).toBe(true);
-      expect(callArgs.select.email).toBeUndefined();
       expect(callArgs.select.password).toBeUndefined();
     });
   });

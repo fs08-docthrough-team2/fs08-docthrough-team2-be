@@ -44,7 +44,7 @@ describe('Challenge Validator Tests', () => {
         };
         const result = createChallengeSchema.safeParse(invalidData);
         expect(result.success).toBe(false);
-        expect(result.error.issues[0].message).toMatch(/최소.*1자/);
+        expect(result.error.issues[0].message).toMatch(/제목이 입력되지 않았습니다/);
       });
 
       it('제목이 200자를 초과하면 실패해야 함', () => {
@@ -71,7 +71,7 @@ describe('Challenge Validator Tests', () => {
         };
         const result = createChallengeSchema.safeParse(invalidData);
         expect(result.success).toBe(false);
-        expect(result.error.issues[0].message).toMatch(/허용되지 않는 문자/);
+        expect(result.error.issues[0].message).toMatch(/보안상 위험한 문자/);
       });
 
       it('제목에 javascript: 프로토콜이 있으면 실패해야 함', () => {
@@ -80,7 +80,7 @@ describe('Challenge Validator Tests', () => {
         };
         const result = createChallengeSchema.safeParse(invalidData);
         expect(result.success).toBe(false);
-        expect(result.error.issues[0].message).toMatch(/허용되지 않는 문자/);
+        expect(result.error.issues[0].message).toMatch(/보안상 위험한 문자/);
       });
 
       it('제목에 onerror 이벤트가 있으면 실패해야 함', () => {
@@ -109,7 +109,7 @@ describe('Challenge Validator Tests', () => {
         };
         const result = createChallengeSchema.safeParse(invalidData);
         expect(result.success).toBe(false);
-        expect(result.error.issues[0].message).toMatch(/최소.*1자/);
+        expect(result.error.issues[0].message).toMatch(/출처가 입력되지 않았습니다/);
       });
 
       it('출처가 500자를 초과하면 실패해야 함', () => {
@@ -256,7 +256,7 @@ describe('Challenge Validator Tests', () => {
         };
         const result = createChallengeSchema.safeParse(invalidData);
         expect(result.success).toBe(false);
-        expect(result.error.issues[0].message).toMatch(/현재.*시간.*이후/);
+        expect(result.error.issues[0].message).toMatch(/마감일이 과거입니다/);
       });
 
       it('미래 날짜면 통과해야 함', () => {
@@ -304,7 +304,7 @@ describe('Challenge Validator Tests', () => {
         };
         const result = createChallengeSchema.safeParse(invalidData);
         expect(result.success).toBe(false);
-        expect(result.error.issues[0].message).toMatch(/100.*이하/);
+        expect(result.error.issues[0].message).toMatch(/정원이 너무 많습니다/);
       });
 
       it('정원이 2-100명 사이면 통과해야 함', () => {
@@ -364,7 +364,7 @@ describe('Challenge Validator Tests', () => {
         };
         const result = createChallengeSchema.safeParse(invalidData);
         expect(result.success).toBe(false);
-        expect(result.error.issues[0].message).toMatch(/허용되지 않는 문자/);
+        expect(result.error.issues[0].message).toMatch(/보안상 위험한 문자/);
       });
 
       it('내용에 javascript: 프로토콜이 있으면 실패해야 함', () => {
@@ -639,7 +639,7 @@ describe('Challenge Validator Tests', () => {
       };
       const result = getChallengeListQuerySchema.safeParse(invalidData);
       expect(result.success).toBe(false);
-      expect(result.error.issues[0].message).toMatch(/100.*이하/);
+      expect(result.error.issues[0].message).toMatch(/페이지 크기가 너무 큽니다/);
     });
 
     it('title이 200자를 초과하면 실패해야 함', () => {

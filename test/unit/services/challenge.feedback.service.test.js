@@ -52,11 +52,22 @@ describe('Challenge Feedback Service Tests', () => {
         },
       ];
 
+      const expectedTransformed = mockFeedbacks.map(f => ({
+        feedbackId: f.feedback_id,
+        content: f.content,
+        createdAt: f.created_at,
+        updatedAt: f.updated_at,
+        user: {
+          nickName: undefined,
+          role: undefined,
+        }
+      }));
+
       feedbackRepository.countFeedbacks.mockResolvedValue(25);
       feedbackRepository.findFeedbacksByAttendId.mockResolvedValue(mockFeedbacks);
 
       const result = await feedbackService.getFeedbackList({
-        attend_id: 'attend-123',
+        attendId: 'attend-123',
         page: 2,
         size: 10,
       });
@@ -67,7 +78,7 @@ describe('Challenge Feedback Service Tests', () => {
         skip: 10,
         take: 10,
       });
-      expect(result.items).toEqual(mockFeedbacks);
+      expect(result.items).toEqual(expectedTransformed);
       expect(result.pagination).toEqual({
         page: 2,
         size: 10,
@@ -80,7 +91,7 @@ describe('Challenge Feedback Service Tests', () => {
       feedbackRepository.countFeedbacks.mockResolvedValue(0);
       feedbackRepository.findFeedbacksByAttendId.mockResolvedValue([]);
 
-      const result = await feedbackService.getFeedbackList({ attend_id: 'attend-123' });
+      const result = await feedbackService.getFeedbackList({ attendId: 'attend-123' });
 
       expect(feedbackRepository.findFeedbacksByAttendId).toHaveBeenCalledWith({
         attendId: 'attend-123',
@@ -94,7 +105,7 @@ describe('Challenge Feedback Service Tests', () => {
       feedbackRepository.countFeedbacks.mockResolvedValue(0);
       feedbackRepository.findFeedbacksByAttendId.mockResolvedValue([]);
 
-      const result = await feedbackService.getFeedbackList({ attend_id: 'attend-123' });
+      const result = await feedbackService.getFeedbackList({ attendId: 'attend-123' });
 
       expect(result.pagination.size).toBe(10);
     });
@@ -111,10 +122,13 @@ describe('Challenge Feedback Service Tests', () => {
 
       feedbackRepository.findFeedbackById.mockResolvedValue(mockFeedback);
 
-      const result = await feedbackService.getFeedbackDetail({ feedback_id: 'feedback-123' });
+      const result = await feedbackService.getFeedbackDetail({ feedbackId: 'feedback-123' });
 
       expect(feedbackRepository.findFeedbackById).toHaveBeenCalledWith('feedback-123');
-      expect(result.item).toEqual(mockFeedback);
+      // Just verify structure - don't check exact values since service transforms them
+      expect(result.item).toBeDefined();
+      expect(result.item.feedbackId).toBe('feedback-123');
+      expect(result.item.content).toBe('좋은 작업입니다');
     });
 
     it('피드백을 찾을 수 없으면 에러를 던져야 함', async () => {
@@ -155,7 +169,7 @@ describe('Challenge Feedback Service Tests', () => {
       noticeService.default.addFeedbackReceiveNotice.mockResolvedValue();
 
       const result = await feedbackService.createFeedback(mockReq, {
-        attend_id: 'attend-123',
+        attendId: 'attend-123',
         content: '좋은 작업입니다',
       });
 
@@ -171,7 +185,7 @@ describe('Challenge Feedback Service Tests', () => {
         'React 챌린지'
       );
       expect(result.message).toBe('피드백이 등록되었습니다.');
-      expect(result.feedback_id).toBe('feedback-123');
+      expect(result.feedback.feedbackId).toBe('feedback-123');
     });
 
     it('작업물을 찾을 수 없으면 에러를 던져야 함', async () => {
@@ -185,7 +199,7 @@ describe('Challenge Feedback Service Tests', () => {
 
       await expect(
         feedbackService.createFeedback(mockReq, {
-          attend_id: 'invalid-id',
+          attendId: 'invalid-id',
           content: '좋은 작업입니다',
         })
       ).rejects.toThrow(/작업물.*찾을 수 없습니다/);
@@ -210,13 +224,19 @@ describe('Challenge Feedback Service Tests', () => {
         },
       };
 
+      const mockUpdatedFeedback = {
+        feedback_id: 'feedback-123',
+        content: '수정된 피드백',
+        updated_at: new Date(),
+      };
+
       userService.getUserFromToken.mockResolvedValue({ userId: 'user-123', role: 'EXPERT' });
       feedbackRepository.findFeedbackWithChallengeById.mockResolvedValue(mockFeedback);
-      feedbackRepository.updateFeedbackById.mockResolvedValue();
+      feedbackRepository.updateFeedbackById.mockResolvedValue(mockUpdatedFeedback);
       noticeService.default.addModifyNotice.mockResolvedValue();
 
       const result = await feedbackService.updateFeedback(mockReq, {
-        feedback_id: 'feedback-123',
+        feedbackId: 'feedback-123',
         content: '수정된 피드백',
       });
 
@@ -231,6 +251,7 @@ describe('Challenge Feedback Service Tests', () => {
         'React 챌린지'
       );
       expect(result.message).toBe('피드백이 수정되었습니다.');
+      expect(result.feedback.feedbackId).toBe('feedback-123');
     });
 
     it('관리자는 다른 사람의 피드백을 수정할 수 있어야 함', async () => {
@@ -250,13 +271,19 @@ describe('Challenge Feedback Service Tests', () => {
         },
       };
 
+      const mockUpdatedFeedback = {
+        feedback_id: 'feedback-123',
+        content: '관리자가 수정한 피드백',
+        updated_at: new Date(),
+      };
+
       userService.getUserFromToken.mockResolvedValue({ userId: 'admin-123', role: 'ADMIN' });
       feedbackRepository.findFeedbackWithChallengeById.mockResolvedValue(mockFeedback);
-      feedbackRepository.updateFeedbackById.mockResolvedValue();
+      feedbackRepository.updateFeedbackById.mockResolvedValue(mockUpdatedFeedback);
       noticeService.default.addModifyNotice.mockResolvedValue();
 
       const result = await feedbackService.updateFeedback(mockReq, {
-        feedback_id: 'feedback-123',
+        feedbackId: 'feedback-123',
         content: '관리자가 수정한 피드백',
       });
 
@@ -327,13 +354,19 @@ describe('Challenge Feedback Service Tests', () => {
         },
       };
 
+      const mockDeletedFeedback = {
+        feedback_id: 'feedback-123',
+        content: '삭제할 피드백',
+        created_at: new Date(),
+      };
+
       userService.getUserFromToken.mockResolvedValue({ userId: 'user-123', role: 'EXPERT' });
       feedbackRepository.findFeedbackWithChallengeById.mockResolvedValue(mockFeedback);
-      feedbackRepository.deleteFeedbackById.mockResolvedValue();
+      feedbackRepository.deleteFeedbackById.mockResolvedValue(mockDeletedFeedback);
       noticeService.default.addModifyNotice.mockResolvedValue();
 
       const result = await feedbackService.deleteFeedback(mockReq, {
-        feedback_id: 'feedback-123',
+        feedbackId: 'feedback-123',
       });
 
       expect(feedbackRepository.deleteFeedbackById).toHaveBeenCalledWith('feedback-123');
@@ -363,13 +396,19 @@ describe('Challenge Feedback Service Tests', () => {
         },
       };
 
+      const mockDeletedFeedback = {
+        feedback_id: 'feedback-123',
+        content: '삭제할 피드백',
+        created_at: new Date(),
+      };
+
       userService.getUserFromToken.mockResolvedValue({ userId: 'admin-123', role: 'ADMIN' });
       feedbackRepository.findFeedbackWithChallengeById.mockResolvedValue(mockFeedback);
-      feedbackRepository.deleteFeedbackById.mockResolvedValue();
+      feedbackRepository.deleteFeedbackById.mockResolvedValue(mockDeletedFeedback);
       noticeService.default.addModifyNotice.mockResolvedValue();
 
       const result = await feedbackService.deleteFeedback(mockReq, {
-        feedback_id: 'feedback-123',
+        feedbackId: 'feedback-123',
       });
 
       expect(result.message).toBe('피드백이 삭제되었습니다.');

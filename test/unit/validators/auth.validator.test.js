@@ -184,7 +184,7 @@ describe('Auth Validator Tests', () => {
 
         const result = signupSchema.safeParse(invalidData);
         expect(result.success).toBe(false);
-        expect(result.error.issues[0].message).toContain('영문과 숫자');
+        expect(result.error.issues[0].message).toContain('영문 알파벳');
       });
     });
 

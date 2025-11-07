@@ -49,8 +49,12 @@ describe('User Service Tests', () => {
 
       expect(userRepository.findUserProfileByToken).toHaveBeenCalledWith('user-123');
       expect(result).toEqual({
-        nickName: '테스트유저',
-        role: 'USER',
+        user: {
+          userId: 'user-123',
+          email: undefined,
+          nickName: '테스트유저',
+          role: 'USER',
+        },
       });
     });
 
@@ -85,8 +89,12 @@ describe('User Service Tests', () => {
 
       expect(mockJwt.verify).toHaveBeenCalledWith('valid-token', 'test-secret');
       expect(result).toEqual({
-        nickName: '테스트유저',
-        role: 'USER',
+        user: {
+          userId: 'user-123',
+          email: undefined,
+          nickName: '테스트유저',
+          role: 'USER',
+        },
         userId: 'user-123',
       });
     });
@@ -112,8 +120,12 @@ describe('User Service Tests', () => {
 
       expect(mockJwt.verify).toHaveBeenCalledWith('valid-token', 'test-secret');
       expect(result).toEqual({
-        nickName: '테스트유저',
-        role: 'EXPERT',
+        user: {
+          userId: 'user-123',
+          email: undefined,
+          nickName: '테스트유저',
+          role: 'EXPERT',
+        },
         userId: 'user-123',
       });
     });
