@@ -5,7 +5,11 @@ import prisma from "../../config/prisma.config.js";
  */
 export async function findWorksByChallengeId({ challengeId, skip, take }) {
   return prisma.attend.findMany({
-    where: { challenge_id: challengeId, isSave: false },
+    where: {
+      challenge_id: challengeId,
+      isSave: false,
+      is_delete: false
+    },
     select: {
       attend_id: true,
       created_at: true,
@@ -32,7 +36,11 @@ export async function findWorksByChallengeId({ challengeId, skip, take }) {
  */
 export async function countWorksByChallengeId(challengeId) {
   return prisma.attend.count({
-    where: { challenge_id: challengeId, isSave: false },
+    where: {
+      challenge_id: challengeId,
+      isSave: false,
+      is_delete: false
+    },
   });
 }
 
@@ -40,10 +48,11 @@ export async function countWorksByChallengeId(challengeId) {
  * 작업물 상세 조회
  */
 export async function findWorkById(attendId) {
-  return prisma.attend.findUnique({
+  return prisma.attend.findFirst({
     where: {
       attend_id: attendId,
       isSave: false,
+      is_delete: false,
     },
     select: {
       attend_id: true,
@@ -79,6 +88,7 @@ export async function findSavesByUserId({ userId, skip, take }) {
     where: {
       user_id: userId,
       isSave: true,
+      is_delete: false,
     },
     select: {
       attend_id: true,
@@ -104,6 +114,7 @@ export async function countSavesByUserId(userId) {
     where: {
       user_id: userId,
       isSave: true,
+      is_delete: false,
     },
   });
 }
@@ -112,10 +123,11 @@ export async function countSavesByUserId(userId) {
  * 임시 저장 상세 조회
  */
 export async function findSaveById(attendId) {
-  return prisma.attend.findUnique({
+  return prisma.attend.findFirst({
     where: {
       attend_id: attendId,
       isSave: true,
+      is_delete: false,
     },
     select: {
       attend_id: true,
@@ -166,6 +178,7 @@ export async function findExistingWork(challengeId, userId) {
       challenge_id: challengeId,
       user_id: userId,
       isSave: false,
+      is_delete: false,
     },
   });
 }
@@ -181,8 +194,11 @@ export async function createWork(data) {
  * 작업물 조회 (수정/삭제 권한 확인용)
  */
 export async function findWorkWithChallengeById(attendId) {
-  return prisma.attend.findUnique({
-    where: { attend_id: attendId },
+  return prisma.attend.findFirst({
+    where: {
+      attend_id: attendId,
+      is_delete: false
+    },
     include: {
       challenge: {
         select: {
@@ -228,10 +244,17 @@ export async function deleteFeedbacksByAttendId(attendId) {
 }
 
 /**
- * 작업물 삭제
+ * 작업물 삭제 (Soft Delete)
  */
-export async function deleteWorkById(attendId) {
-  return prisma.attend.delete({ where: { attend_id: attendId } });
+export async function deleteWorkById(attendId, deleteReason) {
+  return prisma.attend.update({
+    where: { attend_id: attendId },
+    data: {
+      is_delete: true,
+      delete_reason: deleteReason || null,
+      updated_at: new Date(),
+    },
+  });
 }
 
 /**
