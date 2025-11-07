@@ -8,7 +8,7 @@ GET {{baseUrl}}/api/challenge/inquiry/challenge-detail/53e966b3-76ac-4a14-91e1-2
 Authorization: Bearer {{accessToken}}
 
 ### 번역 챌린지 참여 현황 조회
-GET {{baseUrl}}/api/challenge/inquiry/participate-list/0685b51d-953f-4943-bef7-8eebba911e8e?page=1&pageSize=10
+GET {{baseUrl}}/api/challenge/inquiry/participate-list/49cf88a4-1288-4928-be28-92abb8735bdc?page=1&pageSize=10
 Authorization: Bearer {{accessToken}}
 
 ### 각 회원별 참여하는 챌린지 목록 조회 (만료 안된 챌린지 조회)

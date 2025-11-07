@@ -80,6 +80,7 @@ export async function findParticipatesByChallenge({ challengeId, skip, take }) {
       user: {
         select: {
           nick_name: true,
+          role: true,
         },
       },
       _count: {

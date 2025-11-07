@@ -157,6 +157,7 @@ async function getParticipateList(challengeId, page, pageSize) {
       attendId: participate.attend_id,
       userId: participate.user_id,
       nickName: participate.user.nick_name,
+      role: participate.user.role,
       hearts: participate._count.likes,
       lastSubmittedAt: participate.updated_at,
     }));
