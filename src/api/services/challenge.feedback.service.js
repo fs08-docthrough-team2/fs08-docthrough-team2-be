@@ -30,9 +30,9 @@ export async function getFeedbackList({ attendId, page=1, size=10}) {
     items: setFeedback,
     pagination: {
       page,
-      size,
-      total,
-      totalPage: Math.ceil(total/ size),
+      size: size,
+      totalCount: total,
+      totalPages: Math.ceil(total / size),
     }
   }
 }
