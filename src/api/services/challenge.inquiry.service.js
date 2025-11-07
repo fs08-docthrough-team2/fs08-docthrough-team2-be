@@ -136,6 +136,10 @@ async function getParticipateList(challengeId, page, pageSize) {
       );
     }
 
+    // 참여자 전체 개수 조회
+    const totalCount = await challengeInquiryRepository.countParticipatesByChallenge(challengeId);
+
+
     // 참여자 목록 조회
     const participates = await challengeInquiryRepository.findParticipatesByChallenge({
       challengeId,
@@ -171,6 +175,8 @@ async function getParticipateList(challengeId, page, pageSize) {
       pagination: {
         page: page,
         pageSize: pageSize,
+        totalCount: totalCount,
+        totalPages: Math.ceil(totalCount / pageSize),
       },
     };
   } catch (error) {
@@ -233,6 +239,12 @@ async function getUserParticipateList(userID, title, field, type, status, page, 
         orderBy = { created_at: 'desc' };
     }
 
+    // 전체 개수 조회
+    const totalCount = await challengeInquiryRepository.countUserChallenges({
+      userId: userID,
+      where: whereCondition,
+    });
+
     // 챌린지 목록 조회 - userId를 별도 파라미터로 전달
     const participates = await challengeInquiryRepository.findUserChallenges({
       userId: userID,
@@ -266,6 +278,8 @@ async function getUserParticipateList(userID, title, field, type, status, page, 
       pagination: {
         page: page,
         pageSize: pageSize,
+        totalCount: totalCount,
+        totalPages: Math.ceil(totalCount / pageSize),
       },
     };
   } catch (error) {
@@ -328,6 +342,12 @@ async function getUserCompleteList(userID, title, field, type, status, page, pag
         orderBy = { created_at: 'desc' };
     }
 
+    // 전체 개수 조회
+    const totalCount = await challengeInquiryRepository.countUserChallenges({
+      userId: userID,
+      where: whereCondition,
+    });
+
     // 챌린지 목록 조회 - userId를 별도 파라미터로 전달
     const participates = await challengeInquiryRepository.findUserChallenges({
       userId: userID,
@@ -361,6 +381,8 @@ async function getUserCompleteList(userID, title, field, type, status, page, pag
       pagination: {
         page: page,
         pageSize: pageSize,
+        totalCount: totalCount,
+        totalPages: Math.ceil(totalCount / pageSize),
       },
     };
   } catch (error) {
@@ -427,6 +449,9 @@ async function getUserChallengeDetail(userID, title, field, type, status, page, 
       };
     }
 
+    // 전체 개수 조회
+    const totalCount = await challengeInquiryRepository.countChallenges(whereCondition);
+
     // 챌린지 목록 조회
     const participates = await challengeInquiryRepository.findUserChallengeDetails({
       where: whereCondition,
@@ -461,6 +486,8 @@ async function getUserChallengeDetail(userID, title, field, type, status, page, 
       pagination: {
         page: page,
         pageSize: pageSize,
+        totalCount: totalCount,
+        totalPages: Math.ceil(totalCount / pageSize),
       },
     };
   } catch (error) {
