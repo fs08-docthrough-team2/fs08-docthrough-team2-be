@@ -45,6 +45,7 @@ export async function findChallengeDetailById(challengeId) {
       challenge_id: challengeId,
     },
     select: {
+      user_id: true,
       challenge_id: true,
       title: true,
       content: true,

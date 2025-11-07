@@ -107,6 +107,7 @@ async function getChallengeDetail(challengeId) {
     return {
       success: true,
       data: {
+        userId: challenge.user_id,
         challengeId: challenge.challenge_id,
         title: challenge.title,
         content: challenge.content,
