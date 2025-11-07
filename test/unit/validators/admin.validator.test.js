@@ -297,7 +297,7 @@ describe('Admin Validator Tests', () => {
 
         const result = getUsersQuerySchema.safeParse(invalidData);
         expect(result.success).toBe(false);
-        expect(result.error.issues[0].message).toContain('100 이하');
+        expect(result.error.issues[0].message).toContain('페이지 크기가 너무 큽니다');
       });
 
       it('limit가 1-100 사이면 통과해야 함', () => {
