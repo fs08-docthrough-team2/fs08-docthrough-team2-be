@@ -82,6 +82,7 @@ enum ChallengeStatus {
   REJECTED
   CANCELLED
   PENDING
+  DELETED
 }
 
 enum ChallengeField {
