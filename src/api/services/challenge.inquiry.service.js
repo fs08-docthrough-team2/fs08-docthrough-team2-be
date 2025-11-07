@@ -1,5 +1,5 @@
 import * as challengeInquiryRepository from '../repositories/challenge.inquiry.repository.js';
-import { NotFoundError, UnauthorizedError, BadRequestError, ConflictError } from '../../utils/error.util.js';
+import { NotFoundError, BadRequestError } from '../../utils/error.util.js';
 
 async function getChallengeList({ title, field, type, status, page, pageSize, sort }) {
   try {
@@ -467,6 +467,35 @@ async function getUserChallengeDetail(userID, title, field, type, status, page, 
   }
 }
 
+async function getChallengeStatus(challengeId) {
+  try {
+    // 챌린지 상태 조회
+    const challenge = await challengeInquiryRepository.findChallengeStatusById(challengeId);
+    // 결과를 찾을 수 없는 경우, 에러 던지기
+    if (!challenge) {
+      throw new NotFoundError(
+        `챌린지 ID '${challengeId}'를 찾을 수 없습니다. 챌린지가 존재하지 않거나 삭제되었을 수 있습니다. 챌린지 ID를 확인해주세요.`,
+        'CHALLENGE_NOT_FOUND'
+      );
+    }
+
+    // 결과를 반환
+    return {
+      success: true,
+      data: {
+        challengeId: challengeId,
+        isDeleted: challenge.isDelete,
+        deleteReason: challenge.delete_reason,
+        isApprove: challenge.isApprove,
+        isReject: challenge.isReject,
+        rejectReason: challenge.reject_content,
+      },
+    };
+  } catch (error) {
+    throw error;
+  }
+}
+
 export default {
   getChallengeList,
   getChallengeDetail,
@@ -474,4 +503,5 @@ export default {
   getUserParticipateList,
   getUserCompleteList,
   getUserChallengeDetail,
+  getChallengeStatus,
 };
