@@ -69,7 +69,10 @@ export const logoutController = asyncHandler(async (req, res) => {
   await logout(refreshToken);
 
   // 쿠키 제거
-  res.clearCookie("refreshToken");
+  res.clearCookie("refreshToken", {
+    ...cookiesOption,
+    maxAge: 0,
+  });
 
   res.status(HTTP_STATUS.OK).json(
     successResponse({
