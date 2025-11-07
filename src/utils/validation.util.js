@@ -69,7 +69,7 @@ export function validatePagination(page, pageSize, res) {
 
 /**
  * Enum 값 검증
- * @param {string} value - 검증할 값
+ * @param {string|array} value - 검증할 값 (단일 값 또는 배열)
  * @param {object|array} enumObject - Enum 객체 또는 배열
  * @param {object} res - Express response 객체
  * @param {string} errorCode - 에러 코드
@@ -83,6 +83,17 @@ export function validateEnum(value, enumObject, res, errorCode, errorMessage) {
     ? enumObject
     : Object.values(enumObject);
 
+  // 배열인 경우 모든 값 검증
+  if (Array.isArray(value)) {
+    for (const item of value) {
+      if (!validValues.includes(item)) {
+        return sendValidationError(res, errorCode, errorMessage);
+      }
+    }
+    return true;
+  }
+
+  // 단일 값인 경우
   if (!validValues.includes(value)) {
     return sendValidationError(res, errorCode, errorMessage);
   }

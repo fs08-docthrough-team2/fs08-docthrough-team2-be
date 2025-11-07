@@ -227,11 +227,17 @@ export const getChallengeListQuerySchema = z.object({
       .optional(),
 
     field: z
-      .nativeEnum(ChallengeField)
+      .union([
+        z.nativeEnum(ChallengeField),
+        z.array(z.nativeEnum(ChallengeField))
+      ])
       .optional(),
 
     type: z
-      .nativeEnum(ChallengeType)
+      .union([
+        z.nativeEnum(ChallengeType),
+        z.array(z.nativeEnum(ChallengeType))
+      ])
       .optional(),
 
     status: z
