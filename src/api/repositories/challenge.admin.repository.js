@@ -78,7 +78,7 @@ export async function updateChallengeAdminId(challengeId, adminId) {
   return prisma.challenge.update({
     where: { challenge_id: challengeId },
     data: {
-      admin_id: adminId,
+      adminId: adminId,
     },
   });
 }
