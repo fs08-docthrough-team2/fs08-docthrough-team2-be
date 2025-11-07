@@ -65,6 +65,19 @@ export async function findChallengeDetailById(challengeId) {
 }
 
 /**
+ * 챌린지 참여자 수 조회
+ */
+export async function countParticipatesByChallenge(challengeId) {
+  return prisma.attend.count({
+    where: {
+      challenge_id: challengeId,
+      isSave: false,
+      is_delete: false,
+    },
+  });
+}
+
+/**
  * 챌린지 참여자 목록 조회 (좋아요 수 포함)
  */
 export async function findParticipatesByChallenge({ challengeId, skip, take }) {
@@ -72,6 +85,7 @@ export async function findParticipatesByChallenge({ challengeId, skip, take }) {
     where: {
       challenge_id: challengeId,
       isSave: false,
+      is_delete: false,
     },
     select: {
       attend_id: true,
@@ -100,6 +114,24 @@ export async function findParticipatesByChallenge({ challengeId, skip, take }) {
 }
 
 /**
+ * 사용자 참여 챌린지 개수 조회
+ */
+export async function countUserChallenges({ userId, where }) {
+  return prisma.challenge.count({
+    where: {
+      ...where,
+      attends: {
+        some: {
+          user_id: userId,
+          isSave: false,  // 임시 저장이 아닌 제출한 작업물만
+          is_delete: false,
+        }
+      }
+    },
+  });
+}
+
+/**
  * 사용자 참여 챌린지 목록 조회
  */
 export async function findUserChallenges({ userId, where, skip, take, orderBy }) {
@@ -110,6 +142,7 @@ export async function findUserChallenges({ userId, where, skip, take, orderBy })
         some: {
           user_id: userId,
           isSave: false,  // 임시 저장이 아닌 제출한 작업물만
+          is_delete: false,
         }
       }
     },
@@ -188,6 +221,10 @@ export default {
   countChallenges,
   findChallengesWithAttendCount,
   findChallengeDetailById,
+  countParticipatesByChallenge,
   findParticipatesByChallenge,
+  countUserChallenges,
   findUserChallenges,
+  findUserChallengeDetails,
+  findChallengeStatusById,
 };
