@@ -9,7 +9,10 @@
  *     responses:
  *       302:
  *         description: Google 로그인 페이지로 리다이렉트
- *
+ */
+
+/**
+ * @swagger
  * /api/auth/google/callback:
  *   get:
  *     summary: Google 로그인 콜백 (Swagger에서는 실행되지 않습니다)
