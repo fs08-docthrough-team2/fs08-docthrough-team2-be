@@ -13,6 +13,7 @@ import tokenRoutes from "./api/routes/token.route.js"
 import adminRoutes from "./api/routes/admin.route.js"
 import userRoutes from "./api/routes/user.route.js"
 import googleRoutes from "./api/routes/auth.google.route.js"
+import kakaoRoutes from "./api/routes/auth.kakao.route.js"
 
 import challengeAdminRoute from './api/routes/challenge.admin.route.js';
 import challengeInquiryRoute from './api/routes/challenge.inquiry.route.js';
@@ -29,7 +30,9 @@ import cors from './config/cors.config.js';
 import prisma from './config/prisma.config.js';
 import { startScheduler } from './config/cron.config.js';
 import passport from "passport";
+
 import "./config/passport.config.js";
+import "./config/passport.kakao.config.js"
 
 // 환경 변수 설정
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -71,6 +74,7 @@ app.use("/api/token", tokenRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/auth", googleRoutes);
+app.use("/api/auth", kakaoRoutes);
 
 // Swagger 문서
 swaggerDocs(app);
