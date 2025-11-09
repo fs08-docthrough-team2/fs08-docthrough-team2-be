@@ -1,5 +1,5 @@
 import * as challengeAdminRepository from '../repositories/challenge.admin.repository.js';
-import { NotFoundError, UnauthorizedError, BadRequestError, ConflictError } from '../../utils/error.util.js';
+import { NotFoundError, BadRequestError } from '../../utils/error.util.js';
 import noticeService from './notice.service.js';
 
 async function getChallengeList(searchKeyword, status, page, pageSize, sort) {
@@ -124,6 +124,7 @@ async function getChallengeDetail(challengeId) {
         content: challengeDetail.content,
         deadline: challengeDetail.deadline,
         capacity: challengeDetail.capacity,
+        rejectReason: challengeDetail.reject_content,
         source: challengeDetail.source,
       },
     };

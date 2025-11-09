@@ -110,6 +110,7 @@ model Attend {
   challenge Challenge  @relation(fields: [challenge_id], references: [challenge_id])
   feedbacks Feedback[]
   likes     Like[]
+  notices   Notice[]
 }
 
 model Feedback {
@@ -139,13 +140,15 @@ model Like {
 model Notice {
   notice_id  String     @id @default(uuid())
   user_id    String
+  attend_id  String?
   type       NoticeType
   content    String
   isRead     Boolean    @default(false)
   created_at DateTime   @default(now())
   updated_at DateTime   @updatedAt
 
-  user User @relation(fields: [user_id], references: [user_id])
+  user   User    @relation(fields: [user_id], references: [user_id])
+  attend Attend? @relation(fields: [attend_id], references: [attend_id])
 }
 
 enum NoticeType {

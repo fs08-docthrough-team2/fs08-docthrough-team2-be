@@ -48,6 +48,7 @@ CREATE TABLE "Challenge" (
     "isDelete" BOOLEAN NOT NULL DEFAULT false,
     "delete_reason" TEXT,
     "isClose" BOOLEAN NOT NULL DEFAULT false,
+    "adminId" TEXT,
     "isReject" BOOLEAN NOT NULL DEFAULT false,
     "reject_content" TEXT,
     "isApprove" BOOLEAN NOT NULL DEFAULT false,
@@ -65,6 +66,8 @@ CREATE TABLE "Attend" (
     "title" TEXT,
     "work_item" TEXT NOT NULL,
     "isSave" BOOLEAN NOT NULL DEFAULT false,
+    "is_delete" BOOLEAN NOT NULL DEFAULT false,
+    "delete_reason" TEXT,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
 
@@ -99,6 +102,7 @@ CREATE TABLE "Like" (
 CREATE TABLE "Notice" (
     "notice_id" TEXT NOT NULL,
     "user_id" TEXT NOT NULL,
+    "attend_id" TEXT,
     "type" "NoticeType" NOT NULL,
     "content" TEXT NOT NULL,
     "isRead" BOOLEAN NOT NULL DEFAULT false,
@@ -137,3 +141,6 @@ ALTER TABLE "Like" ADD CONSTRAINT "Like_attend_id_fkey" FOREIGN KEY ("attend_id"
 
 -- AddForeignKey
 ALTER TABLE "Notice" ADD CONSTRAINT "Notice_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User"("user_id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Notice" ADD CONSTRAINT "Notice_attend_id_fkey" FOREIGN KEY ("attend_id") REFERENCES "Attend"("attend_id") ON DELETE SET NULL ON UPDATE CASCADE;

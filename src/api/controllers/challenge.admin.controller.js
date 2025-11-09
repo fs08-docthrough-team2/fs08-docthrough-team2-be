@@ -83,11 +83,11 @@ const approveChallengeInput = asyncHandler(async (req, res) => {
 const rejectChallengeInput = asyncHandler(async (req, res) => {
   // 입력값 불러오기
   const challengeID = req.params.challengeId;
-  const userID = req.auth?.userId;
+  const adminID = req.auth?.userId;
   const { reject_comment } = req.body;
 
   // 입력값 검증
-  let valid = validateUserId(userID, res);
+  let valid = validateUserId(adminID, res);
   if (valid !== true) return valid;
 
   valid = validateChallengeId(challengeID, res);
@@ -101,9 +101,9 @@ const rejectChallengeInput = asyncHandler(async (req, res) => {
   );
   if (valid !== true) return valid;
 
-  // 서비스 호출
+  // 서비스 호출 - 매개변수 순서 수정: challengeID, adminID, reject_comment
   const response = await challengeAdminServices.rejectChallenge(
-    challengeID, reject_comment, userID
+    challengeID, adminID, reject_comment
   );
 
   // 호출 결과 반환
