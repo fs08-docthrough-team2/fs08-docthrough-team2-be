@@ -174,6 +174,7 @@ describe('Notice Repository Tests', () => {
           content: 'Notification 1',
           isRead: false,
           created_at: new Date('2025-01-02'),
+          attend: null,
         },
         {
           notice_id: 'notice-2',
@@ -181,6 +182,12 @@ describe('Notice Repository Tests', () => {
           content: 'Notification 2',
           isRead: true,
           created_at: new Date('2025-01-01'),
+          attend: {
+            attend_id: 'attend-123',
+            title: 'Test Work',
+            is_delete: false,
+            delete_reason: null,
+          },
         },
       ];
 
@@ -191,6 +198,16 @@ describe('Notice Repository Tests', () => {
       expect(mockPrisma.notice.findMany).toHaveBeenCalledTimes(1);
       expect(mockPrisma.notice.findMany).toHaveBeenCalledWith({
         where: { user_id: 'user-123' },
+        include: {
+          attend: {
+            select: {
+              attend_id: true,
+              delete_reason: true,
+              is_delete: true,
+              title: true,
+            }
+          }
+        },
         orderBy: { created_at: 'desc' },
         skip: 0,
         take: 10,

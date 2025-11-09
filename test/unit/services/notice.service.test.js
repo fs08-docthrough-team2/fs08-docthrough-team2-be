@@ -302,4 +302,65 @@ describe('Notice Service Tests', () => {
       expect(capturedContent).toContain('거절');
     });
   });
+
+  describe('addAdminWorkUpdateNotice', () => {
+    it('관리자 작업물 업데이트 알림을 생성해야 함', async () => {
+      noticeRepository.createNotice.mockResolvedValue({});
+
+      await noticeService.addAdminWorkUpdateNotice(
+        '삭제',
+        'user-123',
+        '테스트 챌린지',
+        '부적절한 내용입니다',
+        'attend-456'
+      );
+
+      expect(noticeRepository.createNotice).toHaveBeenCalledWith(
+        expect.objectContaining({
+          user_id: 'user-123',
+          attend_id: 'attend-456',
+          type: 'APPROVAL',
+          content: expect.stringContaining('어드민이 작업물을'),
+        })
+      );
+    });
+
+    it('attend_id가 null일 때도 정상 동작해야 함', async () => {
+      noticeRepository.createNotice.mockResolvedValue({});
+
+      await noticeService.addAdminWorkUpdateNotice(
+        '수정',
+        'user-123',
+        '테스트 챌린지',
+        '내용을 수정했습니다'
+      );
+
+      expect(noticeRepository.createNotice).toHaveBeenCalledWith(
+        expect.objectContaining({
+          user_id: 'user-123',
+          attend_id: null,
+          type: 'APPROVAL',
+        })
+      );
+    });
+
+    it('알림 내용에 사유가 포함되어야 함', async () => {
+      let capturedContent = '';
+      noticeRepository.createNotice.mockImplementation((data) => {
+        capturedContent = data.content;
+        return Promise.resolve({});
+      });
+
+      await noticeService.addAdminWorkUpdateNotice(
+        '삭제',
+        'user-123',
+        '테스트 챌린지',
+        '저작권 위반',
+        'attend-789'
+      );
+
+      expect(capturedContent).toContain('저작권 위반');
+      expect(capturedContent).toContain('삭제');
+    });
+  });
 });

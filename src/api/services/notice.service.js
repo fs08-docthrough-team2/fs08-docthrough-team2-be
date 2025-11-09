@@ -177,6 +177,27 @@ async function addAdminFeedbackUpdateNotice(mode = undefined, userID, challengeT
   return null;
 }
 
+// 어드민이 작업물을 수정/삭제했을 때, 작성자에게 사유가 전송되는 알림
+async function addAdminWorkUpdateNotice(mode = undefined, userID, challengeTitle, reason, attendId = null) {
+  await noticeRepository.createNotice({
+    user_id: userID,
+    attend_id: attendId,
+    type: TYPE_ADMIN,
+    content:
+      '어드민이 작업물을 ' +
+      mode +
+      '했습니다. 제목: ' +
+      challengeTitle +
+      ', 사유: ' +
+      reason +
+      ', 변경일: ' +
+      CURRENT_DATE(),
+    isRead: false,
+  });
+
+  return null;
+}
+
 // 알림 조회 함수
 async function getUserNotice(userID, page, pageSize) {
   const skip = (page - 1) * pageSize;
@@ -205,5 +226,6 @@ export default {
   addMarkNoticeAsRead,
   addAdminChallengeUpdateNotice,
   addAdminFeedbackUpdateNotice,
+  addAdminWorkUpdateNotice,
   getUserNotice,
 };
