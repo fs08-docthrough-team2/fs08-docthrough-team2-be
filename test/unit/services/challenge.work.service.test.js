@@ -31,6 +31,7 @@ jest.unstable_mockModule('../../../src/api/services/notice.service.js', () => ({
   default: {
     addWorkSubmitNotice: jest.fn(),
     addModifyNotice: jest.fn(),
+    addAdminWorkUpdateNotice: jest.fn(),
   },
 }));
 
@@ -81,7 +82,7 @@ describe('Challenge Work Service Tests', () => {
       expect(result.pagination).toEqual({
         page: 1,
         size: 10,
-        total: 2,
+        totalCount: 2,
         totalPages: 1,
       });
     });
@@ -540,7 +541,7 @@ describe('Challenge Work Service Tests', () => {
       userService.getUserFromToken.mockResolvedValue({ userId: 'user-123', role: 'USER' });
       workRepository.findWorkWithChallengeById.mockResolvedValue(mockWork);
       workRepository.updateWorkById.mockResolvedValue();
-      noticeService.default.addModifyNotice.mockResolvedValue();
+      noticeService.default.addAdminWorkUpdateNotice.mockResolvedValue();
 
       await workService.updateWork(mockReq, 'attend-123', {
         title: '수정된 제목',
@@ -551,11 +552,12 @@ describe('Challenge Work Service Tests', () => {
         title: '수정된 제목',
         work_item: '수정된 내용',
       });
-      expect(noticeService.default.addModifyNotice).toHaveBeenCalledWith(
-        '작업물',
+      expect(noticeService.default.addAdminWorkUpdateNotice).toHaveBeenCalledWith(
         '업데이트',
         'user-123',
-        'React 챌린지'
+        'React 챌린지',
+        '',
+        'attend-123'
       );
     });
 
@@ -575,7 +577,7 @@ describe('Challenge Work Service Tests', () => {
       userService.getUserFromToken.mockResolvedValue({ userId: 'admin-123', role: 'ADMIN' });
       workRepository.findWorkWithChallengeById.mockResolvedValue(mockWork);
       workRepository.updateWorkById.mockResolvedValue();
-      noticeService.default.addModifyNotice.mockResolvedValue();
+      noticeService.default.addAdminWorkUpdateNotice.mockResolvedValue();
 
       await workService.updateWork(mockReq, 'attend-123', {
         title: '수정된 제목',
@@ -583,6 +585,13 @@ describe('Challenge Work Service Tests', () => {
       });
 
       expect(workRepository.updateWorkById).toHaveBeenCalled();
+      expect(noticeService.default.addAdminWorkUpdateNotice).toHaveBeenCalledWith(
+        '업데이트',
+        'other-user-123',
+        'React 챌린지',
+        '',
+        'attend-123'
+      );
     });
 
     it('작업물을 찾을 수 없으면 에러를 던져야 함', async () => {
@@ -668,18 +677,20 @@ describe('Challenge Work Service Tests', () => {
       workRepository.deleteLikesByAttendId.mockResolvedValue();
       workRepository.deleteFeedbacksByAttendId.mockResolvedValue();
       workRepository.deleteWorkById.mockResolvedValue();
-      noticeService.default.addModifyNotice.mockResolvedValue();
+      noticeService.default.addAdminWorkUpdateNotice.mockResolvedValue();
 
-      const result = await workService.deleteWork(mockReq, 'attend-123');
+      const deleteReason = '내용을 수정하기 위해 삭제합니다.';
+      const result = await workService.deleteWork(mockReq, 'attend-123', deleteReason);
 
       expect(workRepository.deleteLikesByAttendId).toHaveBeenCalledWith('attend-123');
       expect(workRepository.deleteFeedbacksByAttendId).toHaveBeenCalledWith('attend-123');
-      expect(workRepository.deleteWorkById).toHaveBeenCalledWith('attend-123');
-      expect(noticeService.default.addModifyNotice).toHaveBeenCalledWith(
-        '작업물',
+      expect(workRepository.deleteWorkById).toHaveBeenCalledWith('attend-123', deleteReason);
+      expect(noticeService.default.addAdminWorkUpdateNotice).toHaveBeenCalledWith(
         '삭제',
         'user-123',
-        'React 챌린지'
+        'React 챌린지',
+        deleteReason,
+        'attend-123'
       );
       expect(result.message).toBe('삭제 완료 ');
     });
@@ -702,11 +713,20 @@ describe('Challenge Work Service Tests', () => {
       workRepository.deleteLikesByAttendId.mockResolvedValue();
       workRepository.deleteFeedbacksByAttendId.mockResolvedValue();
       workRepository.deleteWorkById.mockResolvedValue();
-      noticeService.default.addModifyNotice.mockResolvedValue();
+      noticeService.default.addAdminWorkUpdateNotice.mockResolvedValue();
 
-      const result = await workService.deleteWork(mockReq, 'attend-123');
+      const deleteReason = '부적절한 내용이 포함되어 있습니다.';
+      const result = await workService.deleteWork(mockReq, 'attend-123', deleteReason);
 
       expect(result.message).toBe('삭제 완료 ');
+      expect(workRepository.deleteWorkById).toHaveBeenCalledWith('attend-123', deleteReason);
+      expect(noticeService.default.addAdminWorkUpdateNotice).toHaveBeenCalledWith(
+        '삭제',
+        'other-user-123',
+        'React 챌린지',
+        deleteReason,
+        'attend-123'
+      );
     });
 
     it('작업물을 찾을 수 없으면 에러를 던져야 함', async () => {
