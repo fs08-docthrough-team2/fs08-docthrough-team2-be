@@ -19,15 +19,27 @@ jest.unstable_mockModule('../../../src/api/repositories/user.repository.js', () 
   findUserProfileByToken: jest.fn(),
   updateUser: jest.fn(),
   deleteUser: jest.fn(),
+  findUserProfileRepository: jest.fn(),
+  getUserWorkIdRepository: jest.fn(),
 }));
 
 jest.unstable_mockModule('../../../src/api/repositories/token.repository.js', () => ({
   updateRefreshToken: jest.fn(),
 }));
 
+// Mock prisma
+jest.unstable_mockModule('../../../src/config/prisma.config.js', () => ({
+  default: {
+    challenge: {
+      findUnique: jest.fn(),
+    },
+  },
+}));
+
 const userService = await import('../../../src/api/services/user.service.js');
 const userRepository = await import('../../../src/api/repositories/user.repository.js');
 const tokenRepository = await import('../../../src/api/repositories/token.repository.js');
+const prisma = await import('../../../src/config/prisma.config.js');
 
 describe('User Service Tests', () => {
   beforeEach(() => {
@@ -89,13 +101,10 @@ describe('User Service Tests', () => {
 
       expect(mockJwt.verify).toHaveBeenCalledWith('valid-token', 'test-secret');
       expect(result).toEqual({
-        user: {
-          userId: 'user-123',
-          email: undefined,
-          nickName: '테스트유저',
-          role: 'USER',
-        },
         userId: 'user-123',
+        email: undefined,
+        nickName: '테스트유저',
+        role: 'USER',
       });
     });
 
@@ -120,13 +129,10 @@ describe('User Service Tests', () => {
 
       expect(mockJwt.verify).toHaveBeenCalledWith('valid-token', 'test-secret');
       expect(result).toEqual({
-        user: {
-          userId: 'user-123',
-          email: undefined,
-          nickName: '테스트유저',
-          role: 'EXPERT',
-        },
         userId: 'user-123',
+        email: undefined,
+        nickName: '테스트유저',
+        role: 'EXPERT',
       });
     });
 
@@ -344,6 +350,83 @@ describe('User Service Tests', () => {
       await expect(userService.deleteUserProfile(mockReq)).rejects.toThrow(
         /이미 탈퇴.*계정입니다/
       );
+    });
+  });
+
+  describe('getUserprofile', () => {
+    it('사용자 프로필을 challengeCount와 workCount와 함께 조회해야 함', async () => {
+      const mockUserData = {
+        email: 'test@example.com',
+        nick_name: '테스트유저',
+        role: 'USER',
+        challengeCount: 5,
+        workCount: 10,
+      };
+
+      userRepository.findUserProfileRepository.mockResolvedValue(mockUserData);
+
+      const result = await userService.getUserprofile({ userId: 'user-123' });
+
+      expect(userRepository.findUserProfileRepository).toHaveBeenCalledWith('user-123');
+      expect(result).toEqual({
+        userId: 'user-123',
+        email: 'test@example.com',
+        nickName: '테스트유저',
+        role: 'USER',
+        challengeCount: 5,
+        workCount: 10,
+      });
+    });
+
+    it('사용자를 찾을 수 없으면 에러를 던져야 함', async () => {
+      userRepository.findUserProfileRepository.mockResolvedValue(null);
+
+      await expect(
+        userService.getUserprofile({ userId: 'invalid-id' })
+      ).rejects.toThrow(/사용자.*찾을 수 없습니다/);
+    });
+  });
+
+  describe('getUserWorkId', () => {
+    it('본인의 챌린지에 대한 출석 ID 목록을 is_delete와 함께 조회해야 함', async () => {
+      const userId = 'user-123';
+      const challengeId = 'challenge-456';
+
+      prisma.default.challenge.findUnique.mockResolvedValue({
+        user_id: userId,
+      });
+
+      userRepository.getUserWorkIdRepository.mockResolvedValue([
+        { attend_id: 'attend-1', is_delete: false },
+        { attend_id: 'attend-2', is_delete: false },
+        { attend_id: 'attend-3', is_delete: true },
+      ]);
+
+      const result = await userService.getUserWorkId(userId, challengeId);
+
+      expect(prisma.default.challenge.findUnique).toHaveBeenCalledWith({
+        where: { challenge_id: challengeId },
+        select: { user_id: true },
+      });
+      expect(userRepository.getUserWorkIdRepository).toHaveBeenCalledWith(userId, challengeId);
+      expect(result).toEqual([
+        { attend_id: 'attend-1', is_delete: false },
+        { attend_id: 'attend-2', is_delete: false },
+        { attend_id: 'attend-3', is_delete: true },
+      ]);
+    });
+
+    it('다른 사용자의 챌린지에 대한 출석 ID 조회 시 에러를 던져야 함', async () => {
+      const userId = 'user-123';
+      const challengeId = 'challenge-456';
+
+      prisma.default.challenge.findUnique.mockResolvedValue({
+        user_id: 'different-user-id',
+      });
+
+      await expect(
+        userService.getUserWorkId(userId, challengeId)
+      ).rejects.toThrow(/본인의 챌린지.*조회할 수 있습니다/);
     });
   });
 });
