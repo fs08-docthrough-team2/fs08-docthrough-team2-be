@@ -7,6 +7,7 @@ jest.unstable_mockModule('../../../src/api/repositories/challenge.admin.reposito
   findChallengeById: jest.fn(),
   approveChallengeById: jest.fn(),
   rejectChallengeById: jest.fn(),
+  updateChallengeAdminId: jest.fn(),
 }));
 
 // Notice Service Mock
@@ -221,6 +222,7 @@ describe('Challenge Admin Service Tests', () => {
         content: '상세 내용',
         deadline: new Date('2025-12-31'),
         capacity: 50,
+        reject_content: null,
         source: 'https://example.com',
       };
 
@@ -231,6 +233,7 @@ describe('Challenge Admin Service Tests', () => {
       expect(result.success).toBe(true);
       expect(result.data.no).toBe(1);
       expect(result.data.title).toBe('React 챌린지');
+      expect(result.data.rejectReason).toBe(null);
     });
 
     it('존재하지 않는 챌린지는 에러를 던져야 함', async () => {
@@ -252,14 +255,19 @@ describe('Challenge Admin Service Tests', () => {
       };
 
       challengeAdminRepository.approveChallengeById.mockResolvedValue(mockChallenge);
+      challengeAdminRepository.updateChallengeAdminId.mockResolvedValue({});
 
-      const result = await challengeAdminService.approveChallenge('challenge-1');
+      const result = await challengeAdminService.approveChallenge('challenge-1', 'admin-456');
 
       expect(result.success).toBe(true);
       expect(result.message).toBe('챌린지가 승인되었습니다.');
+      expect(challengeAdminRepository.updateChallengeAdminId).toHaveBeenCalledWith(
+        'challenge-1',
+        'admin-456'
+      );
       expect(noticeService.default.addChallengeStateNotice).toHaveBeenCalledWith(
         '승인',
-        'user-123',
+        'admin-456',
         'React 챌린지'
       );
     });
@@ -275,17 +283,23 @@ describe('Challenge Admin Service Tests', () => {
       };
 
       challengeAdminRepository.rejectChallengeById.mockResolvedValue(mockChallenge);
+      challengeAdminRepository.updateChallengeAdminId.mockResolvedValue({});
 
       const result = await challengeAdminService.rejectChallenge(
         'challenge-1',
+        'admin-456',
         '중복된 내용입니다'
       );
 
       expect(result.success).toBe(true);
       expect(result.message).toBe('챌린지가 거절되었습니다.');
+      expect(challengeAdminRepository.updateChallengeAdminId).toHaveBeenCalledWith(
+        'challenge-1',
+        'admin-456'
+      );
       expect(noticeService.default.addAdminChallengeUpdateNotice).toHaveBeenCalledWith(
         '거절',
-        'user-123',
+        'admin-456',
         'React 챌린지',
         '중복된 내용입니다'
       );

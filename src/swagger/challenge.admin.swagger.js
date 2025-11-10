@@ -113,6 +113,11 @@
  *           format: uri
  *           description: 출처 URL
  *           example: https://docs.python.org/3/tutorial/index.html
+ *         rejectReason:
+ *           type: string
+ *           nullable: true
+ *           description: 거절 사유 (거절된 경우에만 존재)
+ *           example: null
  *
  *     ChallengeDetail:
  *       type: object
