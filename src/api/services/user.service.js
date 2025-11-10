@@ -4,11 +4,13 @@ import {
   updateUser,
   deleteUser,
   findUserProfileRepository,
-} from "../repositories/user.repository.js";
+  getUserWorkIdRepository,
+} from '../repositories/user.repository.js';
 import argon2 from "argon2";
 import jwt from "jsonwebtoken";
 import { updateRefreshToken } from "../repositories/token.repository.js";
 import { NotFoundError, UnauthorizedError, BadRequestError, ConflictError } from '../../utils/error.util.js';
+import prisma from '../../config/prisma.config.js';
 
 export async function getUserProfileFromToken(tokenPayload){
   const { userId } = tokenPayload;
@@ -124,4 +126,20 @@ export async function getUserprofile({ userId }){
     workCount: userData.workCount,
   }
   return data;
+}
+
+export async function getUserWorkId(userId, challengeId){
+  // 다른 유저가 WorkId를 조회하지 못하도록 권한 검사
+  const DBuserId = await prisma.challenge.findUnique({
+    where: { challenge_id: challengeId },
+    select: { user_id: true },
+  })
+  if (userId !== DBuserId.user_id) {
+    throw new Error(
+      "본인의 챌린지에 대한 출석 기록만 조회할 수 있습니다.",
+      'FORBIDDEN_ACCESS'
+    )
+  }
+  const workIdData = await getUserWorkIdRepository(userId, challengeId);
+  return workIdData;
 }

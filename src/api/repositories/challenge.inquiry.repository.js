@@ -17,9 +17,11 @@ export async function findChallengesWithAttendCount({ where, skip, take, orderBy
     select: {
       challenge_id: true,
       title: true,
+      content: true,
       field: true,
       type: true,
       status: true,
+      source: true,
       created_at: true,
       deadline: true,
       capacity: true,

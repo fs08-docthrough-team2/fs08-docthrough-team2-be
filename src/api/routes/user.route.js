@@ -5,7 +5,8 @@ import {
   getMyInfoController,
   updateUserProfileController,
   deleteUserProfileController,
-  getUserprofileController
+  getUserprofileController,
+  getUserWorkIdController
 } from '../controllers/user.controller.js';
 import { updateUserProfileSchema } from '../../validators/user.validator.js';
 
@@ -21,5 +22,7 @@ router.patch("/my", auth.verifyAccessToken, validate(updateUserProfileSchema), u
 router.delete("/my", auth.verifyAccessToken, deleteUserProfileController);
 
 router.get('/profile', auth.verifyAccessToken, getUserprofileController)
+
+router.get('/workId/:challengeId', auth.verifyAccessToken, getUserWorkIdController)
 
 export default router;
