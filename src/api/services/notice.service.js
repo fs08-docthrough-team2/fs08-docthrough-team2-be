@@ -199,21 +199,12 @@ async function addAdminWorkUpdateNotice(mode = undefined, userID, challengeTitle
 }
 
 // 알림 조회 함수
-async function getUserNotice(userID, page, pageSize) {
-  const skip = (page - 1) * pageSize;
-
-  const totalCount = await noticeRepository.countUserNotices(userID);
-  const notices = await noticeRepository.findUserNotices(userID, skip, pageSize);
+async function getUserNotice(userID) {
+  const notices = await noticeRepository.findUserNotices(userID);
 
   return {
     success: true,
     data: notices,
-    pagination: {
-      page: page,
-      pageSize: pageSize,
-      totalCount: totalCount,
-      totalPages: Math.ceil(totalCount / pageSize),
-    },
   };
 }
 
