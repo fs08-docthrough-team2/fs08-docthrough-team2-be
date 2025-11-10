@@ -25,7 +25,12 @@ export async function findChallengesWithAttendCount({ where, skip, take, orderBy
       capacity: true,
       _count: {
         select: {
-          attends: true,
+          attends: {
+            where: {
+              isSave: false,
+              is_delete: false,
+            },
+          },
         },
       },
     },
@@ -57,7 +62,12 @@ export async function findChallengeDetailById(challengeId) {
       source: true,
       _count: {
         select: {
-          attends: true,
+          attends: {
+            where: {
+              isSave: false,
+              is_delete: false,
+            },
+          },
         },
       },
     },
@@ -158,8 +168,13 @@ export async function findUserChallenges({ userId, where, skip, take, orderBy })
       capacity: true,
       _count: {
         select: {
-          attends: true,
-        }
+          attends: {
+            where: {
+              isSave: false,
+              is_delete: false,
+            },
+          },
+        },
       },
       created_at: true,
     },
@@ -189,8 +204,13 @@ export async function findUserChallengeDetails({ where, skip, take, orderBy }) {
       reject_content: true,
       _count: {
         select: {
-          attends: true,
-        }
+          attends: {
+            where: {
+              isSave: false,
+              is_delete: false,
+            },
+          },
+        },
       },
       created_at: true,
     },
