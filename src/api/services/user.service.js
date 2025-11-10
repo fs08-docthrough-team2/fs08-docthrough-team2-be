@@ -3,6 +3,7 @@ import {
   findUserProfileByToken,
   updateUser,
   deleteUser,
+  findUserProfileRepository,
 } from "../repositories/user.repository.js";
 import argon2 from "argon2";
 import jwt from "jsonwebtoken";
@@ -101,4 +102,25 @@ export async function deleteUserProfile(req){
   await updateRefreshToken(userId, "");
   
   return { message: "회원 탈퇴"};
+}
+
+export async function getUserprofile({ userId }){
+  // userId로 사용자 정보 조회: 이메일, 닉네임, 역할
+  const userData =  await findUserProfileRepository(userId);
+  if(!userData) {
+    throw new NotFoundError(
+      `사용자 ID '${userId}'에 해당하는 프로필을 찾을 수 없습니다. 사용자가 존재하지 않거나 삭제되었을 수 있습니다.`,
+      'USER_NOT_FOUND'
+    );
+  }
+
+  const data ={
+    userId,
+    email: userData.email,
+    nickName: userData.nick_name,
+    role: userData.role,
+    challengeCount: userData.challengeCount,
+    workCount: userData.workCount,
+  }
+  return data;
 }
