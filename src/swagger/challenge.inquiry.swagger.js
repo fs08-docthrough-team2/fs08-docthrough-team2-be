@@ -513,8 +513,8 @@
  *   get:
  *     tags:
  *       - 챌린지 조회
- *     summary: 로그인한 회원의 참여 중인 챌린지 목록 조회
- *     description: 로그인한 회원이 참여하고 있는 챌린지 목록을 필터링 옵션과 함께 조회합니다. JWT 토큰의 userId를 사용합니다.
+ *     summary: 로그인한 회원이 생성한 진행 중인 챌린지 목록 조회
+ *     description: 로그인한 회원이 생성(신청)한 챌린지 중 마감 기한이 지나지 않은 챌린지 목록을 필터링 옵션과 함께 조회합니다. JWT 토큰의 userId를 사용하여 해당 회원이 작성한 챌린지만 조회합니다.
  *     security:
  *       - BearerAuth: []
  *     parameters:

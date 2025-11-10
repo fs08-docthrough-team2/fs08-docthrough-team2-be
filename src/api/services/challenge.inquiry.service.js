@@ -187,11 +187,11 @@ async function getParticipateList(challengeId, page, pageSize) {
 
 async function getUserParticipateList(userID, title, field, type, status, page, pageSize, sort) {
   try {
-    // Where 조건 설정 - 사용자가 참여한 챌린지 찾기
+    // Where 조건 설정 - 사용자가 생성한 챌린지 찾기
     const whereCondition = {
+      user_id: userID,  // 사용자가 생성한 챌린지
       isDelete: false,
       deadline: { gt: new Date() },
-      status: 'APPROVED', // 기본적으로 승인된 챌린지만 조회
     };
     if (field) {
       whereCondition.field = Array.isArray(field) ? { in: field } : field;
@@ -242,14 +242,10 @@ async function getUserParticipateList(userID, title, field, type, status, page, 
     }
 
     // 전체 개수 조회
-    const totalCount = await challengeInquiryRepository.countUserChallenges({
-      userId: userID,
-      where: whereCondition,
-    });
+    const totalCount = await challengeInquiryRepository.countChallenges(whereCondition);
 
-    // 챌린지 목록 조회 - userId를 별도 파라미터로 전달
-    const participates = await challengeInquiryRepository.findUserChallenges({
-      userId: userID,
+    // 챌린지 목록 조회
+    const participates = await challengeInquiryRepository.findChallengesWithAttendCount({
       where: whereCondition,
       skip: (page - 1) * pageSize,
       take: pageSize,
@@ -295,7 +291,6 @@ async function getUserCompleteList(userID, title, field, type, status, page, pag
     const whereCondition = {
       isDelete: false,
       deadline: { lte: new Date() },
-      status: 'APPROVED', // 기본적으로 승인된 챌린지만 조회
     };
     if (field) {
       whereCondition.field = Array.isArray(field) ? { in: field } : field;
@@ -426,6 +421,15 @@ async function getUserChallengeDetail(userID, title, field, type, status, page, 
     if (userID) {
       whereCondition.user_id = userID;
     }
+    if (title) {
+      whereCondition.title = {
+        contains: title.trim(),
+        mode: 'insensitive',
+      };
+    }
+
+    // 전체 개수 조회
+    const totalCount = await challengeInquiryRepository.countChallenges(whereCondition);
 
     // 정렬 조건 설정
     let orderBy;
@@ -445,15 +449,6 @@ async function getUserChallengeDetail(userID, title, field, type, status, page, 
       default:
         orderBy = { created_at: 'desc' };
     }
-    if (title) {
-      whereCondition.title = {
-        contains: title.trim(),
-        mode: 'insensitive',
-      };
-    }
-
-    // 전체 개수 조회
-    const totalCount = await challengeInquiryRepository.countChallenges(whereCondition);
 
     // 챌린지 목록 조회
     const participates = await challengeInquiryRepository.findUserChallengeDetails({

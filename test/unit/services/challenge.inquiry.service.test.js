@@ -3,10 +3,12 @@ import { describe, it, expect, jest, beforeEach } from '@jest/globals';
 // Repository Mock
 jest.unstable_mockModule('../../../src/api/repositories/challenge.inquiry.repository.js', () => ({
   findUserChallenges: jest.fn(),
+  countUserChallenges: jest.fn(),
   countChallenges: jest.fn(),
   findChallengesWithAttendCount: jest.fn(),
   findChallengeDetailById: jest.fn(),
   findParticipatesByChallenge: jest.fn(),
+  countParticipatesByChallenge: jest.fn(),
 }));
 
 const challengeInquiryService = (await import('../../../src/api/services/challenge.inquiry.service.js')).default;
@@ -20,7 +22,7 @@ describe('Challenge Inquiry Service Tests', () => {
   });
 
   describe('getUserParticipateList', () => {
-    it('사용자가 참여한 챌린지 목록을 조회해야 함', async () => {
+    it('사용자가 생성한 진행 중인 챌린지 목록을 조회해야 함', async () => {
       const mockChallenges = [
         {
           challenge_id: 'challenge-1',
@@ -37,7 +39,8 @@ describe('Challenge Inquiry Service Tests', () => {
         },
       ];
 
-      challengeInquiryRepository.findUserChallenges.mockResolvedValue(mockChallenges);
+      challengeInquiryRepository.countChallenges.mockResolvedValue(1);
+      challengeInquiryRepository.findChallengesWithAttendCount.mockResolvedValue(mockChallenges);
 
       const result = await challengeInquiryService.getUserParticipateList(
         'user-123',
@@ -50,9 +53,17 @@ describe('Challenge Inquiry Service Tests', () => {
         '신청시간느림순' // sort
       );
 
-      expect(challengeInquiryRepository.findUserChallenges).toHaveBeenCalledWith({
-        userId: 'user-123',
+      expect(challengeInquiryRepository.countChallenges).toHaveBeenCalledWith(
+        expect.objectContaining({
+          user_id: 'user-123',
+          isDelete: false,
+          deadline: { gt: expect.any(Date) },
+        })
+      );
+
+      expect(challengeInquiryRepository.findChallengesWithAttendCount).toHaveBeenCalledWith({
         where: expect.objectContaining({
+          user_id: 'user-123',
           isDelete: false,
           deadline: { gt: expect.any(Date) },
         }),
@@ -67,7 +78,8 @@ describe('Challenge Inquiry Service Tests', () => {
     });
 
     it('만료되지 않은 챌린지만 조회해야 함', async () => {
-      challengeInquiryRepository.findUserChallenges.mockResolvedValue([]);
+      challengeInquiryRepository.countChallenges.mockResolvedValue(0);
+      challengeInquiryRepository.findChallengesWithAttendCount.mockResolvedValue([]);
 
       await challengeInquiryService.getUserParticipateList(
         'user-123',
@@ -80,12 +92,14 @@ describe('Challenge Inquiry Service Tests', () => {
         '신청시간느림순'
       );
 
-      const whereCondition = challengeInquiryRepository.findUserChallenges.mock.calls[0][0].where;
+      const whereCondition = challengeInquiryRepository.countChallenges.mock.calls[0][0];
       expect(whereCondition.deadline).toEqual({ gt: expect.any(Date) });
+      expect(whereCondition.user_id).toBe('user-123');
     });
 
     it('한글 status를 영문 enum으로 변환해야 함', async () => {
-      challengeInquiryRepository.findUserChallenges.mockResolvedValue([]);
+      challengeInquiryRepository.countChallenges.mockResolvedValue(0);
+      challengeInquiryRepository.findChallengesWithAttendCount.mockResolvedValue([]);
 
       await challengeInquiryService.getUserParticipateList(
         'user-123',
@@ -98,12 +112,13 @@ describe('Challenge Inquiry Service Tests', () => {
         '신청시간느림순'
       );
 
-      const whereCondition = challengeInquiryRepository.findUserChallenges.mock.calls[0][0].where;
+      const whereCondition = challengeInquiryRepository.countChallenges.mock.calls[0][0];
       expect(whereCondition.status).toBe('APPROVED');
     });
 
     it('status 신청거절은 REJECTED로 변환해야 함', async () => {
-      challengeInquiryRepository.findUserChallenges.mockResolvedValue([]);
+      challengeInquiryRepository.countChallenges.mockResolvedValue(0);
+      challengeInquiryRepository.findChallengesWithAttendCount.mockResolvedValue([]);
 
       await challengeInquiryService.getUserParticipateList(
         'user-123',
@@ -116,12 +131,13 @@ describe('Challenge Inquiry Service Tests', () => {
         '신청시간느림순'
       );
 
-      const whereCondition = challengeInquiryRepository.findUserChallenges.mock.calls[0][0].where;
+      const whereCondition = challengeInquiryRepository.countChallenges.mock.calls[0][0];
       expect(whereCondition.status).toBe('REJECTED');
     });
 
     it('status 신청취소는 CANCELLED로 변환해야 함', async () => {
-      challengeInquiryRepository.findUserChallenges.mockResolvedValue([]);
+      challengeInquiryRepository.countChallenges.mockResolvedValue(0);
+      challengeInquiryRepository.findChallengesWithAttendCount.mockResolvedValue([]);
 
       await challengeInquiryService.getUserParticipateList(
         'user-123',
@@ -134,12 +150,13 @@ describe('Challenge Inquiry Service Tests', () => {
         '신청시간느림순'
       );
 
-      const whereCondition = challengeInquiryRepository.findUserChallenges.mock.calls[0][0].where;
+      const whereCondition = challengeInquiryRepository.countChallenges.mock.calls[0][0];
       expect(whereCondition.status).toBe('CANCELLED');
     });
 
     it('status 신청대기는 PENDING으로 변환해야 함', async () => {
-      challengeInquiryRepository.findUserChallenges.mockResolvedValue([]);
+      challengeInquiryRepository.countChallenges.mockResolvedValue(0);
+      challengeInquiryRepository.findChallengesWithAttendCount.mockResolvedValue([]);
 
       await challengeInquiryService.getUserParticipateList(
         'user-123',
@@ -152,12 +169,13 @@ describe('Challenge Inquiry Service Tests', () => {
         '신청시간느림순'
       );
 
-      const whereCondition = challengeInquiryRepository.findUserChallenges.mock.calls[0][0].where;
+      const whereCondition = challengeInquiryRepository.countChallenges.mock.calls[0][0];
       expect(whereCondition.status).toBe('PENDING');
     });
 
     it('정렬 기준이 올바르게 적용되어야 함 - 신청시간빠름순', async () => {
-      challengeInquiryRepository.findUserChallenges.mockResolvedValue([]);
+      challengeInquiryRepository.countChallenges.mockResolvedValue(0);
+      challengeInquiryRepository.findChallengesWithAttendCount.mockResolvedValue([]);
 
       await challengeInquiryService.getUserParticipateList(
         'user-123',
@@ -170,12 +188,13 @@ describe('Challenge Inquiry Service Tests', () => {
         '신청시간빠름순'
       );
 
-      const orderBy = challengeInquiryRepository.findUserChallenges.mock.calls[0][0].orderBy;
+      const orderBy = challengeInquiryRepository.findChallengesWithAttendCount.mock.calls[0][0].orderBy;
       expect(orderBy).toEqual({ created_at: 'asc' });
     });
 
     it('정렬 기준이 올바르게 적용되어야 함 - 마감기한빠름순', async () => {
-      challengeInquiryRepository.findUserChallenges.mockResolvedValue([]);
+      challengeInquiryRepository.countChallenges.mockResolvedValue(0);
+      challengeInquiryRepository.findChallengesWithAttendCount.mockResolvedValue([]);
 
       await challengeInquiryService.getUserParticipateList(
         'user-123',
@@ -188,12 +207,13 @@ describe('Challenge Inquiry Service Tests', () => {
         '마감기한빠름순'
       );
 
-      const orderBy = challengeInquiryRepository.findUserChallenges.mock.calls[0][0].orderBy;
+      const orderBy = challengeInquiryRepository.findChallengesWithAttendCount.mock.calls[0][0].orderBy;
       expect(orderBy).toEqual({ deadline: 'asc' });
     });
 
     it('페이지네이션이 올바르게 계산되어야 함', async () => {
-      challengeInquiryRepository.findUserChallenges.mockResolvedValue([]);
+      challengeInquiryRepository.countChallenges.mockResolvedValue(0);
+      challengeInquiryRepository.findChallengesWithAttendCount.mockResolvedValue([]);
 
       await challengeInquiryService.getUserParticipateList(
         'user-123',
@@ -206,7 +226,7 @@ describe('Challenge Inquiry Service Tests', () => {
         '신청시간느림순'
       );
 
-      expect(challengeInquiryRepository.findUserChallenges).toHaveBeenCalledWith(
+      expect(challengeInquiryRepository.findChallengesWithAttendCount).toHaveBeenCalledWith(
         expect.objectContaining({
           skip: 40, // (3 - 1) * 20
           take: 20,
@@ -215,7 +235,8 @@ describe('Challenge Inquiry Service Tests', () => {
     });
 
     it('title 필터가 있으면 where 조건에 추가해야 함', async () => {
-      challengeInquiryRepository.findUserChallenges.mockResolvedValue([]);
+      challengeInquiryRepository.countChallenges.mockResolvedValue(0);
+      challengeInquiryRepository.findChallengesWithAttendCount.mockResolvedValue([]);
 
       await challengeInquiryService.getUserParticipateList(
         'user-123',
@@ -228,7 +249,7 @@ describe('Challenge Inquiry Service Tests', () => {
         '신청시간느림순'
       );
 
-      const whereCondition = challengeInquiryRepository.findUserChallenges.mock.calls[0][0].where;
+      const whereCondition = challengeInquiryRepository.countChallenges.mock.calls[0][0];
       expect(whereCondition.title).toEqual({
         contains: 'React',
         mode: 'insensitive',
