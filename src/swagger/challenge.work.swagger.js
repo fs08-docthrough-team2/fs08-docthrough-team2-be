@@ -745,7 +745,7 @@
  * /api/challenge/work/translated-detail/{attendId}:
  *   delete:
  *     summary: 작업물 삭제
- *     description: 제출된 작업물을 삭제합니다.
+ *     description: 제출된 작업물을 삭제합니다. (Soft Delete - 실제로는 is_delete 플래그만 변경)
  *     tags: [ChallengeWork]
  *     security:
  *       - BearerAuth: []
@@ -755,6 +755,17 @@
  *         required: true
  *         schema:
  *           type: string
+ *     requestBody:
+ *       required: false
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               deleteReason:
+ *                 type: string
+ *                 description: 삭제 사유 (선택적)
+ *                 example: "내용이 부적절하여 삭제합니다."
  *     responses:
  *       200:
  *         description: 삭제 성공
