@@ -4,6 +4,7 @@ import {
   getUserProfileFromToken,
   updateUserProfile,
   deleteUserProfile,
+  getUserprofile
 } from "../services/user.service.js";
 import HTTP_STATUS from "../../constants/http.constant.js";
 import { successResponse } from "../../utils/response.util.js";
@@ -39,6 +40,16 @@ export const deleteUserProfileController = asyncHandler(async(req, res) => {
     successResponse({
       data: null,
       message: result.message,
+    })
+  );
+});
+
+export const getUserprofileController = asyncHandler(async(req, res) => {
+  const userId = req.auth?.userId;
+  const result = await getUserprofile({ userId });
+  res.status(HTTP_STATUS.OK).json(
+    successResponse({
+      data: result,
     })
   );
 });

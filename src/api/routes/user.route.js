@@ -4,7 +4,8 @@ import { validate } from '../../middleware/validation.middleware.js';
 import {
   getMyInfoController,
   updateUserProfileController,
-  deleteUserProfileController
+  deleteUserProfileController,
+  getUserprofileController
 } from '../controllers/user.controller.js';
 import { updateUserProfileSchema } from '../../validators/user.validator.js';
 
@@ -18,5 +19,7 @@ router.patch("/my", auth.verifyAccessToken, validate(updateUserProfileSchema), u
 
 // 회원 탈퇴
 router.delete("/my", auth.verifyAccessToken, deleteUserProfileController);
+
+router.get('/profile', auth.verifyAccessToken, getUserprofileController)
 
 export default router;

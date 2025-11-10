@@ -34,3 +34,32 @@ export async function deleteUser(user_id) {
     },
   });
 }
+
+export async function findUserProfileRepository(userId){
+  const userData = await prisma.user.findUnique({
+    where: { user_id: userId },
+    select: {
+      email: true,
+      nick_name: true,
+      role: true,
+    },
+  });
+
+  const countChallenges = await prisma.challenge.findMany({
+    where: {
+      user_id: userId,
+    }
+  });
+  const challengeCount = countChallenges.length;
+
+  const countWorks = await prisma.attend.findMany({
+    where: {
+      user_id: userId,
+      is_delete: false,
+    }
+  });
+  const workCount = countWorks.length;
+
+  return {...userData, challengeCount, workCount};
+
+}
