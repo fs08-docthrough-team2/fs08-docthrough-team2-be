@@ -63,3 +63,19 @@ export async function findUserProfileRepository(userId){
   return {...userData, challengeCount, workCount};
 
 }
+
+export async function getUserWorkIdRepository(userId, challengeId){
+  const workIdData = await prisma.attend.findMany({
+    where: {
+      user_id: userId,
+      challenge_id: challengeId,
+    },
+
+    select: {
+      attend_id: true,
+      is_delete: true,
+    }
+  });
+
+  return workIdData;
+}

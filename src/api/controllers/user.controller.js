@@ -4,7 +4,8 @@ import {
   getUserProfileFromToken,
   updateUserProfile,
   deleteUserProfile,
-  getUserprofile
+  getUserprofile,
+  getUserWorkId
 } from "../services/user.service.js";
 import HTTP_STATUS from "../../constants/http.constant.js";
 import { successResponse } from "../../utils/response.util.js";
@@ -50,6 +51,17 @@ export const getUserprofileController = asyncHandler(async(req, res) => {
   res.status(HTTP_STATUS.OK).json(
     successResponse({
       data: result,
+    })
+  );
+});
+
+export const getUserWorkIdController = asyncHandler(async(req, res) => {
+  const userId = req.auth?.userId;
+  const challengeId = req.params?.challengeId;
+  const result = await getUserWorkId(userId, challengeId);
+  res.status(HTTP_STATUS.OK).json(
+    successResponse({
+      data: { workId: result },
     })
   );
 });

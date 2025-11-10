@@ -6,3 +6,7 @@ Authorization: Bearer {{accessToken}}
 ### Get User Profile
 GET {{baseUrl}}/api/user/profile
 Authorization: Bearer {{accessToken}}
+
+### Get workID by userID & challengeID
+GET {{baseUrl}}/api/user/workId/1ffd1fab-8538-4c0f-a60a-bcb75fff7c97
+Authorization: Bearer {{accessToken}}

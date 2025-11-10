@@ -261,3 +261,161 @@
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  */
+
+/**
+ * @swagger
+ * /api/user/profile:
+ *   get:
+ *     summary: 사용자 프로필 조회
+ *     description: 로그인한 유저의 프로필 정보(이메일, 닉네임, 역할, 챌린지 개수, 작업 개수)를 조회합니다.
+ *     tags: [User]
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       200:
+ *         description: 성공적으로 프로필 정보 반환
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     userId:
+ *                       type: string
+ *                       format: uuid
+ *                       example: "abc-123-def-456"
+ *                     email:
+ *                       type: string
+ *                       format: email
+ *                       example: "user@example.com"
+ *                     nickName:
+ *                       type: string
+ *                       example: "테스트유저"
+ *                     role:
+ *                       type: string
+ *                       enum: [USER, EXPERT, ADMIN]
+ *                       example: "USER"
+ *                     challengeCount:
+ *                       type: number
+ *                       description: 사용자가 생성한 챌린지 개수
+ *                       example: 5
+ *                     workCount:
+ *                       type: number
+ *                       description: 사용자의 출석 기록 개수
+ *                       example: 10
+ *       401:
+ *         description: 인증 실패
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               error:
+ *                 code: "MISSING_AUTH_TOKEN"
+ *                 message: "인증 토큰이 제공되지 않았습니다. 이 작업을 수행하려면 로그인이 필요합니다..."
+ *       404:
+ *         description: 사용자를 찾을 수 없음
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               error:
+ *                 code: "USER_NOT_FOUND"
+ *                 message: "사용자 ID에 해당하는 프로필을 찾을 수 없습니다. 사용자가 존재하지 않거나 삭제되었을 수 있습니다."
+ *       500:
+ *         description: 서버 오류
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ */
+
+/**
+ * @swagger
+ * /api/user/workId/{challengeId}:
+ *   get:
+ *     summary: 챌린지별 출석 ID 목록 조회
+ *     description: 본인이 생성한 특정 챌린지에 대한 출석 ID 목록을 조회합니다. 본인의 챌린지만 조회 가능합니다.
+ *     tags: [User]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: challengeId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: 챌린지 ID
+ *         example: "challenge-123"
+ *     responses:
+ *       200:
+ *         description: 성공적으로 출석 ID 목록 반환
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     workId:
+ *                       type: array
+ *                       description: 출석 ID 목록 (is_delete 포함)
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           attend_id:
+ *                             type: string
+ *                             description: 출석 ID
+ *                             example: "attend-1"
+ *                           is_delete:
+ *                             type: boolean
+ *                             description: 삭제 여부
+ *                             example: false
+ *                       example:
+ *                         - attend_id: "attend-1"
+ *                           is_delete: false
+ *                         - attend_id: "attend-2"
+ *                           is_delete: false
+ *                         - attend_id: "attend-3"
+ *                           is_delete: true
+ *       401:
+ *         description: 인증 실패
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               error:
+ *                 code: "MISSING_AUTH_TOKEN"
+ *                 message: "인증 토큰이 제공되지 않았습니다..."
+ *       403:
+ *         description: 권한 없음 (다른 사용자의 챌린지)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               error:
+ *                 code: "FORBIDDEN_ACCESS"
+ *                 message: "본인의 챌린지에 대한 출석 기록만 조회할 수 있습니다."
+ *       500:
+ *         description: 서버 오류
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ */
