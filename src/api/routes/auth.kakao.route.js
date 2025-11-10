@@ -1,16 +1,16 @@
-import express from 'express';
-import passport from 'passport';
-import { cookiesOption } from '../../middleware/auth.middleware.js';
+import express from "express";
+import passport from "passport";
+import { cookiesOption } from "../../middleware/auth.middleware.js";
 
 const router = express.Router();
 
-router.get('/google/login', passport.authenticate('google', { scope: ['profile', 'email'] }));
+router.get("/kakao/login", passport.authenticate("kakao"));
 
 router.get(
-  '/google/callback',
-  passport.authenticate('google', {
+  "/kakao/callback",
+  passport.authenticate("kakao", {
     session: false,
-    failureRedirect: '/api/auth/google/login-failed',
+    failureRedirect: "/api/auth/kakao/login-failed",
   }),
   (req, res) => {
     const { user, jwtAccessToken, jwtRefreshToken } = req.user;
@@ -18,7 +18,7 @@ router.get(
     if (!jwtAccessToken || !jwtRefreshToken) {
       return res.status(500).json({
         success: false,
-        message: '토큰 생성 실패',
+        message: "토큰 생성 실패",
       });
     }
 
@@ -37,17 +37,16 @@ router.get(
     //     accessToken: jwtAccessToken,
     //     refreshToken: jwtRefreshToken,
     //   },
-    //   message: "Google 로그인 성공",
+    //   message: "Kakao 로그인 성공",
     // });
-
     res.cookie('refreshToken', jwtRefreshToken, cookiesOption);
 
     return res.status(302).redirect(`${process.env.FRONTEND_URL}/auth/callback`);
-  },
+  }
 );
 
-router.get('/google/login-failed', (req, res) => {
-  res.status(401).json({ success: false, message: 'Google 로그인 실패' });
+router.get("/kakao/login-failed", (req, res) => {
+  res.status(401).json({ success: false, message: "Kakao 로그인 실패" });
 });
 
 export default router;
