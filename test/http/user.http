@@ -2,3 +2,7 @@
 # Requires accessToken in http-client.private.env.json
 GET {{baseUrl}}/api/user/my
 Authorization: Bearer {{accessToken}}
+
+### Get User Profile
+GET {{baseUrl}}/api/user/profile
+Authorization: Bearer {{accessToken}}
