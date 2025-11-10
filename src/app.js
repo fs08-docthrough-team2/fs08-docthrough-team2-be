@@ -5,12 +5,15 @@ import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import express from 'express';
 import morgan from 'morgan';
+import session from "express-session"; 
 
 // 라우트 임포트
 import authRoutes  from "./api/routes/auth.route.js"
 import tokenRoutes from "./api/routes/token.route.js"
 import adminRoutes from "./api/routes/admin.route.js"
 import userRoutes from "./api/routes/user.route.js"
+import googleRoutes from "./api/routes/auth.google.route.js"
+import kakaoRoutes from "./api/routes/auth.kakao.route.js"
 
 import challengeAdminRoute from './api/routes/challenge.admin.route.js';
 import challengeInquiryRoute from './api/routes/challenge.inquiry.route.js';
@@ -26,6 +29,10 @@ import { swaggerDocs } from './config/swagger.config.js';
 import cors from './config/cors.config.js';
 import prisma from './config/prisma.config.js';
 import { startScheduler } from './config/cron.config.js';
+import passport from "passport";
+
+import "./config/passport.config.js";
+import "./config/passport.kakao.config.js"
 
 // 환경 변수 설정
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -39,12 +46,16 @@ if (!process.env.DATABASE_URL) {
 // Express 앱 생성
 const app = express();
 
+
 // express 미들웨어 설정
 app.use(express.json({ limit: '10mb' })); // JSON 파싱 미들웨어 추가
 app.use(express.urlencoded({ limit: '5mb', extended: true }));
 app.use(morgan('combined'));
 app.use(cookieParser());
 app.use(cors);
+app.use(session({ secret: "secret", resave: false, saveUninitialized: true }));
+app.use(passport.initialize());
+app.use(passport.session());
 
 // API 라우트 설정
 app.get('/', (req, res) => {
@@ -62,6 +73,8 @@ app.use("/api/auth", authRoutes);
 app.use("/api/token", tokenRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/user", userRoutes);
+app.use("/api/auth", googleRoutes);
+app.use("/api/auth", kakaoRoutes);
 
 // Swagger 문서
 swaggerDocs(app);

@@ -73,7 +73,13 @@ export const logoutController = asyncHandler(async (req, res) => {
     ...cookiesOption,
     maxAge: 0,
   });
-
+  
+  res.clearCookie("connect.sid", { path: "/" });
+  
+  if(req.session){
+    req.session.destroy(() => {});
+  }
+  
   res.status(HTTP_STATUS.OK).json(
     successResponse({
       data: null,
