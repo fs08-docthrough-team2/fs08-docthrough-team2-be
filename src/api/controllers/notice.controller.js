@@ -45,28 +45,7 @@ const getUserNoticeInput = asyncHandler(async (req, res) => {
     );
   }
 
-  const { page, pageSize } = req.query;
-  const pageNum = Number(page);
-  const pageSizeNum = Number(pageSize);
-
-  if (!Number.isInteger(pageNum) || !Number.isInteger(pageSizeNum)) {
-    return res.status(HTTP_STATUS.BAD_REQUEST).json(
-      errorResponse({
-        code: VALIDATION_ERROR_CODE.INVALID_PAGINATION,
-        message: VALIDATION_MESSAGE.INVALID_PAGINATION,
-      })
-    );
-  }
-  if (pageNum < 1 || pageSizeNum < 1) {
-    return res.status(HTTP_STATUS.BAD_REQUEST).json(
-      errorResponse({
-        code: VALIDATION_ERROR_CODE.INVALID_PAGE_MIN,
-        message: VALIDATION_MESSAGE.INVALID_PAGE_MIN,
-      })
-    );
-  }
-
-  const noticeList = await noticeService.getUserNotice(userID, pageNum, pageSizeNum);
+  const noticeList = await noticeService.getUserNotice(userID);
 
   // service에서 이미 success를 반환하므로 직접 반환
   res.status(HTTP_STATUS.OK).json(noticeList);

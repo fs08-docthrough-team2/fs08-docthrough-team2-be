@@ -39,7 +39,7 @@ export async function countUserNotices(userId) {
 /**
  * 사용자 알림 목록 조회 (페이지네이션)
  */
-export async function findUserNotices(userId, skip, take) {
+export async function findUserNotices(userId) {
   return prisma.notice.findMany({
     where: { user_id: userId },
     include: {
@@ -53,8 +53,6 @@ export async function findUserNotices(userId, skip, take) {
       }
     },
     orderBy: { created_at: 'desc' },
-    skip,
-    take,
   });
 }
 
