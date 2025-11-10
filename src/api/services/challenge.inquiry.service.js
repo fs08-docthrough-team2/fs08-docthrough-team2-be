@@ -6,6 +6,7 @@ async function getChallengeList({ title, field, type, status, page, pageSize, so
     // where 조건 설정
     const whereCondition = {
       isDelete: false,
+      status: 'APPROVED', // 기본적으로 승인된 챌린지만 조회
     };
     // title이 존재하고 빈 문자열이 아닐 때만 검색 조건 추가
     if (title && title.trim() !== '') {
@@ -21,7 +22,7 @@ async function getChallengeList({ title, field, type, status, page, pageSize, so
       whereCondition.type = Array.isArray(type) ? { in: type } : type;
     }
     if (status) {
-      whereCondition.status = status;
+      whereCondition.status = status; // status 파라미터가 있으면 덮어쓰기
     }
 
     // 정렬 조건 설정
@@ -190,6 +191,7 @@ async function getUserParticipateList(userID, title, field, type, status, page, 
     const whereCondition = {
       isDelete: false,
       deadline: { gt: new Date() },
+      status: 'APPROVED', // 기본적으로 승인된 챌린지만 조회
     };
     if (field) {
       whereCondition.field = Array.isArray(field) ? { in: field } : field;
@@ -293,6 +295,7 @@ async function getUserCompleteList(userID, title, field, type, status, page, pag
     const whereCondition = {
       isDelete: false,
       deadline: { lte: new Date() },
+      status: 'APPROVED', // 기본적으로 승인된 챌린지만 조회
     };
     if (field) {
       whereCondition.field = Array.isArray(field) ? { in: field } : field;
