@@ -34,6 +34,16 @@ async function createChallenge(title, source, field, type, deadline, capacity, c
 
 async function updateChallenge(req, userID) {
   try{
+    // 수정 가능한 챌린지인지 확인
+    const challengeStaus = await challengeCrudRepository.canImodifyThis(req.params.challengeId);
+
+    if (challengeStaus.isDelete || challengeStaus.isClose || challengeStaus.isReject) {
+      throw {
+        status: 400,
+        message: '해당 챌린지는 수정할 수 없는 상태입니다. (사유: 관리자 거절 처리)',
+      };
+    }
+
     // 챌린지를 DB에 업데이트하고, 내용을 반환 받음
     const updateChallenge = await challengeCrudRepository.updateChallengeById(
       req.params.challengeId,
