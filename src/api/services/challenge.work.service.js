@@ -2,6 +2,7 @@ import * as workRepository from "../repositories/challenge.work.repository.js";
 import { NotFoundError, UnauthorizedError, BadRequestError, ConflictError } from '../../utils/error.util.js';
 import { getUserFromToken } from "./user.service.js";
 import noticeServices from './notice.service.js';
+import * as challengeCrudRepository from '../repositories/challenge.crud.repository.js';
 
 
 
@@ -154,6 +155,16 @@ export async function getSaveDetail(req, attend_id){
 // 생성
 export async function createWork(req, challenge_id, title, workItem){
   const { userId } = await getUserFromToken(req);
+
+    // 수정 가능한 챌린지인지 확인
+    const challengeStaus = await challengeCrudRepository.canImodifyThis(req.body.challengeId);
+
+    if (challengeStaus.isDelete || challengeStaus.isClose || challengeStaus.isReject) {
+      throw {
+        status: 400,
+        message: '해당 챌린지에는 작업물을 등록할 수 없습니다. (사유: 관리자 거절 처리)',
+      };
+    }
 
   const challenge = await workRepository.findChallengeIsClose(challenge_id);
 
