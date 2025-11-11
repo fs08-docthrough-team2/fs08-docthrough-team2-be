@@ -50,10 +50,31 @@ export async function hardDeleteChallengeById(challengeId) {
   });
 }
 
+export async function canImodifyThis(challengeId) {
+  const challengeStatus = await prisma.challenge.findUnique({
+    where: { challenge_id: challengeId },
+    select: {
+      isDelete: true,
+      isClose: true,
+      isReject: true,
+    },
+  });
+
+  if (!challengeStatus) {
+    throw {
+      status: 404,
+      message: '챌린지를 찾을 수 없습니다.',
+    };
+  }
+
+  return challengeStatus;
+}
+
 export default {
   createChallenge,
   updateChallengeById,
   cancelChallengeById,
   deleteChallengeById,
   hardDeleteChallengeById,
+  canImodifyThis,
 };
