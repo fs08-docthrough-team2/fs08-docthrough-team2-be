@@ -37,7 +37,7 @@ export async function deleteUser(user_id) {
 
 export async function findUserProfileRepository(userId){
   const userData = await prisma.user.findUnique({
-    where: { user_id: userId },
+    where: { user_id: userId},
     select: {
       email: true,
       nick_name: true,
@@ -56,8 +56,10 @@ export async function findUserProfileRepository(userId){
     where: {
       user_id: userId,
       is_delete: false,
+      isSave: false
     }
   });
+
   const workCount = countWorks.length;
 
   return {...userData, challengeCount, workCount};
