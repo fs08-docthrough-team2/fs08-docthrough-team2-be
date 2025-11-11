@@ -40,7 +40,7 @@ async function updateChallenge(req, userID) {
     if (challengeStaus.isDelete || challengeStaus.isClose || challengeStaus.isReject) {
       throw {
         status: 400,
-        message: '해당 챌린지는 수정할 수 없는 상태입니다.',
+        message: '해당 챌린지는 수정할 수 없는 상태입니다. (사유: 관리자 거절 처리)',
       };
     }
 
