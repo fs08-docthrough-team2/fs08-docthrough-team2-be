@@ -14,7 +14,7 @@ export function startScheduler() {
   // 매시간 정각에 실행 (0 * * * *)
   // 테스트용으로 1분마다 실행하려면: */1 * * * *
   const scheduleJob = cron.schedule(
-    '*/1 * * * *',
+    '* * */1 * *',
     scheduleDeadlineCheck,
     {
       scheduled: true,
